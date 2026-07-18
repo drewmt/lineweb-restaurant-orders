@@ -51,4 +51,4 @@ Use the WordPress.org support forum for the included plugin features. For tailor
 
 ## Copyright and license
 
-Copyright 2025-2026 Andrew Matia / Lineweb. SnapOrder is licensed under GPL-2.0-or-later. Third-party components retain their original copyrights and compatible licenses; see [`LICENSE.md`](LICENSE.md).
+Copyright 2025-2026 Andrew Matia / Lineweb. SnapOrder is licensed under GPL-2.0-or-later; see [`LICENSE`](LICENSE). Third-party components retain their original copyrights and compatible licenses; see [`LICENSE.md`](LICENSE.md).
