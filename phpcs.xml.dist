@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<ruleset name="SnapOrder">
+  <description>WordPress.org coding standards for SnapOrder.</description>
+
+  <file>snaporder.php</file>
+  <file>includes</file>
+  <file>templates</file>
+  <file>uninstall.php</file>
+
+  <exclude-pattern>vendor/*</exclude-pattern>
+  <exclude-pattern>node_modules/*</exclude-pattern>
+
+  <arg name="basepath" value="."/>
+  <arg name="extensions" value="php"/>
+  <arg value="sp"/>
+  <arg name="parallel" value="8"/>
+
+  <config name="testVersion" value="7.4-"/>
+  <config name="minimum_supported_wp_version" value="6.2"/>
+
+  <rule ref="WordPress"/>
+  <rule ref="PHPCompatibilityWP"/>
+  <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+    <properties>
+      <property name="prefixes" type="array">
+        <element value="snaporder"/>
+        <element value="SnapOrder"/>
+      </property>
+    </properties>
+  </rule>
+</ruleset>
+

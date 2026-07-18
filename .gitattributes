@@ -1,0 +1,14 @@
+/.github export-ignore
+/.wp-env.json export-ignore
+/tests export-ignore
+/tools/build-release.sh export-ignore
+/.distignore export-ignore
+/phpcs.xml.dist export-ignore
+/phpunit.xml.dist export-ignore
+/phpunit.unit.xml.dist export-ignore
+/composer.json export-ignore
+/composer.lock export-ignore
+/CONTRIBUTING.md export-ignore
+/README.md export-ignore
+/SECURITY.md export-ignore
+/SOURCE.md export-ignore

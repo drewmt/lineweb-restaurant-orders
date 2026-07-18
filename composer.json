@@ -1,0 +1,38 @@
+{
+  "name": "lineweb/snaporder",
+  "description": "Development tools and tests for the SnapOrder WordPress plugin.",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "authors": [
+    {
+      "name": "Andrew Matia",
+      "homepage": "https://www.lineweb.gr/",
+      "role": "Creator and maintainer"
+    }
+  ],
+  "require": {
+    "php": ">=7.4"
+  },
+  "require-dev": {
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+    "phpcompatibility/phpcompatibility-wp": "^2.1",
+    "phpunit/phpunit": "^9.6",
+    "wp-coding-standards/wpcs": "^3.2",
+    "yoast/phpunit-polyfills": "^4.0"
+  },
+  "scripts": {
+    "lint": "phpcs --standard=phpcs.xml.dist",
+    "format": "phpcbf --standard=phpcs.xml.dist",
+    "test": "phpunit -c phpunit.unit.xml.dist",
+    "test:integration": "phpunit -c phpunit.xml.dist"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    },
+    "platform": {
+      "php": "7.4"
+    },
+    "sort-packages": true
+  }
+}

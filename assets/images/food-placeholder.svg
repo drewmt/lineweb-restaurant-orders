@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-labelledby="title description">
+  <title id="title">Food item placeholder</title>
+  <desc id="description">A simple plate and cutlery illustration.</desc>
+  <rect width="800" height="600" fill="#f3f4f6"/>
+  <circle cx="400" cy="300" r="150" fill="#fff" stroke="#d1d5db" stroke-width="20"/>
+  <circle cx="400" cy="300" r="86" fill="#f9fafb" stroke="#e5e7eb" stroke-width="12"/>
+  <path d="M205 155v290M175 155v120c0 32 60 32 60 0V155M595 155v290M565 155c0 96 60 96 60 0" fill="none" stroke="#9ca3af" stroke-linecap="round" stroke-width="18"/>
+</svg>

@@ -1,0 +1,62 @@
+name: Quality checks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'releases/**'
+
+permissions:
+  contents: read
+
+jobs:
+  php-tests:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['7.4', '8.3']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+      - run: composer install --no-interaction --prefer-dist
+      - run: composer test
+      - if: matrix.php == '8.3'
+        run: composer lint
+
+  assets:
+    name: Frontend assets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run test:js:syntax
+      - name: Verify committed build output
+        run: git diff --exit-code -- assets/css/app.css assets/vendor
+
+  plugin-check:
+    name: WordPress Plugin Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build:release
+      - uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: './build/snaporder'
+          wp-version: latest
