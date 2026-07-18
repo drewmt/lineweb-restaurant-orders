@@ -72,39 +72,39 @@ class SnapOrder_Product_Options {
 		}
 		?>
 		<div class="mfm-row">
-			<label><?php esc_html_e( 'Variants', 'snaporder' ); ?></label>
+			<label><?php esc_html_e( 'Variants', 'lineweb-restaurant-orders' ); ?></label>
 			<div id="mfm-sizes-wrapper">
 				<?php foreach ( $sizes as $index => $size ) : ?>
 					<div class="mfm-size-item" style="margin-bottom:10px;display:flex;gap:10px;">
 						<input type="text" name="mfm_size[<?php echo (int) $index; ?>][name]"
 							value="<?php echo esc_attr( $size['name'] ); ?>"
-							placeholder="<?php esc_attr_e( 'Variant Name (e.g. Large)', 'snaporder' ); ?>">
+							placeholder="<?php esc_attr_e( 'Variant Name (e.g. Large)', 'lineweb-restaurant-orders' ); ?>">
 						<input type="text" name="mfm_size[<?php echo (int) $index; ?>][price]"
 							value="<?php echo esc_attr( $size['price'] ); ?>"
-							placeholder="<?php esc_attr_e( 'Price (+)', 'snaporder' ); ?>">
+							placeholder="<?php esc_attr_e( 'Price (+)', 'lineweb-restaurant-orders' ); ?>">
 						<button type="button" class="button mfm-remove-size">&times;</button>
 					</div>
 				<?php endforeach; ?>
 			</div>
-			<button type="button" class="button" id="mfm-add-size"><?php esc_html_e( 'Add Variant', 'snaporder' ); ?></button>
+			<button type="button" class="button" id="mfm-add-size"><?php esc_html_e( 'Add Variant', 'lineweb-restaurant-orders' ); ?></button>
 		</div>
 
 		<div class="mfm-row">
-			<label><?php esc_html_e( 'Extras', 'snaporder' ); ?></label>
+			<label><?php esc_html_e( 'Extras', 'lineweb-restaurant-orders' ); ?></label>
 			<div id="mfm-extras-wrapper">
 				<?php foreach ( $extras as $index => $extra ) : ?>
 					<div class="mfm-extra-item" style="margin-bottom:10px;display:flex;gap:10px;">
 						<input type="text" name="mfm_extras[<?php echo (int) $index; ?>][name]"
 							value="<?php echo esc_attr( $extra['name'] ); ?>"
-							placeholder="<?php esc_attr_e( 'Extra Name (e.g. Extra Cheese)', 'snaporder' ); ?>">
+							placeholder="<?php esc_attr_e( 'Extra Name (e.g. Extra Cheese)', 'lineweb-restaurant-orders' ); ?>">
 						<input type="text" name="mfm_extras[<?php echo (int) $index; ?>][price]"
 							value="<?php echo esc_attr( $extra['price'] ); ?>"
-							placeholder="<?php esc_attr_e( 'Price (e.g. 1.50)', 'snaporder' ); ?>">
+							placeholder="<?php esc_attr_e( 'Price (e.g. 1.50)', 'lineweb-restaurant-orders' ); ?>">
 						<button type="button" class="button mfm-remove-extra">&times;</button>
 					</div>
 				<?php endforeach; ?>
 			</div>
-			<button type="button" class="button" id="mfm-add-extra"><?php esc_html_e( 'Add Extra', 'snaporder' ); ?></button>
+			<button type="button" class="button" id="mfm-add-extra"><?php esc_html_e( 'Add Extra', 'lineweb-restaurant-orders' ); ?></button>
 		</div>
 		<?php
 	}

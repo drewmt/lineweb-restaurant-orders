@@ -28,7 +28,7 @@ class SnapOrder_Metaboxes {
 	public function add_meta_boxes() {
 		add_meta_box(
 			'mfm_food_details',
-			__( 'Food Details', 'snaporder' ),
+			__( 'Food Details', 'lineweb-restaurant-orders' ),
 			array( $this, 'render_meta_box' ),
 			'food_item',
 			'normal',
@@ -61,34 +61,34 @@ class SnapOrder_Metaboxes {
 		</style>
 		<div class="mfm-meta-box">
 			<div class="mfm-row">
-				<label for="mfm_price"><?php esc_html_e( 'Price', 'snaporder' ); ?></label>
+				<label for="mfm_price"><?php esc_html_e( 'Price', 'lineweb-restaurant-orders' ); ?></label>
 				<input type="text" id="mfm_price" name="mfm_price" value="<?php echo esc_attr( $price ); ?>" placeholder="e.g. 12.99">
 			</div>
 			<div class="mfm-row">
-				<label for="mfm_ingredients"><?php esc_html_e( 'Ingredients', 'snaporder' ); ?></label>
+				<label for="mfm_ingredients"><?php esc_html_e( 'Ingredients', 'lineweb-restaurant-orders' ); ?></label>
 				<textarea id="mfm_ingredients" name="mfm_ingredients" rows="3"><?php echo esc_textarea( $ingredients ); ?></textarea>
 			</div>
 			<div class="mfm-row">
-				<label for="mfm_calories"><?php esc_html_e( 'Calories', 'snaporder' ); ?></label>
+				<label for="mfm_calories"><?php esc_html_e( 'Calories', 'lineweb-restaurant-orders' ); ?></label>
 				<input type="text" id="mfm_calories" name="mfm_calories" value="<?php echo esc_attr( $calories ); ?>" placeholder="e.g. 350 kcal">
 			</div>
 			<div class="mfm-row">
-				<label for="mfm_allergens"><?php esc_html_e( 'Allergens', 'snaporder' ); ?></label>
+				<label for="mfm_allergens"><?php esc_html_e( 'Allergens', 'lineweb-restaurant-orders' ); ?></label>
 				<input type="text" id="mfm_allergens" name="mfm_allergens" value="<?php echo esc_attr( $allergens ); ?>" placeholder="e.g. Nuts, Dairy">
 			</div>
 
 			<?php do_action( 'snaporder_product_options_metabox', $post ); ?>
 
 			<div class="mfm-row">
-				<label><?php esc_html_e( 'Dietary Badges', 'snaporder' ); ?></label>
+				<label><?php esc_html_e( 'Dietary Badges', 'lineweb-restaurant-orders' ); ?></label>
 				<div class="mfm-checkbox-group">
 					<?php
 					$badges = array(
-						'vegan'       => __( 'Vegan', 'snaporder' ),
-						'vegetarian'  => __( 'Vegetarian', 'snaporder' ),
-						'gluten_free' => __( 'Gluten Free', 'snaporder' ),
-						'spicy'       => __( 'Spicy', 'snaporder' ),
-						'nut_free'    => __( 'Nut Free', 'snaporder' ),
+						'vegan'       => __( 'Vegan', 'lineweb-restaurant-orders' ),
+						'vegetarian'  => __( 'Vegetarian', 'lineweb-restaurant-orders' ),
+						'gluten_free' => __( 'Gluten Free', 'lineweb-restaurant-orders' ),
+						'spicy'       => __( 'Spicy', 'lineweb-restaurant-orders' ),
+						'nut_free'    => __( 'Nut Free', 'lineweb-restaurant-orders' ),
 					);
 					foreach ( $badges as $key => $label ) {
 						echo '<label><input type="checkbox" name="mfm_dietary[]" value="' . esc_attr( $key ) . '" ' . checked( in_array( $key, $dietary, true ), true, false ) . '> ' . esc_html( $label ) . '</label>';
@@ -98,10 +98,10 @@ class SnapOrder_Metaboxes {
 			</div>
 
 			<div class="mfm-row">
-				<label for="mfm_featured" style="display:inline-block;margin-right:10px;"><?php esc_html_e( 'Featured Item', 'snaporder' ); ?></label>
+				<label for="mfm_featured" style="display:inline-block;margin-right:10px;"><?php esc_html_e( 'Featured Item', 'lineweb-restaurant-orders' ); ?></label>
 				<?php $featured = get_post_meta( $post->ID, '_mfm_featured', true ); ?>
 				<input type="checkbox" id="mfm_featured" name="mfm_featured" value="1" <?php checked( $featured, '1' ); ?>>
-				<span class="description"><?php esc_html_e( 'Show this item in the Recommended section.', 'snaporder' ); ?></span>
+				<span class="description"><?php esc_html_e( 'Show this item in the Recommended section.', 'lineweb-restaurant-orders' ); ?></span>
 			</div>
 		</div>
 		<?php

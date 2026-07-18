@@ -43,7 +43,7 @@ class SnapOrder_WhatsApp {
 
 		$msg = sprintf(
 			/* translators: 1: order ID, 2: total with currency */
-			__( 'Thanks for your order #%1$s! We have received it and will start preparing it soon. Total: %2$s', 'snaporder' ),
+			__( 'Thanks for your order #%1$s! We have received it and will start preparing it soon. Total: %2$s', 'lineweb-restaurant-orders' ),
 			$order_id,
 			$order_data['total'] . SnapOrder_Settings::get_currency_symbol()
 		);
@@ -69,15 +69,15 @@ class SnapOrder_WhatsApp {
 
 		$messages = array(
 			/* translators: %s: order ID. */
-			'accepted'  => __( 'Your order #%s has been ACCEPTED and is being processed.', 'snaporder' ),
+			'accepted'  => __( 'Your order #%s has been ACCEPTED and is being processed.', 'lineweb-restaurant-orders' ),
 			/* translators: %s: order ID. */
-			'cooking'   => __( 'Your order #%s is now being PREPARED by our kitchen.', 'snaporder' ),
+			'cooking'   => __( 'Your order #%s is now being PREPARED by our kitchen.', 'lineweb-restaurant-orders' ),
 			/* translators: %s: order ID. */
-			'ready'     => __( 'Great news! Your order #%s is READY for pickup/delivery.', 'snaporder' ),
+			'ready'     => __( 'Great news! Your order #%s is READY for pickup/delivery.', 'lineweb-restaurant-orders' ),
 			/* translators: %s: order ID. */
-			'completed' => __( 'Your order #%s has been COMPLETED. Enjoy your meal!', 'snaporder' ),
+			'completed' => __( 'Your order #%s has been COMPLETED. Enjoy your meal!', 'lineweb-restaurant-orders' ),
 			/* translators: %s: order ID. */
-			'rejected'  => __( 'Important: Your order #%s was cancelled. Please contact us for details.', 'snaporder' ),
+			'rejected'  => __( 'Important: Your order #%s was cancelled. Please contact us for details.', 'lineweb-restaurant-orders' ),
 		);
 
 		if ( ! isset( $messages[ $new_status ] ) ) {

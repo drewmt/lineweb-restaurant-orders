@@ -35,7 +35,7 @@ class SnapOrder_Printer {
 		?>
 		<a href="<?php echo esc_url( $print_url ); ?>" target="_blank" class="button button-secondary mfm-print-btn" style="margin-right:10px;">
 			<span class="dashicons dashicons-printer"></span>
-			<?php esc_html_e( 'Print Receipt', 'snaporder' ); ?>
+			<?php esc_html_e( 'Print Receipt', 'lineweb-restaurant-orders' ); ?>
 		</a>
 		<?php
 	}
@@ -59,7 +59,7 @@ class SnapOrder_Printer {
 			return;
 		}
 		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'snaporder_print_order_' . $order_id ) ) {
-			wp_die( esc_html__( 'This print link is invalid or has expired.', 'snaporder' ), '', array( 'response' => 403 ) );
+			wp_die( esc_html__( 'This print link is invalid or has expired.', 'lineweb-restaurant-orders' ), '', array( 'response' => 403 ) );
 		}
 
 		$order = get_post( $order_id );
@@ -68,7 +68,7 @@ class SnapOrder_Printer {
 		}
 
 		$customer_name  = get_post_meta( $order_id, '_mfm_customer_name', true );
-		$customer_name  = $customer_name ? $customer_name : __( 'Guest', 'snaporder' );
+		$customer_name  = $customer_name ? $customer_name : __( 'Guest', 'lineweb-restaurant-orders' );
 		$customer_phone = get_post_meta( $order_id, '_mfm_customer_phone', true );
 		$delivery_type  = get_post_meta( $order_id, '_mfm_delivery_type', true );
 		$table_number   = get_post_meta( $order_id, '_mfm_table_number', true );
@@ -163,7 +163,7 @@ endif;
 				<p class="bold">Order Notes:</p>
 				<p><?php echo nl2br( esc_html( $notes ) ); ?></p>
 			<?php endif; ?>
-			<div class="footer">Thank you!<br>Powered by SnapOrder</div>
+			<div class="footer">Thank you!</div>
 		</body>
 		</html>
 		<?php

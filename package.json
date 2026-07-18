@@ -1,8 +1,8 @@
 {
-  "name": "snaporder",
+  "name": "lineweb-restaurant-orders",
   "version": "1.0.0",
   "private": true,
-  "description": "Build and test tooling for the SnapOrder WordPress plugin.",
+  "description": "Build and test tooling for the Lineweb Restaurant Orders WordPress plugin.",
   "author": "Andrew Matia / Lineweb (https://www.lineweb.gr/)",
   "license": "GPL-2.0-or-later",
   "scripts": {

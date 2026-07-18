@@ -24,7 +24,7 @@ final class SnapOrder_Lifecycle {
 		$statistics->create_stats_table();
 
 		if ( '1' !== get_option( 'mfm_first_activation' ) ) {
-			update_option( 'mfm_store_title', 'SnapOrder Restaurant' );
+			update_option( 'mfm_store_title', 'My Restaurant' );
 			update_option( 'mfm_store_tagline', 'Delicious food delivered to your door.' );
 			update_option( 'mfm_primary_color', '#FF6B35' );
 			update_option( 'mfm_enable_cod', '1' );

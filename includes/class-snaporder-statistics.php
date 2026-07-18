@@ -86,8 +86,8 @@ class SnapOrder_Statistics {
 	public function add_menu() {
 		add_submenu_page(
 			'edit.php?post_type=food_item',
-			__( 'View Statistics', 'snaporder' ),
-			__( 'Statistics', 'snaporder' ),
+			__( 'View Statistics', 'lineweb-restaurant-orders' ),
+			__( 'Statistics', 'lineweb-restaurant-orders' ),
 			'manage_options',
 			'mfm-statistics',
 			array( $this, 'render_admin_page' )
@@ -122,17 +122,17 @@ class SnapOrder_Statistics {
 		);
 		?>
 		<div class="wrap">
-			<h1><?php esc_html_e( 'Menu View Statistics', 'snaporder' ); ?></h1>
+			<h1><?php esc_html_e( 'Menu View Statistics', 'lineweb-restaurant-orders' ); ?></h1>
 			<form method="get">
 				<input type="hidden" name="post_type" value="food_item">
 				<input type="hidden" name="page" value="mfm-statistics">
 				<select name="days" onchange="this.form.submit()">
 					<?php
 					$periods = array(
-						1  => __( 'Today', 'snaporder' ),
-						7  => __( 'Last 7 Days', 'snaporder' ),
-						30 => __( 'Last 30 Days', 'snaporder' ),
-						90 => __( 'Last 90 Days', 'snaporder' ),
+						1  => __( 'Today', 'lineweb-restaurant-orders' ),
+						7  => __( 'Last 7 Days', 'lineweb-restaurant-orders' ),
+						30 => __( 'Last 30 Days', 'lineweb-restaurant-orders' ),
+						90 => __( 'Last 90 Days', 'lineweb-restaurant-orders' ),
 					);
 					foreach ( $periods as $val => $label ) {
 						printf( '<option value="%d" %s>%s</option>', (int) $val, selected( $days, $val, false ), esc_html( $label ) );
@@ -143,8 +143,8 @@ class SnapOrder_Statistics {
 			<table class="widefat striped" style="margin-top:15px;">
 				<thead>
 					<tr>
-						<th><?php esc_html_e( 'Item', 'snaporder' ); ?></th>
-						<th><?php esc_html_e( 'Views', 'snaporder' ); ?></th>
+						<th><?php esc_html_e( 'Item', 'lineweb-restaurant-orders' ); ?></th>
+						<th><?php esc_html_e( 'Views', 'lineweb-restaurant-orders' ); ?></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -162,7 +162,7 @@ class SnapOrder_Statistics {
 						endforeach;
 					else :
 						?>
-						<tr><td colspan="2"><?php esc_html_e( 'No data for this period.', 'snaporder' ); ?></td></tr>
+						<tr><td colspan="2"><?php esc_html_e( 'No data for this period.', 'lineweb-restaurant-orders' ); ?></td></tr>
 					<?php endif; ?>
 				</tbody>
 			</table>

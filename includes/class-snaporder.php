@@ -126,11 +126,11 @@ final class SnapOrder {
 				'stripe_key'      => SnapOrder_Settings::get_stripe_publishable_key(),
 				'default_payment' => ! empty( $payment_methods ) ? $payment_methods[0] : '',
 				'strings'         => array(
-					'processing'    => __( 'Processing...', 'snaporder' ),
-					'empty_cart'    => __( 'Your cart is empty.', 'snaporder' ),
-					'order_error'   => __( 'We could not place the order. Please try again.', 'snaporder' ),
-					'payment_error' => __( 'The card payment could not be completed.', 'snaporder' ),
-					'invalid_link'  => __( 'This order link is not available on this device.', 'snaporder' ),
+					'processing'    => __( 'Processing...', 'lineweb-restaurant-orders' ),
+					'empty_cart'    => __( 'Your cart is empty.', 'lineweb-restaurant-orders' ),
+					'order_error'   => __( 'We could not place the order. Please try again.', 'lineweb-restaurant-orders' ),
+					'payment_error' => __( 'The card payment could not be completed.', 'lineweb-restaurant-orders' ),
+					'invalid_link'  => __( 'This order link is not available on this device.', 'lineweb-restaurant-orders' ),
 				),
 			)
 		);
@@ -180,7 +180,7 @@ final class SnapOrder {
 	 * @return string[]
 	 */
 	public function add_settings_link( $links ) {
-		$settings_link = '<a href="' . esc_url( admin_url( 'edit.php?post_type=food_item&page=mfm-settings' ) ) . '">' . esc_html__( 'Settings', 'snaporder' ) . '</a>';
+		$settings_link = '<a href="' . esc_url( admin_url( 'edit.php?post_type=food_item&page=mfm-settings' ) ) . '">' . esc_html__( 'Settings', 'lineweb-restaurant-orders' ) . '</a>';
 		array_unshift( $links, $settings_link );
 
 		return $links;

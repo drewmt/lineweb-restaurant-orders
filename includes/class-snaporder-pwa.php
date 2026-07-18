@@ -57,7 +57,7 @@ class SnapOrder_PWA {
 		}
 
 		$name       = get_option( 'mfm_pwa_name', get_bloginfo( 'name' ) );
-		$short_name = get_option( 'mfm_pwa_short_name', 'SnapOrder' );
+		$short_name = get_option( 'mfm_pwa_short_name', 'Restaurant' );
 		$color      = get_option( 'mfm_pwa_theme_color', '#10b981' );
 		$app_url    = $this->get_app_url();
 

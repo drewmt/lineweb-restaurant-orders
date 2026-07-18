@@ -189,14 +189,14 @@ class SnapOrder_Admin_Sorting {
 		check_ajax_referer( 'mfm_sorting_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( __( 'Permission denied.', 'snaporder' ), 403 );
+			wp_send_json_error( __( 'Permission denied.', 'lineweb-restaurant-orders' ), 403 );
 		}
 
 		$order = isset( $_POST['order'] ) && is_array( $_POST['order'] ) ? array_map( 'absint', wp_unslash( $_POST['order'] ) ) : array();
 		$type  = isset( $_POST['type'] ) ? sanitize_key( wp_unslash( $_POST['type'] ) ) : '';
 
 		if ( empty( $order ) || ! in_array( $type, array( 'category', 'post' ), true ) ) {
-			wp_send_json_error( __( 'Invalid sorting data.', 'snaporder' ), 400 );
+			wp_send_json_error( __( 'Invalid sorting data.', 'lineweb-restaurant-orders' ), 400 );
 		}
 
 		foreach ( $order as $index => $id ) {
@@ -220,6 +220,6 @@ class SnapOrder_Admin_Sorting {
 			}
 		}
 
-		wp_send_json_success( __( 'Order updated.', 'snaporder' ) );
+		wp_send_json_success( __( 'Order updated.', 'lineweb-restaurant-orders' ) );
 	}
 }

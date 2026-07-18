@@ -1,6 +1,6 @@
-# SnapOrder build sources
+# Lineweb Restaurant Orders build sources
 
-SnapOrder ships its runtime assets locally. No remote code is downloaded or executed, except the documented Stripe.js payment-service script when Stripe is enabled.
+Lineweb Restaurant Orders ships its runtime assets locally. No remote code is downloaded or executed, except the documented Stripe.js payment-service script when Stripe is enabled.
 
 ## Reproduce the assets
 
@@ -26,4 +26,4 @@ Exact package versions are recorded in `package-lock.json`. The release ZIP incl
 - QRCode.js 1.0.0 — MIT License.
 - Stripe.js v3 — loaded directly from `https://js.stripe.com/v3/` only when the administrator enables a fully configured Stripe checkout.
 
-SnapOrder's original source is copyright Andrew Matia / Lineweb and released under GPL-2.0-or-later. Third-party copyrights remain with their respective authors.
+The original Lineweb Restaurant Orders source is copyright Andrew Matia / Lineweb and released under GPL-2.0-or-later. Third-party copyrights remain with their respective authors.

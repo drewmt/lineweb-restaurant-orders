@@ -67,7 +67,7 @@ $snaporder_brand_rgb = snaporder_hex_to_rgb( $snaporder_brand_color );
 $snaporder_store_closed   = ! SnapOrder_Settings::is_store_open();
 $snaporder_closed_message = '';
 if ( $snaporder_store_closed ) {
-	$snaporder_closed_message = __( 'We are currently closed. Please order during opening hours.', 'snaporder' );
+	$snaporder_closed_message = __( 'We are currently closed. Please order during opening hours.', 'lineweb-restaurant-orders' );
 }
 ?>
 <!DOCTYPE html>
@@ -136,27 +136,27 @@ if ( $snaporder_store_closed ) {
 			<div class="w-14 h-14 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm">
 				<i data-lucide="check" class="w-6 h-6 mfm-text-primary"></i>
 			</div>
-			<h1 class="text-2xl font-bold text-gray-900 mb-1"><?php esc_html_e( 'Thank you for your order!', 'snaporder' ); ?></h1>
-				<p class="text-gray-500 text-sm"><?php /* translators: %d: order ID. */ printf( esc_html__( 'Order #%d', 'snaporder' ), (int) $snaporder_tracking_order_id ); ?></p>
+			<h1 class="text-2xl font-bold text-gray-900 mb-1"><?php esc_html_e( 'Thank you for your order!', 'lineweb-restaurant-orders' ); ?></h1>
+				<p class="text-gray-500 text-sm"><?php /* translators: %d: order ID. */ printf( esc_html__( 'Order #%d', 'lineweb-restaurant-orders' ), (int) $snaporder_tracking_order_id ); ?></p>
 		</div>
 
 		<div class="p-5" id="order-status-container" data-order-id="<?php echo (int) $snaporder_tracking_order_id; ?>" data-current-status="">
-			<h3 class="font-bold text-gray-900 mb-3 text-base"><?php esc_html_e( 'Order Status', 'snaporder' ); ?></h3>
+			<h3 class="font-bold text-gray-900 mb-3 text-base"><?php esc_html_e( 'Order Status', 'lineweb-restaurant-orders' ); ?></h3>
 			<div class="mfm-bg-primary text-white p-3 rounded-xl flex items-center justify-between mb-5 shadow-lg mfm-shadow-primary">
 				<div class="flex items-center gap-2">
 					<div class="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-					<span class="font-bold text-lg capitalize" id="live-status-text"><?php esc_html_e( 'Checking order...', 'snaporder' ); ?></span>
+					<span class="font-bold text-lg capitalize" id="live-status-text"><?php esc_html_e( 'Checking order...', 'lineweb-restaurant-orders' ); ?></span>
 				</div>
-				<span class="text-xs bg-white/20 px-2 py-0.5 rounded"><?php esc_html_e( 'Live Update', 'snaporder' ); ?></span>
+				<span class="text-xs bg-white/20 px-2 py-0.5 rounded"><?php esc_html_e( 'Live Update', 'lineweb-restaurant-orders' ); ?></span>
 			</div>
 			<div class="space-y-5 relative pl-4 border-l-2 border-gray-100 ml-2">
 				<?php
 				$snaporder_steps = array(
-					'pending'   => __( 'Order Received', 'snaporder' ),
-					'accepted'  => __( 'Accepted', 'snaporder' ),
-					'cooking'   => __( 'Cooking', 'snaporder' ),
-					'ready'     => __( 'Ready', 'snaporder' ),
-					'completed' => __( 'Completed', 'snaporder' ),
+					'pending'   => __( 'Order Received', 'lineweb-restaurant-orders' ),
+					'accepted'  => __( 'Accepted', 'lineweb-restaurant-orders' ),
+					'cooking'   => __( 'Cooking', 'lineweb-restaurant-orders' ),
+					'ready'     => __( 'Ready', 'lineweb-restaurant-orders' ),
+					'completed' => __( 'Completed', 'lineweb-restaurant-orders' ),
 				);
 				foreach ( $snaporder_steps as $snaporder_key => $snaporder_label ) :
 					?>
@@ -169,11 +169,11 @@ if ( $snaporder_store_closed ) {
 		</div>
 
 		<div id="mfm-order-details" class="p-5 border-t border-gray-100 hidden">
-			<h3 class="font-bold text-gray-900 mb-3 text-base"><?php esc_html_e( 'Order Details', 'snaporder' ); ?></h3>
+			<h3 class="font-bold text-gray-900 mb-3 text-base"><?php esc_html_e( 'Order Details', 'lineweb-restaurant-orders' ); ?></h3>
 			<div class="bg-gray-50 rounded-xl p-3 space-y-2" id="mfm-order-detail-items"></div>
 			<div class="bg-gray-50 rounded-xl px-3 pb-3">
 				<div class="border-t border-gray-200 pt-2 flex justify-between items-center mt-2">
-					<span class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Total', 'snaporder' ); ?></span>
+					<span class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Total', 'lineweb-restaurant-orders' ); ?></span>
 					<span class="font-bold text-xl mfm-text-primary" id="mfm-order-detail-total"></span>
 				</div>
 			</div>
@@ -181,7 +181,7 @@ if ( $snaporder_store_closed ) {
 
 		<div class="p-5">
 			<a href="<?php echo esc_url( get_permalink() ); ?>" class="block w-full mfm-bg-primary text-white text-center font-bold py-3.5 rounded-xl shadow-lg mfm-shadow-primary mfm-hover-bg-primary-dark transition-all text-base">
-				<?php esc_html_e( 'Back to Menu', 'snaporder' ); ?>
+				<?php esc_html_e( 'Back to Menu', 'lineweb-restaurant-orders' ); ?>
 			</a>
 		</div>
 	</div>
@@ -244,7 +244,7 @@ endforeach;
 		<div class="px-4 py-3">
 			<div class="relative">
 				<i data-lucide="search" class="absolute left-4 top-3.5 w-4 h-4 text-gray-400"></i>
-				<input type="text" id="mfm-search-input" placeholder="<?php esc_attr_e( 'Search for food...', 'snaporder' ); ?>"
+				<input type="text" id="mfm-search-input" placeholder="<?php esc_attr_e( 'Search for food...', 'lineweb-restaurant-orders' ); ?>"
 					class="w-full bg-gray-100 text-gray-900 rounded-xl pl-10 pr-4 py-3 font-medium text-base focus:outline-none focus:ring-2 mfm-ring-primary transition-all">
 			</div>
 		</div>
@@ -332,8 +332,8 @@ endforeach;
 			<!-- Recommended / Featured Items -->
 			<section class="mb-8 px-4 mfm-recommended-section">
 				<div class="flex justify-between items-end mb-4">
-					<h2 class="text-2xl font-bold text-gray-900"><?php esc_html_e( 'Recommended', 'snaporder' ); ?></h2>
-					<a href="#" onclick="MFMApp.showFeaturedPage(); return false;" class="mfm-text-primary text-base font-bold mfm-hover-text-primary-dark"><?php esc_html_e( 'See all', 'snaporder' ); ?></a>
+					<h2 class="text-2xl font-bold text-gray-900"><?php esc_html_e( 'Recommended', 'lineweb-restaurant-orders' ); ?></h2>
+					<a href="#" onclick="MFMApp.showFeaturedPage(); return false;" class="mfm-text-primary text-base font-bold mfm-hover-text-primary-dark"><?php esc_html_e( 'See all', 'lineweb-restaurant-orders' ); ?></a>
 				</div>
 				<div class="flex gap-4 overflow-x-auto hide-scrollbar pb-4">
 					<?php
@@ -492,7 +492,7 @@ endif;
 				<button onclick="MFMApp.hideFeaturedPage()" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
 					<i data-lucide="arrow-left" class="w-6 h-6 text-gray-900"></i>
 				</button>
-				<h2 class="text-2xl font-bold text-gray-900"><?php esc_html_e( 'Featured Items', 'snaporder' ); ?></h2>
+				<h2 class="text-2xl font-bold text-gray-900"><?php esc_html_e( 'Featured Items', 'lineweb-restaurant-orders' ); ?></h2>
 			</div>
 			<div class="grid grid-cols-2 gap-3">
 				<?php
@@ -561,11 +561,11 @@ endif;
 				<div class="flex items-center gap-3">
 					<div class="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center font-bold text-sm" id="mfm-bar-count">0</div>
 					<div class="flex flex-col">
-						<span class="text-[10px] text-gray-400"><?php esc_html_e( 'Total', 'snaporder' ); ?></span>
+						<span class="text-[10px] text-gray-400"><?php esc_html_e( 'Total', 'lineweb-restaurant-orders' ); ?></span>
 						<span class="font-bold text-base leading-none" id="mfm-bar-total">0.00<?php echo esc_html( $snaporder_currency_symbol ); ?></span>
 					</div>
 				</div>
-				<div class="flex items-center gap-2 font-bold text-xs"><?php esc_html_e( 'View Cart', 'snaporder' ); ?> <i data-lucide="chevron-right" class="w-4 h-4"></i></div>
+				<div class="flex items-center gap-2 font-bold text-xs"><?php esc_html_e( 'View Cart', 'lineweb-restaurant-orders' ); ?> <i data-lucide="chevron-right" class="w-4 h-4"></i></div>
 			</div>
 		</div>
 
@@ -574,20 +574,20 @@ endif;
 			<div class="max-w-md mx-auto flex justify-around items-center h-14 px-2">
 				<a href="<?php echo esc_url( get_permalink() ); ?>" class="bottom-nav-item active flex flex-col items-center justify-center w-full h-full space-y-0.5 text-gray-400 mfm-hover-text-primary">
 					<i data-lucide="home" class="w-6 h-6"></i>
-					<span class="text-xs font-medium"><?php esc_html_e( 'Menu', 'snaporder' ); ?></span>
+					<span class="text-xs font-medium"><?php esc_html_e( 'Menu', 'lineweb-restaurant-orders' ); ?></span>
 				</a>
 				<button onclick="document.getElementById('mfm-search-input').focus()" class="bottom-nav-item flex flex-col items-center justify-center w-full h-full space-y-0.5 text-gray-400 mfm-hover-text-primary">
 					<i data-lucide="search" class="w-6 h-6"></i>
-					<span class="text-xs font-medium"><?php esc_html_e( 'Search', 'snaporder' ); ?></span>
+					<span class="text-xs font-medium"><?php esc_html_e( 'Search', 'lineweb-restaurant-orders' ); ?></span>
 				</button>
 				<button onclick="MFMCart.openCart()" class="bottom-nav-item flex flex-col items-center justify-center w-full h-full space-y-0.5 text-gray-400 mfm-hover-text-primary relative">
 					<i data-lucide="shopping-bag" class="w-6 h-6"></i>
-					<span class="text-xs font-medium"><?php esc_html_e( 'Cart', 'snaporder' ); ?></span>
+					<span class="text-xs font-medium"><?php esc_html_e( 'Cart', 'lineweb-restaurant-orders' ); ?></span>
 					<span class="mfm-cart-count absolute top-0 right-3 w-4 h-4 mfm-bg-primary text-white text-[9px] font-bold flex items-center justify-center rounded-full border-2 border-white">0</span>
 				</button>
 				<button class="bottom-nav-item flex flex-col items-center justify-center w-full h-full space-y-0.5 text-gray-400 mfm-hover-text-primary">
 					<i data-lucide="user" class="w-6 h-6"></i>
-					<span class="text-xs font-medium"><?php esc_html_e( 'Profile', 'snaporder' ); ?></span>
+					<span class="text-xs font-medium"><?php esc_html_e( 'Profile', 'lineweb-restaurant-orders' ); ?></span>
 				</button>
 			</div>
 		</div>
@@ -622,16 +622,16 @@ endif;
 					</div>
 					<p class="mfm-modal-desc text-gray-500 text-base leading-relaxed mb-6"></p>
 					<div class="mfm-modal-variants-wrapper hidden mb-6">
-						<h3 class="font-bold text-gray-900 mb-3 text-sm"><?php esc_html_e( 'Choose Variant', 'snaporder' ); ?></h3>
+						<h3 class="font-bold text-gray-900 mb-3 text-sm"><?php esc_html_e( 'Choose Variant', 'lineweb-restaurant-orders' ); ?></h3>
 						<div class="mfm-modal-variants space-y-2"></div>
 					</div>
 					<div class="mfm-modal-extras-wrapper hidden mb-8">
-						<h3 class="font-bold text-gray-900 mb-3 text-sm"><?php esc_html_e( 'Extras', 'snaporder' ); ?></h3>
+						<h3 class="font-bold text-gray-900 mb-3 text-sm"><?php esc_html_e( 'Extras', 'lineweb-restaurant-orders' ); ?></h3>
 						<div class="mfm-modal-extras space-y-2"></div>
 					</div>
 					<div class="mb-6">
-						<label class="block font-bold text-gray-900 mb-2 text-sm"><?php esc_html_e( 'Special Instructions (Optional)', 'snaporder' ); ?></label>
-						<textarea id="mfm-product-notes" class="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 mfm-ring-primary focus:border-transparent resize-none" rows="3" placeholder="<?php esc_attr_e( 'E.g., No onions, extra sauce, well done...', 'snaporder' ); ?>"></textarea>
+						<label class="block font-bold text-gray-900 mb-2 text-sm"><?php esc_html_e( 'Special Instructions (Optional)', 'lineweb-restaurant-orders' ); ?></label>
+						<textarea id="mfm-product-notes" class="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 mfm-ring-primary focus:border-transparent resize-none" rows="3" placeholder="<?php esc_attr_e( 'E.g., No onions, extra sauce, well done...', 'lineweb-restaurant-orders' ); ?>"></textarea>
 					</div>
 					<div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 p-4 pb-8 shadow-[0_-10px_40px_rgb(0,0,0,0.05)]">
 						<div class="flex items-center justify-between gap-3 max-w-md mx-auto">
@@ -641,7 +641,7 @@ endif;
 								<button class="w-10 h-10 flex items-center justify-center font-bold text-xl hover:bg-white rounded-lg transition-all" onclick="MFMApp.incrementQty()">+</button>
 							</div>
 							<button class="flex-1 bg-gray-900 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-gray-800 transition-all flex justify-between px-5 text-base" onclick="MFMApp.addToCart()">
-								<span><?php esc_html_e( 'Add to Order', 'snaporder' ); ?></span>
+								<span><?php esc_html_e( 'Add to Order', 'lineweb-restaurant-orders' ); ?></span>
 								<span class="mfm-modal-price-display"></span>
 							</button>
 						</div>
@@ -655,17 +655,17 @@ endif;
 			<div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="MFMCart.closeCart()"></div>
 			<div class="mfm-cart-content absolute bottom-0 left-0 w-full bg-white rounded-t-3xl h-[85vh] flex flex-col translate-y-full">
 				<div class="p-4 border-b border-gray-100 flex justify-between items-center">
-					<h2 class="text-lg font-bold"><?php esc_html_e( 'Your Cart', 'snaporder' ); ?></h2>
+					<h2 class="text-lg font-bold"><?php esc_html_e( 'Your Cart', 'lineweb-restaurant-orders' ); ?></h2>
 					<button onclick="MFMCart.closeCart()" class="p-2 bg-gray-100 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
 				</div>
 				<div class="flex-1 overflow-y-auto p-4 space-y-3" id="mfm-cart-items"></div>
 				<div class="p-4 border-t border-gray-100 bg-gray-50 pb-safe">
 					<div class="flex justify-between items-center mb-4">
-						<span class="text-gray-500 text-sm"><?php esc_html_e( 'Total Amount', 'snaporder' ); ?></span>
+						<span class="text-gray-500 text-sm"><?php esc_html_e( 'Total Amount', 'lineweb-restaurant-orders' ); ?></span>
 						<span class="text-xl font-bold text-gray-900" id="mfm-cart-total">0.00<?php echo esc_html( $snaporder_currency_symbol ); ?></span>
 					</div>
 					<button onclick="MFMCart.openCheckout()" class="w-full mfm-bg-primary text-white font-bold py-3.5 rounded-xl shadow-lg mfm-shadow-primary mfm-hover-bg-primary-dark transition-all text-sm">
-						<?php esc_html_e( 'Proceed to Checkout', 'snaporder' ); ?>
+						<?php esc_html_e( 'Proceed to Checkout', 'lineweb-restaurant-orders' ); ?>
 					</button>
 				</div>
 			</div>
@@ -676,52 +676,52 @@ endif;
 			<div class="max-w-md mx-auto min-h-screen flex flex-col">
 				<div class="p-4 border-b border-gray-100 flex items-center gap-3 sticky top-0 bg-white z-10">
 					<button onclick="MFMCart.closeCheckout()" class="p-2 hover:bg-gray-100 rounded-full"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
-					<h2 class="text-lg font-bold"><?php esc_html_e( 'Checkout', 'snaporder' ); ?></h2>
+					<h2 class="text-lg font-bold"><?php esc_html_e( 'Checkout', 'lineweb-restaurant-orders' ); ?></h2>
 				</div>
 				<div class="flex-1 p-5">
 					<form id="mfm-checkout-form" class="space-y-5">
 						<!-- Delivery Type -->
 						<div class="bg-gray-100 p-1 rounded-xl flex">
-							<button type="button" id="btn-delivery" class="flex-1 py-3 rounded-lg text-sm font-bold shadow-sm bg-white text-gray-900 transition-all" onclick="MFMCart.setDeliveryType('delivery')"><?php esc_html_e( 'Delivery', 'snaporder' ); ?></button>
-							<button type="button" id="btn-pickup"   class="flex-1 py-3 rounded-lg text-sm font-bold text-gray-500 transition-all" onclick="MFMCart.setDeliveryType('pickup')"><?php esc_html_e( 'Pickup', 'snaporder' ); ?></button>
+							<button type="button" id="btn-delivery" class="flex-1 py-3 rounded-lg text-sm font-bold shadow-sm bg-white text-gray-900 transition-all" onclick="MFMCart.setDeliveryType('delivery')"><?php esc_html_e( 'Delivery', 'lineweb-restaurant-orders' ); ?></button>
+							<button type="button" id="btn-pickup"   class="flex-1 py-3 rounded-lg text-sm font-bold text-gray-500 transition-all" onclick="MFMCart.setDeliveryType('pickup')"><?php esc_html_e( 'Pickup', 'lineweb-restaurant-orders' ); ?></button>
 							<?php if ( get_option( 'mfm_dinein_enabled' ) === '1' ) : ?>
-							<button type="button" id="btn-dinein" class="flex-1 py-3 rounded-lg text-sm font-bold text-gray-500 transition-all" onclick="MFMCart.setDeliveryType('dinein')"><?php esc_html_e( 'Dine-In', 'snaporder' ); ?></button>
+							<button type="button" id="btn-dinein" class="flex-1 py-3 rounded-lg text-sm font-bold text-gray-500 transition-all" onclick="MFMCart.setDeliveryType('dinein')"><?php esc_html_e( 'Dine-In', 'lineweb-restaurant-orders' ); ?></button>
 							<?php endif; ?>
 						</div>
 						<!-- Contact -->
 						<div class="space-y-3">
-							<h3 class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Contact Info', 'snaporder' ); ?></h3>
+							<h3 class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Contact Info', 'lineweb-restaurant-orders' ); ?></h3>
 							<div id="contact-info-fields" class="space-y-2">
-								<input type="text" name="name"  placeholder="<?php esc_attr_e( 'Full Name', 'snaporder' ); ?>"    required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
-								<input type="tel"  name="phone" placeholder="<?php esc_attr_e( 'Phone Number', 'snaporder' ); ?>" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
+								<input type="text" name="name"  placeholder="<?php esc_attr_e( 'Full Name', 'lineweb-restaurant-orders' ); ?>"    required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
+								<input type="tel"  name="phone" placeholder="<?php esc_attr_e( 'Phone Number', 'lineweb-restaurant-orders' ); ?>" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
 							</div>
 							<?php if ( get_option( 'mfm_dinein_enabled' ) === '1' ) : ?>
 							<div id="dinein-fields" class="hidden">
-								<input type="number" name="table_number" placeholder="<?php esc_attr_e( 'Table Number', 'snaporder' ); ?>" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
+								<input type="number" name="table_number" placeholder="<?php esc_attr_e( 'Table Number', 'lineweb-restaurant-orders' ); ?>" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
 							</div>
 							<?php endif; ?>
 						</div>
 						<!-- Delivery Address -->
 						<div id="delivery-fields" class="space-y-3">
-							<h3 class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Delivery Address', 'snaporder' ); ?></h3>
+							<h3 class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Delivery Address', 'lineweb-restaurant-orders' ); ?></h3>
 							<div class="flex gap-2">
-								<input type="text" name="street" placeholder="<?php esc_attr_e( 'Street Name', 'snaporder' ); ?>" required class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
-								<input type="text" name="number" placeholder="<?php esc_attr_e( 'No.', 'snaporder' ); ?>"         required class="w-24 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
+								<input type="text" name="street" placeholder="<?php esc_attr_e( 'Street Name', 'lineweb-restaurant-orders' ); ?>" required class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
+								<input type="text" name="number" placeholder="<?php esc_attr_e( 'No.', 'lineweb-restaurant-orders' ); ?>"         required class="w-24 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
 							</div>
 							<div class="flex gap-2">
-								<input type="text" name="city" placeholder="<?php esc_attr_e( 'City', 'snaporder' ); ?>" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
-								<input type="text" name="zip"  placeholder="<?php esc_attr_e( 'ZIP', 'snaporder' ); ?>"  required class="w-28  bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
+								<input type="text" name="city" placeholder="<?php esc_attr_e( 'City', 'lineweb-restaurant-orders' ); ?>" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
+								<input type="text" name="zip"  placeholder="<?php esc_attr_e( 'ZIP', 'lineweb-restaurant-orders' ); ?>"  required class="w-28  bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
 							</div>
 						</div>
 						<!-- Tips -->
 						<?php if ( get_option( 'mfm_tipping_enabled' ) === '1' ) : ?>
 						<div class="space-y-3">
-							<h3 class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Add a Tip', 'snaporder' ); ?></h3>
+							<h3 class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Add a Tip', 'lineweb-restaurant-orders' ); ?></h3>
 							<div class="grid grid-cols-4 gap-2">
 								<button type="button" class="tip-btn border border-gray-200 rounded-xl py-2 font-medium text-sm hover:border-orange-500 hover:text-orange-500 transition-colors" onclick="MFMCart.setTip(0.05)">5%</button>
 								<button type="button" class="tip-btn border border-gray-200 rounded-xl py-2 font-medium text-sm hover:border-orange-500 hover:text-orange-500 transition-colors" onclick="MFMCart.setTip(0.10)">10%</button>
 								<button type="button" class="tip-btn border border-gray-200 rounded-xl py-2 font-medium text-sm hover:border-orange-500 hover:text-orange-500 transition-colors" onclick="MFMCart.setTip(0.15)">15%</button>
-								<button type="button" class="tip-btn border border-gray-200 rounded-xl py-2 font-medium text-sm hover:border-orange-500 hover:text-orange-500 transition-colors" onclick="MFMCart.toggleCustomTip()"><?php esc_html_e( 'Custom', 'snaporder' ); ?></button>
+								<button type="button" class="tip-btn border border-gray-200 rounded-xl py-2 font-medium text-sm hover:border-orange-500 hover:text-orange-500 transition-colors" onclick="MFMCart.toggleCustomTip()"><?php esc_html_e( 'Custom', 'lineweb-restaurant-orders' ); ?></button>
 							</div>
 							<div id="custom-tip-wrap" class="hidden mt-2">
 								<div class="relative">
@@ -731,23 +731,23 @@ endif;
 							</div>
 							<input type="hidden" name="tip_amount" id="tip-amount-input" value="0">
 							<div id="tip-display-row" class="text-sm text-gray-500 flex justify-between hidden">
-								<span><?php esc_html_e( 'Tip added:', 'snaporder' ); ?></span>
+								<span><?php esc_html_e( 'Tip added:', 'lineweb-restaurant-orders' ); ?></span>
 								<span class="font-bold text-gray-900" id="tip-display-amount"></span>
 							</div>
 						</div>
 						<?php endif; ?>
 						<!-- Order Notes -->
 						<div class="space-y-3">
-							<h3 class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Order Notes (Optional)', 'snaporder' ); ?></h3>
-							<textarea name="order_notes" id="mfm-order-notes" placeholder="<?php esc_attr_e( 'Any special requests?', 'snaporder' ); ?>" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary resize-none" rows="3"></textarea>
+							<h3 class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Order Notes (Optional)', 'lineweb-restaurant-orders' ); ?></h3>
+							<textarea name="order_notes" id="mfm-order-notes" placeholder="<?php esc_attr_e( 'Any special requests?', 'lineweb-restaurant-orders' ); ?>" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary resize-none" rows="3"></textarea>
 						</div>
 						<!-- Payment -->
 						<div class="space-y-3">
-							<h3 class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Payment Method', 'snaporder' ); ?></h3>
+							<h3 class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Payment Method', 'lineweb-restaurant-orders' ); ?></h3>
 							<?php if ( in_array( 'stripe', $snaporder_payment_methods, true ) ) : ?>
 							<div class="payment-option <?php echo 'stripe' === $snaporder_default_payment ? 'selected mfm-border-primary mfm-bg-primary-50' : 'border border-gray-200'; ?> rounded-xl p-4 flex items-center gap-3 cursor-pointer" data-payment-method="stripe" role="button" tabindex="0">
 								<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm"><i data-lucide="credit-card" class="w-5 h-5 mfm-text-primary"></i></div>
-								<span class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Credit/Debit Card', 'snaporder' ); ?></span>
+								<span class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Credit/Debit Card', 'lineweb-restaurant-orders' ); ?></span>
 								<input type="radio" name="payment" value="stripe" <?php checked( 'stripe', $snaporder_default_payment ); ?> class="hidden">
 							</div>
 							<div id="stripe-card-element" class="mt-4 p-4 bg-white rounded-lg border border-gray-200"<?php echo 'stripe' === $snaporder_default_payment ? '' : ' style="display:none"'; ?>></div>
@@ -756,16 +756,16 @@ endif;
 							<?php if ( in_array( 'cod', $snaporder_payment_methods, true ) ) : ?>
 							<div class="payment-option <?php echo 'cod' === $snaporder_default_payment ? 'selected mfm-border-primary mfm-bg-primary-50' : 'border border-gray-200'; ?> rounded-xl p-4 flex items-center gap-3 cursor-pointer" data-payment-method="cod" role="button" tabindex="0">
 								<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm"><i data-lucide="banknote" class="w-5 h-5 mfm-text-primary"></i></div>
-								<span class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Cash on Delivery', 'snaporder' ); ?></span>
+								<span class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Cash on Delivery', 'lineweb-restaurant-orders' ); ?></span>
 								<input type="radio" name="payment" value="cod" <?php checked( 'cod', $snaporder_default_payment ); ?> class="hidden">
 							</div>
 							<?php endif; ?>
 							<?php if ( empty( $snaporder_payment_methods ) ) : ?>
-							<p class="rounded-xl bg-red-50 p-4 text-sm text-red-700"><?php esc_html_e( 'Ordering is temporarily unavailable because no payment method is configured.', 'snaporder' ); ?></p>
+							<p class="rounded-xl bg-red-50 p-4 text-sm text-red-700"><?php esc_html_e( 'Ordering is temporarily unavailable because no payment method is configured.', 'lineweb-restaurant-orders' ); ?></p>
 							<?php endif; ?>
 						</div>
 						<button type="submit" <?php disabled( empty( $snaporder_payment_methods ) ); ?> class="w-full bg-gray-900 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-gray-800 transition-all mt-6 text-base disabled:opacity-50 disabled:cursor-not-allowed">
-							<?php esc_html_e( 'Place Order', 'snaporder' ); ?>
+							<?php esc_html_e( 'Place Order', 'lineweb-restaurant-orders' ); ?>
 						</button>
 					</form>
 				</div>

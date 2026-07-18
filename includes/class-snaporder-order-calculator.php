@@ -50,11 +50,11 @@ class SnapOrder_Order_Calculator {
 	 */
 	public function calculate( $raw_cart, $raw_tip, $tipping_enabled ) {
 		if ( ! is_array( $raw_cart ) || empty( $raw_cart ) ) {
-			return new WP_Error( 'snaporder_empty_cart', __( 'Your cart is empty.', 'snaporder' ) );
+			return new WP_Error( 'snaporder_empty_cart', __( 'Your cart is empty.', 'lineweb-restaurant-orders' ) );
 		}
 
 		if ( count( $raw_cart ) > self::MAX_CART_LINES ) {
-			return new WP_Error( 'snaporder_cart_too_large', __( 'The cart contains too many items.', 'snaporder' ) );
+			return new WP_Error( 'snaporder_cart_too_large', __( 'The cart contains too many items.', 'lineweb-restaurant-orders' ) );
 		}
 
 		$items          = array();
@@ -68,7 +68,7 @@ class SnapOrder_Order_Calculator {
 			}
 
 			if ( $subtotal_cents > self::MAX_TOTAL_CENTS - $item['line_total_cents'] ) {
-				return new WP_Error( 'snaporder_total_too_large', __( 'The order total is too large.', 'snaporder' ) );
+				return new WP_Error( 'snaporder_total_too_large', __( 'The order total is too large.', 'lineweb-restaurant-orders' ) );
 			}
 
 			$subtotal_cents += $item['line_total_cents'];
@@ -76,7 +76,7 @@ class SnapOrder_Order_Calculator {
 		}
 
 		if ( $subtotal_cents <= 0 ) {
-			return new WP_Error( 'snaporder_invalid_total', __( 'The order total must be greater than zero.', 'snaporder' ) );
+			return new WP_Error( 'snaporder_invalid_total', __( 'The order total must be greater than zero.', 'lineweb-restaurant-orders' ) );
 		}
 
 		$tip_cents = 0;
@@ -84,13 +84,13 @@ class SnapOrder_Order_Calculator {
 			$tip_cents = self::money_to_cents( $raw_tip );
 
 			if ( is_wp_error( $tip_cents ) || $tip_cents > $subtotal_cents ) {
-				return new WP_Error( 'snaporder_invalid_tip', __( 'The selected tip is invalid.', 'snaporder' ) );
+				return new WP_Error( 'snaporder_invalid_tip', __( 'The selected tip is invalid.', 'lineweb-restaurant-orders' ) );
 			}
 		}
 
 		$total_cents = $subtotal_cents + $tip_cents;
 		if ( $total_cents > self::MAX_TOTAL_CENTS ) {
-			return new WP_Error( 'snaporder_total_too_large', __( 'The order total is too large.', 'snaporder' ) );
+			return new WP_Error( 'snaporder_total_too_large', __( 'The order total is too large.', 'lineweb-restaurant-orders' ) );
 		}
 
 		return array(
@@ -112,18 +112,18 @@ class SnapOrder_Order_Calculator {
 	 */
 	private function calculate_item( $raw_item ) {
 		if ( ! is_array( $raw_item ) ) {
-			return new WP_Error( 'snaporder_invalid_cart_item', __( 'A cart item is invalid.', 'snaporder' ) );
+			return new WP_Error( 'snaporder_invalid_cart_item', __( 'A cart item is invalid.', 'lineweb-restaurant-orders' ) );
 		}
 
 		$product_id = isset( $raw_item['id'] ) ? (int) $raw_item['id'] : 0;
 		$quantity   = isset( $raw_item['qty'] ) ? (int) $raw_item['qty'] : 0;
 
 		if ( $product_id <= 0 ) {
-			return new WP_Error( 'snaporder_invalid_product', __( 'A selected product is unavailable.', 'snaporder' ) );
+			return new WP_Error( 'snaporder_invalid_product', __( 'A selected product is unavailable.', 'lineweb-restaurant-orders' ) );
 		}
 
 		if ( $quantity < 1 || $quantity > self::MAX_ITEM_QTY ) {
-			return new WP_Error( 'snaporder_invalid_quantity', __( 'A product quantity is invalid.', 'snaporder' ) );
+			return new WP_Error( 'snaporder_invalid_quantity', __( 'A product quantity is invalid.', 'lineweb-restaurant-orders' ) );
 		}
 
 		$product = call_user_func( $this->product_loader, $product_id );
@@ -132,12 +132,12 @@ class SnapOrder_Order_Calculator {
 		}
 
 		if ( ! is_array( $product ) || ! isset( $product['price'], $product['title'] ) ) {
-			return new WP_Error( 'snaporder_invalid_product', __( 'A selected product is unavailable.', 'snaporder' ) );
+			return new WP_Error( 'snaporder_invalid_product', __( 'A selected product is unavailable.', 'lineweb-restaurant-orders' ) );
 		}
 
 		$unit_cents = self::money_to_cents( $product['price'] );
 		if ( is_wp_error( $unit_cents ) ) {
-			return new WP_Error( 'snaporder_invalid_catalog_price', __( 'A selected product has an invalid price.', 'snaporder' ) );
+			return new WP_Error( 'snaporder_invalid_catalog_price', __( 'A selected product has an invalid price.', 'lineweb-restaurant-orders' ) );
 		}
 
 		$canonical_variant = null;
@@ -152,12 +152,12 @@ class SnapOrder_Order_Calculator {
 				! is_array( $variants[ $variant_index ] ) ||
 				! isset( $variants[ $variant_index ]['name'], $variants[ $variant_index ]['price'] )
 			) {
-				return new WP_Error( 'snaporder_invalid_variant', __( 'The selected product variant is unavailable.', 'snaporder' ) );
+				return new WP_Error( 'snaporder_invalid_variant', __( 'The selected product variant is unavailable.', 'lineweb-restaurant-orders' ) );
 			}
 
 			$variant_cents = self::money_to_cents( $variants[ $variant_index ]['price'] );
 			if ( is_wp_error( $variant_cents ) ) {
-				return new WP_Error( 'snaporder_invalid_catalog_price', __( 'A selected product variant has an invalid price.', 'snaporder' ) );
+				return new WP_Error( 'snaporder_invalid_catalog_price', __( 'A selected product variant has an invalid price.', 'lineweb-restaurant-orders' ) );
 			}
 
 			$unit_cents       += $variant_cents;
@@ -173,13 +173,13 @@ class SnapOrder_Order_Calculator {
 		$catalog_extras   = isset( $product['extras'] ) && is_array( $product['extras'] ) ? array_values( $product['extras'] ) : array();
 
 		if ( count( $raw_extras ) > count( $catalog_extras ) ) {
-			return new WP_Error( 'snaporder_invalid_extra', __( 'A selected product extra is unavailable.', 'snaporder' ) );
+			return new WP_Error( 'snaporder_invalid_extra', __( 'A selected product extra is unavailable.', 'lineweb-restaurant-orders' ) );
 		}
 
 		$seen_extra_indexes = array();
 		foreach ( $raw_extras as $raw_extra ) {
 			if ( ! is_array( $raw_extra ) || ! array_key_exists( 'index', $raw_extra ) ) {
-				return new WP_Error( 'snaporder_invalid_extra', __( 'A selected product extra is unavailable.', 'snaporder' ) );
+				return new WP_Error( 'snaporder_invalid_extra', __( 'A selected product extra is unavailable.', 'lineweb-restaurant-orders' ) );
 			}
 
 			$extra_index = filter_var( $raw_extra['index'], FILTER_VALIDATE_INT );
@@ -195,12 +195,12 @@ class SnapOrder_Order_Calculator {
 				$extra_qty < 1 ||
 				$extra_qty > self::MAX_EXTRA_QTY
 			) {
-				return new WP_Error( 'snaporder_invalid_extra', __( 'A selected product extra is unavailable.', 'snaporder' ) );
+				return new WP_Error( 'snaporder_invalid_extra', __( 'A selected product extra is unavailable.', 'lineweb-restaurant-orders' ) );
 			}
 
 			$extra_cents = self::money_to_cents( $catalog_extras[ $extra_index ]['price'] );
 			if ( is_wp_error( $extra_cents ) ) {
-				return new WP_Error( 'snaporder_invalid_catalog_price', __( 'A selected product extra has an invalid price.', 'snaporder' ) );
+				return new WP_Error( 'snaporder_invalid_catalog_price', __( 'A selected product extra has an invalid price.', 'lineweb-restaurant-orders' ) );
 			}
 
 			$seen_extra_indexes[ $extra_index ] = true;
@@ -214,7 +214,7 @@ class SnapOrder_Order_Calculator {
 		}
 
 		if ( $unit_cents <= 0 || $unit_cents > self::MAX_TOTAL_CENTS / $quantity ) {
-			return new WP_Error( 'snaporder_invalid_total', __( 'A cart item has an invalid total.', 'snaporder' ) );
+			return new WP_Error( 'snaporder_invalid_total', __( 'A cart item has an invalid total.', 'lineweb-restaurant-orders' ) );
 		}
 
 		$notes = isset( $raw_item['notes'] ) ? sanitize_textarea_field( $raw_item['notes'] ) : '';
@@ -249,7 +249,7 @@ class SnapOrder_Order_Calculator {
 		$product = get_post( $product_id );
 
 		if ( ! $product || 'food_item' !== $product->post_type || 'publish' !== $product->post_status ) {
-			return new WP_Error( 'snaporder_invalid_product', __( 'A selected product is unavailable.', 'snaporder' ) );
+			return new WP_Error( 'snaporder_invalid_product', __( 'A selected product is unavailable.', 'lineweb-restaurant-orders' ) );
 		}
 
 		$image    = get_the_post_thumbnail_url( $product_id, 'thumbnail' );
@@ -278,7 +278,7 @@ class SnapOrder_Order_Calculator {
 		} elseif ( is_float( $value ) ) {
 			$value = number_format( $value, 2, '.', '' );
 		} elseif ( ! is_string( $value ) ) {
-			return new WP_Error( 'snaporder_invalid_money', __( 'A monetary value is invalid.', 'snaporder' ) );
+			return new WP_Error( 'snaporder_invalid_money', __( 'A monetary value is invalid.', 'lineweb-restaurant-orders' ) );
 		}
 
 		$value = trim( str_replace( array( "\xc2\xa0", ' ' ), '', $value ) );
@@ -295,7 +295,7 @@ class SnapOrder_Order_Calculator {
 		}
 
 		if ( ! preg_match( '/^\d+(?:\.\d{1,2})?$/', $value ) ) {
-			return new WP_Error( 'snaporder_invalid_money', __( 'A monetary value is invalid.', 'snaporder' ) );
+			return new WP_Error( 'snaporder_invalid_money', __( 'A monetary value is invalid.', 'lineweb-restaurant-orders' ) );
 		}
 
 		$parts   = explode( '.', $value, 2 );
@@ -304,12 +304,12 @@ class SnapOrder_Order_Calculator {
 		$decimal = isset( $parts[1] ) ? str_pad( $parts[1], 2, '0' ) : '00';
 
 		if ( strlen( $whole ) > 7 ) {
-			return new WP_Error( 'snaporder_invalid_money', __( 'A monetary value is too large.', 'snaporder' ) );
+			return new WP_Error( 'snaporder_invalid_money', __( 'A monetary value is too large.', 'lineweb-restaurant-orders' ) );
 		}
 
 		$cents = ( (int) $whole * 100 ) + (int) $decimal;
 		if ( $cents > self::MAX_TOTAL_CENTS ) {
-			return new WP_Error( 'snaporder_invalid_money', __( 'A monetary value is too large.', 'snaporder' ) );
+			return new WP_Error( 'snaporder_invalid_money', __( 'A monetary value is too large.', 'lineweb-restaurant-orders' ) );
 		}
 
 		return $cents;

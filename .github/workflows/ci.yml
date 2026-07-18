@@ -58,5 +58,5 @@ jobs:
       - run: npm run build:release
       - uses: wordpress/plugin-check-action@v1
         with:
-          build-dir: './build/snaporder'
+          build-dir: './build/lineweb-restaurant-orders'
           wp-version: latest

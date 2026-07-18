@@ -31,7 +31,7 @@ class SnapOrder_Template_Loader {
 	 * @return array Modified templates.
 	 */
 	public function add_page_template( $templates ) {
-		$templates['mfm-app-view.php'] = __( 'Food Menu App View', 'snaporder' );
+		$templates['mfm-app-view.php'] = __( 'Food Menu App View', 'lineweb-restaurant-orders' );
 		return $templates;
 	}
 

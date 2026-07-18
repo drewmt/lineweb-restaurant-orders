@@ -61,7 +61,7 @@ class SnapOrder_Shortcode {
 
 		$query = new WP_Query( $query_args );
 		if ( ! $query->have_posts() ) {
-			return '<p>' . esc_html__( 'No food items found.', 'snaporder' ) . '</p>';
+			return '<p>' . esc_html__( 'No food items found.', 'lineweb-restaurant-orders' ) . '</p>';
 		}
 
 		$categories  = get_terms(
@@ -77,8 +77,8 @@ class SnapOrder_Shortcode {
 		<div id="<?php echo esc_attr( $instance_id ); ?>" class="mfm-menu-container mfm-shortcode-menu">
 			<?php if ( ! $category && ! is_wp_error( $categories ) && ! empty( $categories ) ) : ?>
 				<div class="mfm-cat-nav">
-					<div class="mfm-cat-scroll" role="group" aria-label="<?php esc_attr_e( 'Filter menu by category', 'snaporder' ); ?>">
-						<button type="button" class="mfm-cat-pill mfm-shortcode-cat-pill active" data-filter="all"><?php esc_html_e( 'All', 'snaporder' ); ?></button>
+					<div class="mfm-cat-scroll" role="group" aria-label="<?php esc_attr_e( 'Filter menu by category', 'lineweb-restaurant-orders' ); ?>">
+						<button type="button" class="mfm-cat-pill mfm-shortcode-cat-pill active" data-filter="all"><?php esc_html_e( 'All', 'lineweb-restaurant-orders' ); ?></button>
 						<?php foreach ( $categories as $term ) : ?>
 							<button type="button" class="mfm-cat-pill mfm-shortcode-cat-pill" data-filter="<?php echo esc_attr( $term->slug ); ?>"><?php echo esc_html( $term->name ); ?></button>
 						<?php endforeach; ?>

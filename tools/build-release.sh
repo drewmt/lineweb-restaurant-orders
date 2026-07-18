@@ -4,9 +4,9 @@ set -euo pipefail
 
 plugin_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 build_root="${plugin_root}/build"
-stage_root="${build_root}/snaporder"
+stage_root="${build_root}/lineweb-restaurant-orders"
 version="$(sed -n 's/^ \* Version:[[:space:]]*//p' "${plugin_root}/snaporder.php" | head -n 1)"
-archive="${build_root}/snaporder-${version}.zip"
+archive="${build_root}/lineweb-restaurant-orders-${version}.zip"
 
 rm -rf "${stage_root}" "${archive}"
 mkdir -p "${stage_root}"
@@ -23,7 +23,7 @@ done
 
 (
 	cd "${build_root}"
-	zip -q -r "${archive}" snaporder
+	zip -q -r "${archive}" lineweb-restaurant-orders
 )
 
 echo "Built ${archive}"

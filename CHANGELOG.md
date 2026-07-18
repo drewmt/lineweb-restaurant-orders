@@ -1,4 +1,4 @@
-# SnapOrder by Lineweb changelog
+# Lineweb Restaurant Orders changelog
 
 ## 1.0.0 - 2026-07-18
 
@@ -8,7 +8,7 @@
 - Hardened admin order permissions, input validation, output escaping, and receipt access.
 - Preserved complete delivery addresses and canonical cart details.
 - Bundled Tailwind, Lucide, and QR runtime assets locally.
-- Scoped frontend loading and PWA caching to SnapOrder surfaces.
+- Scoped frontend loading and PWA caching to Lineweb Restaurant Orders surfaces.
 - Added privacy-policy guidance, configurable order anonymization, and opt-in uninstall cleanup.
 - Added unit and integration test foundations plus WordPress coding-standard tooling.
 - Kept every included feature freely available, with no paid gates or upgrade prompts.

@@ -28,8 +28,8 @@ class SnapOrder_QR_Code {
 	public function add_admin_menu() {
 		add_submenu_page(
 			'edit.php?post_type=food_item',
-			__( 'QR Code', 'snaporder' ),
-			__( 'QR Code', 'snaporder' ),
+			__( 'QR Code', 'lineweb-restaurant-orders' ),
+			__( 'QR Code', 'lineweb-restaurant-orders' ),
 			'manage_options',
 			'mfm-qr-code',
 			array( $this, 'render_page' )
@@ -79,9 +79,9 @@ class SnapOrder_QR_Code {
 		}
 		?>
 		<div class="wrap mfm-wrap">
-			<h1 class="mfm-page-title"><?php esc_html_e( 'QR Code Generator', 'snaporder' ); ?></h1>
+			<h1 class="mfm-page-title"><?php esc_html_e( 'QR Code Generator', 'lineweb-restaurant-orders' ); ?></h1>
 			<p class="description">
-				<?php esc_html_e( 'Generate and print QR codes for your customers to scan and order at the table.', 'snaporder' ); ?>
+				<?php esc_html_e( 'Generate and print QR codes for your customers to scan and order at the table.', 'lineweb-restaurant-orders' ); ?>
 			</p>
 
 			<div class="mfm-qr-layout">
@@ -89,23 +89,23 @@ class SnapOrder_QR_Code {
 				<div class="mfm-qr-card">
 					<h2 class="mfm-box-header">
 						<span class="dashicons dashicons-admin-settings mfm-box-icon"></span>
-						<?php esc_html_e( 'Customize Code', 'snaporder' ); ?>
+						<?php esc_html_e( 'Customize Code', 'lineweb-restaurant-orders' ); ?>
 					</h2>
 
 					<table class="form-table">
 						<tr>
 							<th scope="row"><label for="mfm_qr_url"
-									style="color:var(--mfm-text-main); font-weight:600;"><?php esc_html_e( 'Menu URL', 'snaporder' ); ?></label>
+									style="color:var(--mfm-text-main); font-weight:600;"><?php esc_html_e( 'Menu URL', 'lineweb-restaurant-orders' ); ?></label>
 							</th>
 							<td>
 								<input type="url" id="mfm_qr_url" class="large-text" value="<?php echo esc_url( $menu_url ); ?>">
-								<p class="description"><?php esc_html_e( 'The link your customers will visit.', 'snaporder' ); ?>
+								<p class="description"><?php esc_html_e( 'The link your customers will visit.', 'lineweb-restaurant-orders' ); ?>
 								</p>
 							</td>
 						</tr>
 						<tr>
 							<th scope="row"><label for="mfm_qr_color"
-									style="color:var(--mfm-text-main); font-weight:600;"><?php esc_html_e( 'Color', 'snaporder' ); ?></label>
+									style="color:var(--mfm-text-main); font-weight:600;"><?php esc_html_e( 'Color', 'lineweb-restaurant-orders' ); ?></label>
 							</th>
 							<td>
 								<input type="color" id="mfm_qr_color" value="<?php echo esc_attr( $primary_color ); ?>"
@@ -114,7 +114,7 @@ class SnapOrder_QR_Code {
 						</tr>
 						<tr>
 							<th scope="row"><label
-									style="color:var(--mfm-text-main); font-weight:600;"><?php esc_html_e( 'Size', 'snaporder' ); ?></label>
+									style="color:var(--mfm-text-main); font-weight:600;"><?php esc_html_e( 'Size', 'lineweb-restaurant-orders' ); ?></label>
 							</th>
 							<td>
 								<div style="display: flex; align-items: center; gap: 15px;">
@@ -131,7 +131,7 @@ class SnapOrder_QR_Code {
 						<button type="button" class="button mfm-btn-primary button-large" id="mfm_print_btn"
 							style="padding: 10px 24px !important; font-size: 16px !important;">
 							<span class="dashicons dashicons-printer" style="line-height: normal; margin-right: 8px;"></span>
-							<?php esc_html_e( 'Print QR Code', 'snaporder' ); ?>
+							<?php esc_html_e( 'Print QR Code', 'lineweb-restaurant-orders' ); ?>
 						</button>
 					</div>
 				</div>
@@ -140,7 +140,7 @@ class SnapOrder_QR_Code {
 				<div class="mfm-qr-preview-col">
 					<h2
 						style="margin: 0 0 20px 0; font-size: 18px; font-weight: 700; color: var(--mfm-text-muted); text-align: left; width: 100%; max-width: 400px;">
-						<?php esc_html_e( 'Live Preview', 'snaporder' ); ?></h2>
+						<?php esc_html_e( 'Live Preview', 'lineweb-restaurant-orders' ); ?></h2>
 
 					<div id="mfm_qr_container" class="mfm-qr-print-box">
 						<h3 id="mfm_preview_title" class="mfm-qr-title">
@@ -148,12 +148,12 @@ class SnapOrder_QR_Code {
 						</h3>
 						<div id="mfm_qrcode" style="display: flex; justify-content: center;"></div>
 						<p class="mfm-qr-scan-text">
-							<?php esc_html_e( 'Scan to Order', 'snaporder' ); ?>
+							<?php esc_html_e( 'Scan to Order', 'lineweb-restaurant-orders' ); ?>
 						</p>
 					</div>
 
 					<p class="description" style="margin-top: 20px; text-align: center;">
-						<?php esc_html_e( 'Right-click the image to save as PNG.', 'snaporder' ); ?>
+						<?php esc_html_e( 'Right-click the image to save as PNG.', 'lineweb-restaurant-orders' ); ?>
 					</p>
 				</div>
 			</div>

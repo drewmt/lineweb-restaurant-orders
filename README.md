@@ -1,6 +1,6 @@
-# SnapOrder by Lineweb
+# Lineweb Restaurant Orders
 
-SnapOrder by Lineweb is a self-hosted WordPress food menu and ordering plugin created by [Andrew Matia / Lineweb](https://www.lineweb.gr/).
+Lineweb Restaurant Orders is a self-hosted WordPress food menu and ordering plugin created by [Andrew Matia / Lineweb](https://www.lineweb.gr/).
 
 Version 1.0.0 is the first public release and contains the complete planned free feature set. There is no Pro edition, feature gate, trial, commission, author telemetry, or upgrade prompt.
 
@@ -51,4 +51,4 @@ Use the WordPress.org support forum for the included plugin features. For tailor
 
 ## Copyright and license
 
-Copyright 2025-2026 Andrew Matia / Lineweb. SnapOrder is licensed under GPL-2.0-or-later; see [`LICENSE`](LICENSE). Third-party components retain their original copyrights and compatible licenses; see [`LICENSE.md`](LICENSE.md).
+Copyright 2025-2026 Andrew Matia / Lineweb. Lineweb Restaurant Orders is licensed under GPL-2.0-or-later; see [`LICENSE`](LICENSE). Third-party components retain their original copyrights and compatible licenses; see [`LICENSE.md`](LICENSE.md).

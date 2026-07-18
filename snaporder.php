@@ -1,13 +1,14 @@
 <?php
 /**
- * Plugin Name: SnapOrder by Lineweb
+ * Plugin Name: Lineweb Restaurant Orders
+ * Plugin URI:  https://github.com/drewmt/lineweb-restaurant-orders
  * Description: Transform WordPress into a mobile-first food ordering app with card and cash payments, order tracking, WhatsApp notifications, and PWA support.
  * Version:     1.0.0
  * Author:      Andrew Matia / Lineweb
  * Author URI:  https://www.lineweb.gr/
  * License:     GPL-2.0+
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: snaporder
+ * Text Domain: lineweb-restaurant-orders
  * Copyright:   2026 Andrew Matia / Lineweb
  * Requires at least: 6.2
  * Requires PHP:      7.4

@@ -42,11 +42,11 @@ class SnapOrder_Privacy {
 			return;
 		}
 
-		$content  = '<p>' . esc_html__( 'When a customer places an order, SnapOrder stores the contact, delivery, order, and payment-status information entered at checkout. This data is used to fulfil and manage the order.', 'snaporder' ) . '</p>';
-		$content .= '<p>' . esc_html__( 'If Stripe card payments are enabled, payment data is sent directly to Stripe and SnapOrder stores the related payment reference and status. If Twilio WhatsApp notifications are enabled, the customer phone number and order message are sent to Twilio.', 'snaporder' ) . '</p>';
-		$content .= '<p>' . esc_html__( 'SnapOrder also stores aggregate menu-item view counts without retaining a visitor IP address. The site owner controls how long completed order personal data is retained in the plugin settings.', 'snaporder' ) . '</p>';
+		$content  = '<p>' . esc_html__( 'When a customer places an order, Lineweb Restaurant Orders stores the contact, delivery, order, and payment-status information entered at checkout. This data is used to fulfil and manage the order.', 'lineweb-restaurant-orders' ) . '</p>';
+		$content .= '<p>' . esc_html__( 'If Stripe card payments are enabled, payment data is sent directly to Stripe and Lineweb Restaurant Orders stores the related payment reference and status. If Twilio WhatsApp notifications are enabled, the customer phone number and order message are sent to Twilio.', 'lineweb-restaurant-orders' ) . '</p>';
+		$content .= '<p>' . esc_html__( 'Lineweb Restaurant Orders also stores aggregate menu-item view counts without retaining a visitor IP address. The site owner controls how long completed order personal data is retained in the plugin settings.', 'lineweb-restaurant-orders' ) . '</p>';
 
-		wp_add_privacy_policy_content( 'SnapOrder', wp_kses_post( wpautop( $content ) ) );
+		wp_add_privacy_policy_content( 'Lineweb Restaurant Orders', wp_kses_post( wpautop( $content ) ) );
 	}
 
 	/**
@@ -92,7 +92,7 @@ class SnapOrder_Privacy {
 	 * @param int $order_id Order post ID.
 	 */
 	private function anonymize_order( $order_id ) {
-		update_post_meta( $order_id, '_mfm_customer_name', __( 'Anonymized customer', 'snaporder' ) );
+		update_post_meta( $order_id, '_mfm_customer_name', __( 'Anonymized customer', 'lineweb-restaurant-orders' ) );
 		foreach ( array( '_mfm_customer_phone', '_mfm_address', '_mfm_street', '_mfm_house_number', '_mfm_city', '_mfm_zip', '_mfm_order_notes', '_mfm_order_token', '_mfm_transaction_id', '_snaporder_stripe_intent_id', '_snaporder_stripe_client_secret', '_snaporder_request_id' ) as $meta_key ) {
 			delete_post_meta( $order_id, $meta_key );
 		}

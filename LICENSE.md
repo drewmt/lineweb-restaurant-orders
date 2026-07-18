@@ -1,10 +1,10 @@
-# SnapOrder license and copyright
+# Lineweb Restaurant Orders license and copyright
 
 Copyright (C) 2025-2026 Andrew Matia / Lineweb.gr
 
-Andrew Matia / Lineweb retains the copyright in SnapOrder's original code, documentation, and visual work. SnapOrder is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.
+Andrew Matia / Lineweb retains the copyright in the original Lineweb Restaurant Orders code, documentation, and visual work. Lineweb Restaurant Orders is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.
 
-SnapOrder is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the complete GNU General Public License in [`LICENSE`](LICENSE).
+Lineweb Restaurant Orders is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the complete GNU General Public License in [`LICENSE`](LICENSE).
 
 SPDX-License-Identifier: GPL-2.0-or-later
 

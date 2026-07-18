@@ -1,6 +1,6 @@
 {
-  "name": "lineweb/snaporder",
-  "description": "Development tools and tests for the SnapOrder WordPress plugin.",
+  "name": "lineweb/restaurant-orders",
+  "description": "Development tools and tests for the Lineweb Restaurant Orders WordPress plugin.",
   "type": "wordpress-plugin",
   "license": "GPL-2.0-or-later",
   "authors": [

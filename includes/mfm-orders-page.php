@@ -150,7 +150,7 @@ if ( $snaporder_has_status && $snaporder_has_search ) {
 $snaporder_currency = SnapOrder_Settings::get_currency_symbol();
 ?>
 <div class="wrap mfm-orders-wrap">
-	<h1 class="mfm-page-title"><?php esc_html_e( 'Orders', 'snaporder' ); ?></h1>
+	<h1 class="mfm-page-title"><?php esc_html_e( 'Orders', 'lineweb-restaurant-orders' ); ?></h1>
 
 	<!-- Dashboard Cards -->
 	<div class="mfm-dashboard-grid">
@@ -159,7 +159,7 @@ $snaporder_currency = SnapOrder_Settings::get_currency_symbol();
 				<span class="dashicons dashicons-cart"></span>
 			</div>
 			<div>
-				<div class="mfm-dash-label"><?php esc_html_e( "Today's Orders", 'snaporder' ); ?></div>
+				<div class="mfm-dash-label"><?php esc_html_e( "Today's Orders", 'lineweb-restaurant-orders' ); ?></div>
 				<div class="mfm-dash-value"><?php echo number_format( $snaporder_today_count ); ?></div>
 			</div>
 		</div>
@@ -168,7 +168,7 @@ $snaporder_currency = SnapOrder_Settings::get_currency_symbol();
 				<span class="dashicons dashicons-money-alt"></span>
 			</div>
 			<div>
-				<div class="mfm-dash-label"><?php esc_html_e( "Today's Revenue", 'snaporder' ); ?></div>
+				<div class="mfm-dash-label"><?php esc_html_e( "Today's Revenue", 'lineweb-restaurant-orders' ); ?></div>
 				<div class="mfm-dash-value"><?php echo esc_html( number_format( $snaporder_today_revenue, 2 ) . $snaporder_currency ); ?></div>
 			</div>
 		</div>
@@ -177,7 +177,7 @@ $snaporder_currency = SnapOrder_Settings::get_currency_symbol();
 				<span class="dashicons dashicons-bell"></span>
 			</div>
 			<div>
-				<div class="mfm-dash-label"><?php esc_html_e( 'Pending Action', 'snaporder' ); ?></div>
+				<div class="mfm-dash-label"><?php esc_html_e( 'Pending Action', 'lineweb-restaurant-orders' ); ?></div>
 				<div class="mfm-dash-value"><?php echo number_format( $snaporder_pending_count ); ?></div>
 			</div>
 		</div>
@@ -190,39 +190,39 @@ $snaporder_currency = SnapOrder_Settings::get_currency_symbol();
 				<?php
 				$snaporder_tabs = array(
 					'all'              => array(
-						'label' => __( 'All', 'snaporder' ),
+						'label' => __( 'All', 'lineweb-restaurant-orders' ),
 						'color' => '#6b7280',
 					),
 					'awaiting_payment' => array(
-						'label' => __( 'Awaiting payment', 'snaporder' ),
+						'label' => __( 'Awaiting payment', 'lineweb-restaurant-orders' ),
 						'color' => '#7c3aed',
 					),
 					'payment_failed'   => array(
-						'label' => __( 'Payment failed', 'snaporder' ),
+						'label' => __( 'Payment failed', 'lineweb-restaurant-orders' ),
 						'color' => '#b91c1c',
 					),
 					'pending'          => array(
-						'label' => __( 'Pending', 'snaporder' ),
+						'label' => __( 'Pending', 'lineweb-restaurant-orders' ),
 						'color' => '#f59e0b',
 					),
 					'accepted'         => array(
-						'label' => __( 'Accepted', 'snaporder' ),
+						'label' => __( 'Accepted', 'lineweb-restaurant-orders' ),
 						'color' => '#3b82f6',
 					),
 					'cooking'          => array(
-						'label' => __( 'Cooking', 'snaporder' ),
+						'label' => __( 'Cooking', 'lineweb-restaurant-orders' ),
 						'color' => '#f97316',
 					),
 					'ready'            => array(
-						'label' => __( 'Ready', 'snaporder' ),
+						'label' => __( 'Ready', 'lineweb-restaurant-orders' ),
 						'color' => '#10b981',
 					),
 					'completed'        => array(
-						'label' => __( 'Completed', 'snaporder' ),
+						'label' => __( 'Completed', 'lineweb-restaurant-orders' ),
 						'color' => '#059669',
 					),
 					'rejected'         => array(
-						'label' => __( 'Rejected', 'snaporder' ),
+						'label' => __( 'Rejected', 'lineweb-restaurant-orders' ),
 						'color' => '#ef4444',
 					),
 				);
@@ -257,12 +257,12 @@ $snaporder_currency = SnapOrder_Settings::get_currency_symbol();
 				<input type="hidden" name="status" value="<?php echo esc_attr( $snaporder_current_status ); ?>">
 			<?php endif; ?>
 			<input type="text" name="s" value="<?php echo esc_attr( $snaporder_search_term ); ?>"
-				placeholder="<?php esc_attr_e( 'Search order ID or name...', 'snaporder' ); ?>"
+				placeholder="<?php esc_attr_e( 'Search order ID or name...', 'lineweb-restaurant-orders' ); ?>"
 				class="mfm-search-input">
-			<button type="submit" class="button mfm-btn-primary"><?php esc_html_e( 'Search', 'snaporder' ); ?></button>
+			<button type="submit" class="button mfm-btn-primary"><?php esc_html_e( 'Search', 'lineweb-restaurant-orders' ); ?></button>
 			<?php if ( $snaporder_search_term ) : ?>
 				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=mfm_order&page=mfm-manage-orders' ) ); ?>" class="button">
-					<?php esc_html_e( 'Clear', 'snaporder' ); ?>
+					<?php esc_html_e( 'Clear', 'lineweb-restaurant-orders' ); ?>
 				</a>
 			<?php endif; ?>
 		</form>
@@ -273,13 +273,13 @@ $snaporder_currency = SnapOrder_Settings::get_currency_symbol();
 		<table class="wp-list-table widefat fixed striped table-view-list">
 			<thead>
 				<tr>
-					<th scope="col" style="width:100px;"><?php esc_html_e( 'Status', 'snaporder' ); ?></th>
-					<th scope="col"><?php esc_html_e( 'Order', 'snaporder' ); ?></th>
-					<th scope="col"><?php esc_html_e( 'Date', 'snaporder' ); ?></th>
-					<th scope="col"><?php esc_html_e( 'Customer', 'snaporder' ); ?></th>
-					<th scope="col"><?php esc_html_e( 'Type', 'snaporder' ); ?></th>
-					<th scope="col"><?php esc_html_e( 'Total', 'snaporder' ); ?></th>
-					<th scope="col" style="width:120px;text-align:right;"><?php esc_html_e( 'Actions', 'snaporder' ); ?></th>
+					<th scope="col" style="width:100px;"><?php esc_html_e( 'Status', 'lineweb-restaurant-orders' ); ?></th>
+					<th scope="col"><?php esc_html_e( 'Order', 'lineweb-restaurant-orders' ); ?></th>
+					<th scope="col"><?php esc_html_e( 'Date', 'lineweb-restaurant-orders' ); ?></th>
+					<th scope="col"><?php esc_html_e( 'Customer', 'lineweb-restaurant-orders' ); ?></th>
+					<th scope="col"><?php esc_html_e( 'Type', 'lineweb-restaurant-orders' ); ?></th>
+					<th scope="col"><?php esc_html_e( 'Total', 'lineweb-restaurant-orders' ); ?></th>
+					<th scope="col" style="width:120px;text-align:right;"><?php esc_html_e( 'Actions', 'lineweb-restaurant-orders' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -296,7 +296,7 @@ $snaporder_currency = SnapOrder_Settings::get_currency_symbol();
 						$snaporder_payment_method = get_post_meta( $snaporder_order_id, '_mfm_payment_method', true );
 						$snaporder_post_date_ts   = get_post_time( 'U', true, $snaporder_order );
 						$snaporder_time_ago       = $snaporder_post_date_ts
-							? human_time_diff( $snaporder_post_date_ts, time() ) . ' ' . __( 'ago', 'snaporder' )
+							? human_time_diff( $snaporder_post_date_ts, time() ) . ' ' . __( 'ago', 'lineweb-restaurant-orders' )
 							: '';
 
 						$snaporder_status_colors = array(
@@ -373,7 +373,7 @@ $snaporder_currency = SnapOrder_Settings::get_currency_symbol();
 							<td style="text-align:right;">
 								<button class="button button-small mfm-view-order-btn"
 									data-order-id="<?php echo (int) $snaporder_order_id; ?>">
-									<?php esc_html_e( 'View', 'snaporder' ); ?>
+									<?php esc_html_e( 'View', 'lineweb-restaurant-orders' ); ?>
 								</button>
 							</td>
 						</tr>
@@ -384,7 +384,7 @@ $snaporder_currency = SnapOrder_Settings::get_currency_symbol();
 					<tr>
 						<td colspan="7" style="padding:40px;text-align:center;color:#6b7280;">
 							<span class="dashicons dashicons-cart" style="font-size:32px;width:32px;height:32px;display:block;margin:0 auto 10px;"></span>
-							<?php esc_html_e( 'No orders found', 'snaporder' ); ?>
+							<?php esc_html_e( 'No orders found', 'lineweb-restaurant-orders' ); ?>
 						</td>
 					</tr>
 				<?php endif; ?>

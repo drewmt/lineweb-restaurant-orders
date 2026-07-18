@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name="SnapOrder">
-  <description>WordPress.org coding standards for SnapOrder.</description>
+<ruleset name="Lineweb Restaurant Orders">
+  <description>WordPress.org coding standards for Lineweb Restaurant Orders.</description>
 
   <file>snaporder.php</file>
   <file>includes</file>
@@ -29,4 +29,3 @@
     </properties>
   </rule>
 </ruleset>
-
