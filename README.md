@@ -4,6 +4,42 @@ Lineweb Restaurant Orders is a self-hosted WordPress food menu and ordering plug
 
 Version 1.0.0 is the first public release and contains the complete planned free feature set. There is no Pro edition, feature gate, trial, commission, author telemetry, or upgrade prompt.
 
+## Product preview
+
+![Lineweb Restaurant Orders order-management dashboard](.github/assets/readme/admin-orders.jpg)
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src=".github/assets/readme/product-mobile.jpg" alt="Restaurant product options on mobile" />
+    </td>
+    <td width="50%">
+      <img src=".github/assets/readme/checkout-mobile.jpg" alt="Restaurant checkout on mobile" />
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Variants, extras, dietary details, and notes</sub></td>
+    <td align="center"><sub>Delivery, pickup, dine-in, tips, and payment</sub></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src=".github/assets/readme/admin-settings.jpg" alt="Lineweb Restaurant Orders settings" />
+    </td>
+    <td width="50%">
+      <img src=".github/assets/readme/admin-qr.jpg" alt="Restaurant ordering QR-code generator" />
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Store, privacy, payment, and notification settings</sub></td>
+    <td align="center"><sub>Local QR-code generation and print preview</sub></td>
+  </tr>
+</table>
+
+<sub>Screenshots use fictional local demo data. Food photography is shown under the [Unsplash License](https://unsplash.com/license) and is not bundled with the plugin.</sub>
+
 ## Included
 
 - Food products, categories, variants, extras, dietary labels, and allergens.

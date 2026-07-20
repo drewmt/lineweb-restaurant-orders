@@ -1,5 +1,9 @@
 # Lineweb Restaurant Orders changelog
 
+## Unreleased
+
+- Added current desktop and mobile product screenshots to the public README.
+
 ## 1.0.0 - 2026-07-18
 
 - Rebuilt order totals from server-side catalogue data and ignored browser-supplied prices.
