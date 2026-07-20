@@ -10,14 +10,18 @@ Version 1.0.0 is the first public release and contains the complete planned free
 
 <table>
   <tr>
-    <td width="50%">
+    <td width="33.33%">
+      <img src=".github/assets/readme/home-mobile.jpg" alt="Restaurant menu homepage on mobile" />
+    </td>
+    <td width="33.33%">
       <img src=".github/assets/readme/product-mobile.jpg" alt="Restaurant product options on mobile" />
     </td>
-    <td width="50%">
+    <td width="33.33%">
       <img src=".github/assets/readme/checkout-mobile.jpg" alt="Restaurant checkout on mobile" />
     </td>
   </tr>
   <tr>
+    <td align="center"><sub>Mobile menu, banners, categories, and recommendations</sub></td>
     <td align="center"><sub>Variants, extras, dietary details, and notes</sub></td>
     <td align="center"><sub>Delivery, pickup, dine-in, tips, and payment</sub></td>
   </tr>

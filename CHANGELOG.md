@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Added current desktop and mobile product screenshots to the public README.
+- Added current desktop and mobile product screenshots, including the mobile menu homepage, to the public README.
 
 ## 1.0.0 - 2026-07-18
 
