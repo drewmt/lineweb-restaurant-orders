@@ -1,6 +1,6 @@
-# Lineweb Restaurant Orders
+# Lineweb Restaurant Orders — QR Menu & Online Ordering for WordPress
 
-Lineweb Restaurant Orders is a self-hosted WordPress food menu and ordering plugin created by [Andrew Matia / Lineweb](https://www.lineweb.gr/).
+Lineweb Restaurant Orders is a free, self-hosted QR menu and online food ordering plugin for WordPress, created by [Andrew Matia / Lineweb](https://www.lineweb.gr/). Restaurants, cafés, and takeaway businesses can accept delivery, pickup, and dine-in orders directly from their own website.
 
 Version 1.0.0 is the first public release and contains the complete planned free feature set. There is no Pro edition, feature gate, trial, commission, author telemetry, or upgrade prompt.
 

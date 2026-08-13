@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Lineweb Restaurant Orders
  * Plugin URI:  https://github.com/drewmt/lineweb-restaurant-orders
- * Description: Transform WordPress into a mobile-first food ordering app with card and cash payments, order tracking, WhatsApp notifications, and PWA support.
+ * Description: A self-hosted QR menu and restaurant ordering system for delivery, pickup, and dine-in, with card or cash payments and no commissions.
  * Version:     1.0.0
  * Author:      Andrew Matia / Lineweb
  * Author URI:  https://www.lineweb.gr/

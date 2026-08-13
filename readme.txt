@@ -8,11 +8,11 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A self-hosted restaurant menu with direct ordering, Stripe or cash payments, QR codes, tracking, and optional WhatsApp notifications.
+A self-hosted QR menu and restaurant ordering system with delivery, pickup, dine-in, Stripe or cash payments, and no commissions.
 
 == Description ==
 
-Lineweb Restaurant Orders gives restaurants a self-hosted food menu and ordering workflow inside WordPress. There are no commissions, paid feature gates, trials, or Pro upsells.
+Lineweb Restaurant Orders gives restaurants, cafés, and takeaway businesses a self-hosted QR menu and online food ordering workflow inside WordPress. Customers can order delivery, pickup, or dine-in directly from the restaurant's own website. There are no commissions, paid feature gates, trials, or Pro upsells.
 
 Features include:
 
