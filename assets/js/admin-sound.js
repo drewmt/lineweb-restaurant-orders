@@ -1,18 +1,18 @@
 jQuery(document).ready(function ($) {
-    let lastOrderId = mfm_sound_vars.latest_order_id;
+    let lastOrderId = snaporder_sound_vars.latest_order_id;
     let audioContext = null;
-    let soundEnabled = localStorage.getItem('mfm_sound_enabled') === 'true';
+    let soundEnabled = localStorage.getItem('snaporder_sound_enabled') === 'true';
 
     // Add UI Control
-    const $header = $('.mfm-logo-text');
-    const $toggleBtn = $('<button type="button" class="button mfm-sound-toggle"><span class="dashicons dashicons-volume-off"></span> Enable Sound</button>');
+    const $header = $('.snaporder-logo-text');
+    const $toggleBtn = $('<button type="button" class="button snaporder-sound-toggle"><span class="dashicons dashicons-volume-off"></span> Enable Sound</button>');
 
     // Insert after title or somewhere visible
-    if ($('.mfm-page-header').length) {
-        $('.mfm-page-header').append($toggleBtn);
+    if ($('.snaporder-page-header').length) {
+        $('.snaporder-page-header').append($toggleBtn);
         $toggleBtn.css({ 'margin-left': '15px', 'vertical-align': 'middle' });
-    } else if ($('.mfm-page-title').length) {
-        $('.mfm-page-title').append($toggleBtn);
+    } else if ($('.snaporder-page-title').length) {
+        $('.snaporder-page-title').append($toggleBtn);
         $toggleBtn.css({ 'margin-left': '15px', 'vertical-align': 'middle' });
     }
 
@@ -46,7 +46,7 @@ jQuery(document).ready(function ($) {
         playWithDelay();
 
         // Visual indicator
-        $toggleBtn.addClass('mfm-ringing-pulse');
+        $toggleBtn.addClass('snaporder-ringing-pulse');
     }
 
     function stopSoundLoop() {
@@ -55,7 +55,7 @@ jQuery(document).ready(function ($) {
             clearTimeout(loopTimeout);
             loopTimeout = null;
         }
-        $toggleBtn.removeClass('mfm-ringing-pulse');
+        $toggleBtn.removeClass('snaporder-ringing-pulse');
     }
 
     function playTone() {
@@ -74,7 +74,7 @@ jQuery(document).ready(function ($) {
     }
 
     // Stop Sound Triggers
-    $(document).on('click', '.mfm-view-order-btn, .mfm-order-card, .mfm-status-tab, #mfm-order-modal', function () {
+    $(document).on('click', '.snaporder-view-order-btn, .snaporder-order-card, .snaporder-status-tab, #snaporder-order-modal', function () {
         if (isRinging) {
             stopSoundLoop();
         }
@@ -94,14 +94,14 @@ jQuery(document).ready(function ($) {
             $(this).html('<span class="dashicons dashicons-volume-off"></span> Sound Off');
             $(this).removeClass('button-primary');
         }
-        localStorage.setItem('mfm_sound_enabled', soundEnabled ? 'true' : 'false');
+        localStorage.setItem('snaporder_sound_enabled', soundEnabled ? 'true' : 'false');
     });
 
     // Check for new orders every 15 seconds
     setInterval(function () {
-        $.post(mfm_sound_vars.ajax_url, {
-            action: 'mfm_check_new_orders',
-            nonce: mfm_sound_vars.nonce,
+        $.post(snaporder_sound_vars.ajax_url, {
+            action: 'snaporder_check_new_orders',
+            nonce: snaporder_sound_vars.nonce,
             last_id: lastOrderId
         }, function (response) {
             if (response.success && response.data.new_orders) {
@@ -115,7 +115,7 @@ jQuery(document).ready(function ($) {
                 if (Notification.permission === "granted") {
                     new Notification("New Order Received!", {
                         body: "Order #" + lastOrderId + " has just been placed.",
-                        icon: mfm_sound_vars.icon_url // Optional if we had one
+                        icon: snaporder_sound_vars.icon_url // Optional if we had one
                     });
                 }
 
@@ -126,7 +126,7 @@ jQuery(document).ready(function ($) {
 
     function showToast(message) {
         // Simple toast notification
-        let $toast = $('<div class="mfm-toast">' + message + '</div>');
+        let $toast = $('<div class="snaporder-toast">' + message + '</div>');
         $('body').append($toast);
         $toast.css({
             'position': 'fixed',

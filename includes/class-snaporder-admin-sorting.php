@@ -22,18 +22,18 @@ class SnapOrder_Admin_Sorting {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
 		// Register the AJAX handler.
-		add_action( 'wp_ajax_mfm_update_order', array( $this, 'update_order' ) );
+		add_action( 'wp_ajax_snaporder_update_order', array( $this, 'update_order' ) );
 
 		// Add columns to sortable post types.
-		foreach ( array( 'food_item', 'mfm_banner' ) as $post_type ) {
+		foreach ( array( 'snaporder_item', 'snaporder_banner' ) as $post_type ) {
 			add_filter( "manage_{$post_type}_posts_columns", array( $this, 'add_column' ) );
 			add_action( "manage_{$post_type}_posts_custom_column", array( $this, 'render_column' ), 10, 2 );
 		}
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 
 		// Add ordering to the food category taxonomy.
-		add_filter( 'manage_edit-food_category_columns', array( $this, 'add_column' ) );
-		add_filter( 'manage_food_category_custom_column', array( $this, 'render_term_column' ), 10, 3 );
+		add_filter( 'manage_edit-snaporder_category_columns', array( $this, 'add_column' ) );
+		add_filter( 'manage_snaporder_category_custom_column', array( $this, 'render_term_column' ), 10, 3 );
 		add_action( 'pre_get_terms', array( $this, 'pre_get_terms' ) );
 	}
 
@@ -50,21 +50,21 @@ class SnapOrder_Admin_Sorting {
 			return;
 		}
 
-		$is_food_item = 'food_item' === $screen->post_type && 'edit' === $screen->base;
-		$is_banner    = 'mfm_banner' === $screen->post_type && 'edit' === $screen->base;
-		$is_category  = 'food_category' === $screen->taxonomy && 'edit-tags' === $screen->base;
+		$is_snaporder_item = 'snaporder_item' === $screen->post_type && 'edit' === $screen->base;
+		$is_banner         = 'snaporder_banner' === $screen->post_type && 'edit' === $screen->base;
+		$is_category       = 'snaporder_category' === $screen->taxonomy && 'edit-tags' === $screen->base;
 
-		if ( $is_food_item || $is_banner || $is_category ) {
-			wp_enqueue_style( 'mfm-admin-sorting', SNAPORDER_PLUGIN_URL . 'assets/css/admin-sorting.css', array(), '1.0.0' );
+		if ( $is_snaporder_item || $is_banner || $is_category ) {
+			wp_enqueue_style( 'snaporder-admin-sorting', SNAPORDER_PLUGIN_URL . 'assets/css/admin-sorting.css', array(), SNAPORDER_VERSION );
 			wp_enqueue_script( 'jquery-ui-sortable' );
-			wp_enqueue_script( 'mfm-admin-sorting', SNAPORDER_PLUGIN_URL . 'assets/js/admin-sorting.js', array( 'jquery', 'jquery-ui-sortable' ), '1.0.0', true );
+			wp_enqueue_script( 'snaporder-admin-sorting', SNAPORDER_PLUGIN_URL . 'assets/js/admin-sorting.js', array( 'jquery', 'jquery-ui-sortable' ), SNAPORDER_VERSION, true );
 
 			wp_localize_script(
-				'mfm-admin-sorting',
-				'mfm_sorting',
+				'snaporder-admin-sorting',
+				'snaporder_sorting',
 				array(
 					'ajax_url' => admin_url( 'admin-ajax.php' ),
-					'nonce'    => wp_create_nonce( 'mfm_sorting_nonce' ),
+					'nonce'    => wp_create_nonce( 'snaporder_sorting_nonce' ),
 					'type'     => $is_category ? 'category' : 'post',
 				)
 			);
@@ -81,8 +81,8 @@ class SnapOrder_Admin_Sorting {
 		$new_columns = array();
 		foreach ( $columns as $key => $value ) {
 			if ( 'cb' === $key ) {
-				$new_columns[ $key ]     = $value;
-				$new_columns['mfm_sort'] = '<span class="dashicons dashicons-menu"></span>';
+				$new_columns[ $key ]           = $value;
+				$new_columns['snaporder_sort'] = '<span class="dashicons dashicons-menu"></span>';
 			} else {
 				$new_columns[ $key ] = $value;
 			}
@@ -98,8 +98,8 @@ class SnapOrder_Admin_Sorting {
 	 */
 	public function render_column( $column, $post_id ) {
 		unset( $post_id );
-		if ( 'mfm_sort' === $column ) {
-			echo '<span class="mfm-drag-handle dashicons dashicons-menu"></span>';
+		if ( 'snaporder_sort' === $column ) {
+			echo '<span class="snaporder-drag-handle dashicons dashicons-menu"></span>';
 		}
 	}
 
@@ -113,8 +113,8 @@ class SnapOrder_Admin_Sorting {
 	 */
 	public function render_term_column( $content, $column_name, $term_id ) {
 		unset( $term_id );
-		if ( 'mfm_sort' === $column_name ) {
-			return '<span class="mfm-drag-handle dashicons dashicons-menu"></span>';
+		if ( 'snaporder_sort' === $column_name ) {
+			return '<span class="snaporder-drag-handle dashicons dashicons-menu"></span>';
 		}
 		return $content;
 	}
@@ -135,8 +135,8 @@ class SnapOrder_Admin_Sorting {
 		}
 
 		if (
-			( 'edit-food_item' === $screen->id && 'food_item' === $query->get( 'post_type' ) ) ||
-			( 'edit-mfm_banner' === $screen->id && 'mfm_banner' === $query->get( 'post_type' ) )
+			( 'edit-snaporder_item' === $screen->id && 'snaporder_item' === $query->get( 'post_type' ) ) ||
+			( 'edit-snaporder_banner' === $screen->id && 'snaporder_banner' === $query->get( 'post_type' ) )
 		) {
 			$query->set( 'orderby', 'menu_order' );
 			$query->set( 'order', 'ASC' );
@@ -154,23 +154,23 @@ class SnapOrder_Admin_Sorting {
 		}
 
 		$screen = get_current_screen();
-		if ( ! $screen || 'edit-food_category' !== $screen->id ) {
+		if ( ! $screen || 'edit-snaporder_category' !== $screen->id ) {
 			return;
 		}
 
 		$taxonomies = isset( $query->query_vars['taxonomy'] ) ? $query->query_vars['taxonomy'] : '';
 
-		if ( 'food_category' === $taxonomies || ( is_array( $taxonomies ) && in_array( 'food_category', $taxonomies, true ) ) ) {
+		if ( 'snaporder_category' === $taxonomies || ( is_array( $taxonomies ) && in_array( 'snaporder_category', $taxonomies, true ) ) ) {
 			// Include both ordered terms and terms that have not been ordered yet.
 			$meta_query = array(
 				'relation'    => 'OR',
 				'ordered'     => array(
-					'key'     => '_mfm_order',
+					'key'     => '_snaporder_order',
 					'compare' => 'EXISTS',
 					'type'    => 'NUMERIC',
 				),
 				'not_ordered' => array(
-					'key'     => '_mfm_order',
+					'key'     => '_snaporder_order',
 					'compare' => 'NOT EXISTS',
 				),
 			);
@@ -186,7 +186,7 @@ class SnapOrder_Admin_Sorting {
 	 * Persists a validated drag-and-drop order.
 	 */
 	public function update_order() {
-		check_ajax_referer( 'mfm_sorting_nonce', 'nonce' );
+		check_ajax_referer( 'snaporder_sorting_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( __( 'Permission denied.', 'lineweb-restaurant-orders' ), 403 );
@@ -203,13 +203,13 @@ class SnapOrder_Admin_Sorting {
 			$id = intval( $id );
 
 			if ( 'category' === $type ) {
-				$term = get_term( $id, 'food_category' );
+				$term = get_term( $id, 'snaporder_category' );
 				if ( ! $term || is_wp_error( $term ) ) {
 					continue;
 				}
-				update_term_meta( $id, '_mfm_order', $index );
+				update_term_meta( $id, '_snaporder_order', $index );
 			} else {
-				if ( ! in_array( get_post_type( $id ), array( 'food_item', 'mfm_banner' ), true ) || ! current_user_can( 'edit_post', $id ) ) {
+				if ( ! in_array( get_post_type( $id ), array( 'snaporder_item', 'snaporder_banner' ), true ) || ! current_user_can( 'edit_post', $id ) ) {
 					continue;
 				}
 				$post_data = array(

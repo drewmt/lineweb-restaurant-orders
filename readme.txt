@@ -4,7 +4,7 @@ Tags: food ordering, restaurant menu, online ordering, stripe, qr code
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,7 +26,7 @@ Features include:
 * Optional Twilio WhatsApp order notifications.
 * Configurable retention and anonymization of completed order personal data.
 
-For the complete ordering experience, create a page and select the **Food Menu App View** page template. The `[modern_food_menu]` shortcode provides a lightweight menu catalogue inside a normal theme page.
+For the complete ordering experience, create a page and select the **Food Menu App View** page template. The `[snaporder_restaurant_menu]` shortcode provides a lightweight menu catalogue inside a normal theme page.
 
 == External services ==
 
@@ -105,6 +105,12 @@ Order contact, delivery, cart, notes, total, and payment-status data are stored 
 6. QR-code generator.
 
 == Changelog ==
+
+= 1.0.1 =
+* Adopted the distinctive `snaporder` prefix across plugin identifiers and added a safe migration for existing 1.0.0 installations.
+* Moved frontend, PWA, QR, receipt, and admin scripts and styles into properly enqueued assets.
+* Updated the bundled Lucide icon library.
+* Restored promotional banner management and its admin fields.
 
 = 1.0.0 =
 

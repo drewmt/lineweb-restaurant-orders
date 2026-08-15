@@ -30,12 +30,12 @@ $snaporder_stats_today = $wpdb->get_row(
 		"SELECT COUNT(p.ID) as count, SUM(pm.meta_value) as revenue
 	 FROM {$wpdb->posts} p
 	 JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-	 WHERE p.post_type = 'mfm_order'
+	 WHERE p.post_type = 'snaporder_order'
 	   AND p.post_status = 'publish'
-	   AND pm.meta_key = '_mfm_order_total'
+	   AND pm.meta_key = '_snaporder_order_total'
 	   AND (
-		EXISTS (SELECT 1 FROM {$wpdb->postmeta} pay_method WHERE pay_method.post_id = p.ID AND pay_method.meta_key = '_mfm_payment_method' AND pay_method.meta_value = 'cod')
-		OR EXISTS (SELECT 1 FROM {$wpdb->postmeta} pay_status WHERE pay_status.post_id = p.ID AND pay_status.meta_key = '_mfm_payment_status' AND pay_status.meta_value = 'paid')
+		EXISTS (SELECT 1 FROM {$wpdb->postmeta} pay_method WHERE pay_method.post_id = p.ID AND pay_method.meta_key = '_snaporder_payment_method' AND pay_method.meta_value = 'cod')
+		OR EXISTS (SELECT 1 FROM {$wpdb->postmeta} pay_status WHERE pay_status.post_id = p.ID AND pay_status.meta_key = '_snaporder_payment_status' AND pay_status.meta_value = 'paid')
 	   )
 	   AND p.post_date >= %s",
 		$snaporder_today_start
@@ -46,9 +46,9 @@ $snaporder_stats_today = $wpdb->get_row(
 $snaporder_pending_count = (int) $wpdb->get_var(
 	"SELECT COUNT(*) FROM {$wpdb->posts} p
 	 INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-	 WHERE p.post_type = 'mfm_order'
+	 WHERE p.post_type = 'snaporder_order'
 	   AND p.post_status = 'publish'
-	   AND pm.meta_key = '_mfm_order_status'
+	   AND pm.meta_key = '_snaporder_order_status'
 	   AND pm.meta_value = 'pending'"
 );
 
@@ -64,9 +64,9 @@ $snaporder_count_results = $wpdb->get_results(
 	"SELECT pm.meta_value as status, COUNT(p.ID) as count
 	 FROM {$wpdb->posts} p
 	 INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-	 WHERE p.post_type = 'mfm_order'
+	 WHERE p.post_type = 'snaporder_order'
 	   AND p.post_status = 'publish'
-	   AND pm.meta_key = '_mfm_order_status'
+	   AND pm.meta_key = '_snaporder_order_status'
 	 GROUP BY pm.meta_value"
 );
 
@@ -91,9 +91,9 @@ if ( $snaporder_has_status && $snaporder_has_search ) {
 			"SELECT DISTINCT p.ID, p.post_title, p.post_date
 			 FROM {$wpdb->posts} p
 			 INNER JOIN {$wpdb->postmeta} pm_status ON p.ID = pm_status.post_id
-			 WHERE p.post_type = 'mfm_order'
+			 WHERE p.post_type = 'snaporder_order'
 			   AND p.post_status = 'publish'
-			   AND pm_status.meta_key = '_mfm_order_status'
+			   AND pm_status.meta_key = '_snaporder_order_status'
 			   AND pm_status.meta_value = %s
 			   AND (CAST(p.ID AS CHAR) LIKE %s OR p.post_title LIKE %s)
 			 ORDER BY p.post_date DESC
@@ -110,9 +110,9 @@ if ( $snaporder_has_status && $snaporder_has_search ) {
 			"SELECT DISTINCT p.ID, p.post_title, p.post_date
 			 FROM {$wpdb->posts} p
 			 INNER JOIN {$wpdb->postmeta} pm_status ON p.ID = pm_status.post_id
-			 WHERE p.post_type = 'mfm_order'
+			 WHERE p.post_type = 'snaporder_order'
 			   AND p.post_status = 'publish'
-			   AND pm_status.meta_key = '_mfm_order_status'
+			   AND pm_status.meta_key = '_snaporder_order_status'
 			   AND pm_status.meta_value = %s
 			 ORDER BY p.post_date DESC
 			 LIMIT 50",
@@ -126,7 +126,7 @@ if ( $snaporder_has_status && $snaporder_has_search ) {
 		$wpdb->prepare(
 			"SELECT DISTINCT p.ID, p.post_title, p.post_date
 			 FROM {$wpdb->posts} p
-			 WHERE p.post_type = 'mfm_order'
+			 WHERE p.post_type = 'snaporder_order'
 			   AND p.post_status = 'publish'
 			   AND (CAST(p.ID AS CHAR) LIKE %s OR p.post_title LIKE %s)
 			 ORDER BY p.post_date DESC
@@ -140,7 +140,7 @@ if ( $snaporder_has_status && $snaporder_has_search ) {
 	$snaporder_orders = $wpdb->get_results(
 		"SELECT p.ID, p.post_title, p.post_date
 		 FROM {$wpdb->posts} p
-		 WHERE p.post_type = 'mfm_order'
+		 WHERE p.post_type = 'snaporder_order'
 		   AND p.post_status = 'publish'
 		 ORDER BY p.post_date DESC
 		 LIMIT 50"
@@ -149,44 +149,44 @@ if ( $snaporder_has_status && $snaporder_has_search ) {
 
 $snaporder_currency = SnapOrder_Settings::get_currency_symbol();
 ?>
-<div class="wrap mfm-orders-wrap">
-	<h1 class="mfm-page-title"><?php esc_html_e( 'Orders', 'lineweb-restaurant-orders' ); ?></h1>
+<div class="wrap snaporder-orders-wrap">
+	<h1 class="snaporder-page-title"><?php esc_html_e( 'Orders', 'lineweb-restaurant-orders' ); ?></h1>
 
 	<!-- Dashboard Cards -->
-	<div class="mfm-dashboard-grid">
-		<div class="mfm-dash-card">
-			<div class="mfm-dash-icon-box mfm-dash-icon-blue">
+	<div class="snaporder-dashboard-grid">
+		<div class="snaporder-dash-card">
+			<div class="snaporder-dash-icon-box snaporder-dash-icon-blue">
 				<span class="dashicons dashicons-cart"></span>
 			</div>
 			<div>
-				<div class="mfm-dash-label"><?php esc_html_e( "Today's Orders", 'lineweb-restaurant-orders' ); ?></div>
-				<div class="mfm-dash-value"><?php echo number_format( $snaporder_today_count ); ?></div>
+				<div class="snaporder-dash-label"><?php esc_html_e( "Today's Orders", 'lineweb-restaurant-orders' ); ?></div>
+				<div class="snaporder-dash-value"><?php echo number_format( $snaporder_today_count ); ?></div>
 			</div>
 		</div>
-		<div class="mfm-dash-card">
-			<div class="mfm-dash-icon-box mfm-dash-icon-green">
+		<div class="snaporder-dash-card">
+			<div class="snaporder-dash-icon-box snaporder-dash-icon-green">
 				<span class="dashicons dashicons-money-alt"></span>
 			</div>
 			<div>
-				<div class="mfm-dash-label"><?php esc_html_e( "Today's Revenue", 'lineweb-restaurant-orders' ); ?></div>
-				<div class="mfm-dash-value"><?php echo esc_html( number_format( $snaporder_today_revenue, 2 ) . $snaporder_currency ); ?></div>
+				<div class="snaporder-dash-label"><?php esc_html_e( "Today's Revenue", 'lineweb-restaurant-orders' ); ?></div>
+				<div class="snaporder-dash-value"><?php echo esc_html( number_format( $snaporder_today_revenue, 2 ) . $snaporder_currency ); ?></div>
 			</div>
 		</div>
-		<div class="mfm-dash-card">
-			<div class="mfm-dash-icon-box mfm-dash-icon-orange">
+		<div class="snaporder-dash-card">
+			<div class="snaporder-dash-icon-box snaporder-dash-icon-orange">
 				<span class="dashicons dashicons-bell"></span>
 			</div>
 			<div>
-				<div class="mfm-dash-label"><?php esc_html_e( 'Pending Action', 'lineweb-restaurant-orders' ); ?></div>
-				<div class="mfm-dash-value"><?php echo number_format( $snaporder_pending_count ); ?></div>
+				<div class="snaporder-dash-label"><?php esc_html_e( 'Pending Action', 'lineweb-restaurant-orders' ); ?></div>
+				<div class="snaporder-dash-value"><?php echo number_format( $snaporder_pending_count ); ?></div>
 			</div>
 		</div>
 	</div>
 
 	<!-- Toolbar: Tabs + Search -->
-	<div class="mfm-search-bar">
-		<div class="mfm-status-tabs" style="margin-bottom:0;">
-			<div class="mfm-tabs-container">
+	<div class="snaporder-search-bar">
+		<div class="snaporder-status-tabs" style="margin-bottom:0;">
+			<div class="snaporder-tabs-container">
 				<?php
 				$snaporder_tabs = array(
 					'all'              => array(
@@ -233,35 +233,35 @@ $snaporder_currency = SnapOrder_Settings::get_currency_symbol();
 					$snaporder_text_color = $snaporder_is_active ? 'white' : '#374151';
 					$snaporder_url        = add_query_arg(
 						array(
-							'post_type' => 'mfm_order',
-							'page'      => 'mfm-manage-orders',
+							'post_type' => 'snaporder_order',
+							'page'      => 'snaporder-manage-orders',
 							'status'    => $snaporder_status,
 						),
 						admin_url( 'edit.php' )
 					);
 					?>
-					<a href="<?php echo esc_url( $snaporder_url ); ?>" class="mfm-status-tab"
+					<a href="<?php echo esc_url( $snaporder_url ); ?>" class="snaporder-status-tab"
 						style="background:<?php echo esc_attr( $snaporder_bg_color ); ?>;color:<?php echo esc_attr( $snaporder_text_color ); ?>;">
 						<?php echo esc_html( $snaporder_tab['label'] ); ?>
-						<span class="mfm-tab-count" style="background:<?php echo $snaporder_is_active ? 'rgba(255,255,255,0.3)' : '#e5e7eb'; ?>;">
+						<span class="snaporder-tab-count" style="background:<?php echo $snaporder_is_active ? 'rgba(255,255,255,0.3)' : '#e5e7eb'; ?>;">
 							<?php echo number_format( $snaporder_count ); ?>
 						</span>
 					</a>
 				<?php endforeach; ?>
 			</div>
 		</div>
-		<form method="get" action="<?php echo esc_url( admin_url( 'edit.php' ) ); ?>" class="mfm-search-form">
-			<input type="hidden" name="post_type" value="mfm_order">
-			<input type="hidden" name="page" value="mfm-manage-orders">
+		<form method="get" action="<?php echo esc_url( admin_url( 'edit.php' ) ); ?>" class="snaporder-search-form">
+			<input type="hidden" name="post_type" value="snaporder_order">
+			<input type="hidden" name="page" value="snaporder-manage-orders">
 			<?php if ( 'all' !== $snaporder_current_status ) : ?>
 				<input type="hidden" name="status" value="<?php echo esc_attr( $snaporder_current_status ); ?>">
 			<?php endif; ?>
 			<input type="text" name="s" value="<?php echo esc_attr( $snaporder_search_term ); ?>"
 				placeholder="<?php esc_attr_e( 'Search order ID or name...', 'lineweb-restaurant-orders' ); ?>"
-				class="mfm-search-input">
-			<button type="submit" class="button mfm-btn-primary"><?php esc_html_e( 'Search', 'lineweb-restaurant-orders' ); ?></button>
+				class="snaporder-search-input">
+			<button type="submit" class="button snaporder-btn-primary"><?php esc_html_e( 'Search', 'lineweb-restaurant-orders' ); ?></button>
 			<?php if ( $snaporder_search_term ) : ?>
-				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=mfm_order&page=mfm-manage-orders' ) ); ?>" class="button">
+				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=snaporder_order&page=snaporder-manage-orders' ) ); ?>" class="button">
 					<?php esc_html_e( 'Clear', 'lineweb-restaurant-orders' ); ?>
 				</a>
 			<?php endif; ?>
@@ -269,7 +269,7 @@ $snaporder_currency = SnapOrder_Settings::get_currency_symbol();
 	</div>
 
 	<!-- Orders Table -->
-	<div class="mfm-orders-table-container">
+	<div class="snaporder-orders-table-container">
 		<table class="wp-list-table widefat fixed striped table-view-list">
 			<thead>
 				<tr>
@@ -287,13 +287,13 @@ $snaporder_currency = SnapOrder_Settings::get_currency_symbol();
 				if ( $snaporder_orders ) :
 					foreach ( $snaporder_orders as $snaporder_order ) :
 						$snaporder_order_id       = $snaporder_order->ID;
-						$snaporder_customer_name  = get_post_meta( $snaporder_order_id, '_mfm_customer_name', true );
-						$snaporder_customer_phone = get_post_meta( $snaporder_order_id, '_mfm_customer_phone', true );
-						$snaporder_total          = get_post_meta( $snaporder_order_id, '_mfm_order_total', true );
-						$snaporder_status         = get_post_meta( $snaporder_order_id, '_mfm_order_status', true );
+						$snaporder_customer_name  = get_post_meta( $snaporder_order_id, '_snaporder_customer_name', true );
+						$snaporder_customer_phone = get_post_meta( $snaporder_order_id, '_snaporder_customer_phone', true );
+						$snaporder_total          = get_post_meta( $snaporder_order_id, '_snaporder_order_total', true );
+						$snaporder_status         = get_post_meta( $snaporder_order_id, '_snaporder_order_status', true );
 						$snaporder_status         = $snaporder_status ? $snaporder_status : 'pending';
-						$snaporder_delivery_type  = get_post_meta( $snaporder_order_id, '_mfm_delivery_type', true );
-						$snaporder_payment_method = get_post_meta( $snaporder_order_id, '_mfm_payment_method', true );
+						$snaporder_delivery_type  = get_post_meta( $snaporder_order_id, '_snaporder_delivery_type', true );
+						$snaporder_payment_method = get_post_meta( $snaporder_order_id, '_snaporder_payment_method', true );
 						$snaporder_post_date_ts   = get_post_time( 'U', true, $snaporder_order );
 						$snaporder_time_ago       = $snaporder_post_date_ts
 							? human_time_diff( $snaporder_post_date_ts, time() ) . ' ' . __( 'ago', 'lineweb-restaurant-orders' )
@@ -345,7 +345,7 @@ $snaporder_currency = SnapOrder_Settings::get_currency_symbol();
 						?>
 						<tr>
 							<td>
-								<span class="mfm-status-badge"
+								<span class="snaporder-status-badge"
 									style="background:<?php echo esc_attr( $snaporder_color['bg'] ); ?>;color:<?php echo esc_attr( $snaporder_color['text'] ); ?>;border:1px solid <?php echo esc_attr( $snaporder_color['border'] ); ?>;">
 									<?php echo esc_html( ucfirst( $snaporder_status ) ); ?>
 								</span>
@@ -357,7 +357,7 @@ $snaporder_currency = SnapOrder_Settings::get_currency_symbol();
 							</td>
 							<td>
 								<strong><?php echo esc_html( $snaporder_customer_name ); ?></strong><br>
-								<a href="tel:<?php echo esc_attr( $snaporder_customer_phone ); ?>" style="text-decoration:none;color:var(--mfm-primary);font-size:13px;">
+								<a href="tel:<?php echo esc_attr( $snaporder_customer_phone ); ?>" style="text-decoration:none;color:var(--snaporder-primary);font-size:13px;">
 									<?php echo esc_html( $snaporder_customer_phone ); ?>
 								</a>
 							</td>
@@ -371,7 +371,7 @@ $snaporder_currency = SnapOrder_Settings::get_currency_symbol();
 								<small style="color:#6b7280;"><?php echo esc_html( ucfirst( (string) $snaporder_payment_method ) ); ?></small>
 							</td>
 							<td style="text-align:right;">
-								<button class="button button-small mfm-view-order-btn"
+								<button class="button button-small snaporder-view-order-btn"
 									data-order-id="<?php echo (int) $snaporder_order_id; ?>">
 									<?php esc_html_e( 'View', 'lineweb-restaurant-orders' ); ?>
 								</button>
@@ -394,9 +394,9 @@ $snaporder_currency = SnapOrder_Settings::get_currency_symbol();
 </div>
 
 <!-- Order Details Modal -->
-<div id="mfm-order-modal" class="mfm-modal-overlay">
-	<div class="mfm-modal-container">
-		<div id="mfm-modal-content" class="mfm-modal-content">
+<div id="snaporder-order-modal" class="snaporder-modal-overlay">
+	<div class="snaporder-modal-container">
+		<div id="snaporder-modal-content" class="snaporder-modal-content">
 			<!-- Content loaded via AJAX -->
 		</div>
 	</div>

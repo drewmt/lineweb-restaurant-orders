@@ -2,7 +2,7 @@
 /**
  * Print-friendly receipt view.
  *
- * Opened via ?mfm-print={order_id}. Requires the user to be logged in and
+ * Opened via ?snaporder-print={order_id}. Requires the user to be logged in and
  * have manage_options capability to prevent unauthenticated access to order data.
  *
  * @package SnapOrder
@@ -31,9 +31,9 @@ class SnapOrder_Printer {
 	 * @param int $order_id Order post ID.
 	 */
 	public function render_print_button( $order_id ) {
-		$print_url = wp_nonce_url( add_query_arg( 'mfm-print', (int) $order_id, site_url( '/' ) ), 'snaporder_print_order_' . (int) $order_id );
+		$print_url = wp_nonce_url( add_query_arg( 'snaporder-print', (int) $order_id, site_url( '/' ) ), 'snaporder_print_order_' . (int) $order_id );
 		?>
-		<a href="<?php echo esc_url( $print_url ); ?>" target="_blank" class="button button-secondary mfm-print-btn" style="margin-right:10px;">
+		<a href="<?php echo esc_url( $print_url ); ?>" target="_blank" class="button button-secondary snaporder-print-btn">
 			<span class="dashicons dashicons-printer"></span>
 			<?php esc_html_e( 'Print Receipt', 'lineweb-restaurant-orders' ); ?>
 		</a>
@@ -44,7 +44,7 @@ class SnapOrder_Printer {
 	 * Validates the request and renders a printable receipt.
 	 */
 	public function render_receipt_template() {
-		if ( ! isset( $_GET['mfm-print'] ) ) {
+		if ( ! isset( $_GET['snaporder-print'] ) ) {
 			return;
 		}
 
@@ -54,7 +54,7 @@ class SnapOrder_Printer {
 			exit;
 		}
 
-		$order_id = absint( wp_unslash( $_GET['mfm-print'] ) );
+		$order_id = absint( wp_unslash( $_GET['snaporder-print'] ) );
 		if ( ! $order_id ) {
 			return;
 		}
@@ -63,46 +63,41 @@ class SnapOrder_Printer {
 		}
 
 		$order = get_post( $order_id );
-		if ( ! $order || 'mfm_order' !== $order->post_type ) {
+		if ( ! $order || 'snaporder_order' !== $order->post_type ) {
 			return;
 		}
 
-		$customer_name  = get_post_meta( $order_id, '_mfm_customer_name', true );
+		$customer_name  = get_post_meta( $order_id, '_snaporder_customer_name', true );
 		$customer_name  = $customer_name ? $customer_name : __( 'Guest', 'lineweb-restaurant-orders' );
-		$customer_phone = get_post_meta( $order_id, '_mfm_customer_phone', true );
-		$delivery_type  = get_post_meta( $order_id, '_mfm_delivery_type', true );
-		$table_number   = get_post_meta( $order_id, '_mfm_table_number', true );
-		$tip_amount     = get_post_meta( $order_id, '_mfm_tip_amount', true );
-		$address        = get_post_meta( $order_id, '_mfm_address', true );
-		$street         = get_post_meta( $order_id, '_mfm_street', true );
-		$city           = get_post_meta( $order_id, '_mfm_city', true );
-		$zip            = get_post_meta( $order_id, '_mfm_zip', true );
-		$payment        = get_post_meta( $order_id, '_mfm_payment_method', true );
-		$total          = get_post_meta( $order_id, '_mfm_order_total', true );
-		$cart           = get_post_meta( $order_id, '_mfm_cart_items', true );
-		$notes          = get_post_meta( $order_id, '_mfm_order_notes', true );
+		$customer_phone = get_post_meta( $order_id, '_snaporder_customer_phone', true );
+		$delivery_type  = get_post_meta( $order_id, '_snaporder_delivery_type', true );
+		$table_number   = get_post_meta( $order_id, '_snaporder_table_number', true );
+		$tip_amount     = get_post_meta( $order_id, '_snaporder_tip_amount', true );
+		$address        = get_post_meta( $order_id, '_snaporder_address', true );
+		$street         = get_post_meta( $order_id, '_snaporder_street', true );
+		$city           = get_post_meta( $order_id, '_snaporder_city', true );
+		$zip            = get_post_meta( $order_id, '_snaporder_zip', true );
+		$payment        = get_post_meta( $order_id, '_snaporder_payment_method', true );
+		$total          = get_post_meta( $order_id, '_snaporder_order_total', true );
+		$cart           = get_post_meta( $order_id, '_snaporder_cart_items', true );
+		$notes          = get_post_meta( $order_id, '_snaporder_order_notes', true );
 		$currency       = SnapOrder_Settings::get_currency_symbol();
+
+		wp_enqueue_style( 'snaporder-receipt', SNAPORDER_PLUGIN_URL . 'assets/css/receipt.css', array(), SNAPORDER_VERSION );
+		wp_enqueue_script( 'snaporder-receipt', SNAPORDER_PLUGIN_URL . 'assets/js/receipt.js', array(), SNAPORDER_VERSION, true );
 		?>
 		<!DOCTYPE html>
 		<html>
 		<head>
 			<meta charset="UTF-8">
 			<title>Receipt #<?php echo (int) $order_id; ?></title>
-			<style>
-				body{font-family:'Courier New',monospace;font-size:14px;width:80mm;margin:0;padding:10px;color:#000;background:#fff;}
-				.center{text-align:center;}.bold{font-weight:bold;}
-				.line{border-bottom:1px dashed #000;margin:10px 0;}
-				.row{display:flex;justify-content:space-between;margin-bottom:5px;}
-				.item-row{margin-bottom:5px;}.item-extras{font-size:12px;padding-left:10px;}
-				.footer{margin-top:20px;font-size:12px;text-align:center;}
-				@media print{@page{margin:0;}body{width:auto;padding:0 5mm;}}
-			</style>
+			<?php wp_print_styles( 'snaporder-receipt' ); ?>
 		</head>
-		<body onload="window.print()">
+		<body>
 			<div class="center">
-				<h2 style="margin:0;"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></h2>
-				<p style="margin:5px 0;">Order #<?php echo (int) $order_id; ?></p>
-				<p style="margin:5px 0;"><?php echo esc_html( get_the_date( 'd/m/Y H:i', $order ) ); ?></p>
+				<h2 class="receipt-title"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></h2>
+				<p class="receipt-meta">Order #<?php echo (int) $order_id; ?></p>
+				<p class="receipt-meta"><?php echo esc_html( get_the_date( 'd/m/Y H:i', $order ) ); ?></p>
 			</div>
 			<div class="line"></div>
 			<div class="row">
@@ -118,7 +113,7 @@ class SnapOrder_Printer {
 			</div>
 			<div class="row"><span class="bold">Name:</span><span><?php echo esc_html( $customer_name ); ?></span></div>
 			<?php if ( 'delivery' === $delivery_type ) : ?>
-				<div class="row" style="display:block;">
+				<div class="row receipt-address">
 					<span class="bold">Address:</span><br>
 					<?php echo esc_html( "{$street} {$address}" ); ?><br>
 					<?php echo esc_html( "{$city} {$zip}" ); ?>
@@ -154,7 +149,7 @@ endif;
 			<?php if ( $tip_amount > 0 ) : ?>
 				<div class="row"><span>Tip:</span><span><?php echo esc_html( number_format( (float) $tip_amount, 2 ) ); ?></span></div>
 			<?php endif; ?>
-			<div class="row bold" style="font-size:16px;">
+			<div class="row bold receipt-total">
 				<span>TOTAL:</span>
 				<span><?php echo esc_html( $currency . number_format( (float) $total, 2 ) ); ?></span>
 			</div>
@@ -164,6 +159,7 @@ endif;
 				<p><?php echo nl2br( esc_html( $notes ) ); ?></p>
 			<?php endif; ?>
 			<div class="footer">Thank you!</div>
+			<?php wp_print_footer_scripts(); ?>
 		</body>
 		</html>
 		<?php

@@ -18,7 +18,7 @@ class SnapOrder_Shortcode {
 	 * Registers the shortcode.
 	 */
 	public function __construct() {
-		add_shortcode( 'modern_food_menu', array( $this, 'render_shortcode' ) );
+		add_shortcode( 'snaporder_restaurant_menu', array( $this, 'render_shortcode' ) );
 	}
 
 	/**
@@ -36,11 +36,11 @@ class SnapOrder_Shortcode {
 				'category' => '',
 			),
 			$attributes,
-			'modern_food_menu'
+			'snaporder_restaurant_menu'
 		);
 
 		$query_args = array(
-			'post_type'      => 'food_item',
+			'post_type'      => 'snaporder_item',
 			'post_status'    => 'publish',
 			'posts_per_page' => 100,
 			'orderby'        => 'menu_order',
@@ -52,7 +52,7 @@ class SnapOrder_Shortcode {
 			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- The optional shortcode attribute deliberately scopes products by category.
 			$query_args['tax_query'] = array(
 				array(
-					'taxonomy' => 'food_category',
+					'taxonomy' => 'snaporder_category',
 					'field'    => 'slug',
 					'terms'    => $category,
 				),
@@ -66,7 +66,7 @@ class SnapOrder_Shortcode {
 
 		$categories  = get_terms(
 			array(
-				'taxonomy'   => 'food_category',
+				'taxonomy'   => 'snaporder_category',
 				'hide_empty' => true,
 			)
 		);
@@ -74,41 +74,41 @@ class SnapOrder_Shortcode {
 
 		ob_start();
 		?>
-		<div id="<?php echo esc_attr( $instance_id ); ?>" class="mfm-menu-container mfm-shortcode-menu">
+		<div id="<?php echo esc_attr( $instance_id ); ?>" class="snaporder-menu-container snaporder-shortcode-menu">
 			<?php if ( ! $category && ! is_wp_error( $categories ) && ! empty( $categories ) ) : ?>
-				<div class="mfm-cat-nav">
-					<div class="mfm-cat-scroll" role="group" aria-label="<?php esc_attr_e( 'Filter menu by category', 'lineweb-restaurant-orders' ); ?>">
-						<button type="button" class="mfm-cat-pill mfm-shortcode-cat-pill active" data-filter="all"><?php esc_html_e( 'All', 'lineweb-restaurant-orders' ); ?></button>
+				<div class="snaporder-cat-nav">
+					<div class="snaporder-cat-scroll" role="group" aria-label="<?php esc_attr_e( 'Filter menu by category', 'lineweb-restaurant-orders' ); ?>">
+						<button type="button" class="snaporder-cat-pill snaporder-shortcode-cat-pill active" data-filter="all"><?php esc_html_e( 'All', 'lineweb-restaurant-orders' ); ?></button>
 						<?php foreach ( $categories as $term ) : ?>
-							<button type="button" class="mfm-cat-pill mfm-shortcode-cat-pill" data-filter="<?php echo esc_attr( $term->slug ); ?>"><?php echo esc_html( $term->name ); ?></button>
+							<button type="button" class="snaporder-cat-pill snaporder-shortcode-cat-pill" data-filter="<?php echo esc_attr( $term->slug ); ?>"><?php echo esc_html( $term->name ); ?></button>
 						<?php endforeach; ?>
 					</div>
 				</div>
 			<?php endif; ?>
 
-			<div class="mfm-menu-items">
+			<div class="snaporder-menu-items">
 				<?php
 				while ( $query->have_posts() ) :
 					$query->the_post();
 					$item_id    = get_the_ID();
-					$price      = get_post_meta( $item_id, '_mfm_price', true );
+					$price      = get_post_meta( $item_id, '_snaporder_price', true );
 					$image_url  = get_the_post_thumbnail_url( $item_id, 'medium' );
-					$item_terms = get_the_terms( $item_id, 'food_category' );
+					$item_terms = get_the_terms( $item_id, 'snaporder_category' );
 					$term_slugs = array();
 					if ( is_array( $item_terms ) ) {
 						$term_slugs = wp_list_pluck( $item_terms, 'slug' );
 					}
 					?>
-					<article class="mfm-list-card mfm-shortcode-item" data-categories="<?php echo esc_attr( implode( ' ', $term_slugs ) ); ?>">
-						<div class="mfm-list-img">
+					<article class="snaporder-list-card snaporder-shortcode-item" data-categories="<?php echo esc_attr( implode( ' ', $term_slugs ) ); ?>">
+						<div class="snaporder-list-img">
 							<?php if ( $image_url ) : ?>
 								<img src="<?php echo esc_url( $image_url ); ?>" alt="<?php echo esc_attr( get_the_title() ); ?>" loading="lazy">
 							<?php endif; ?>
 						</div>
-						<div class="mfm-list-info">
+						<div class="snaporder-list-info">
 							<h3><?php echo esc_html( get_the_title() ); ?></h3>
 							<p><?php echo esc_html( wp_trim_words( get_the_excerpt(), 18 ) ); ?></p>
-							<span class="mfm-price"><?php echo esc_html( SnapOrder_Settings::get_currency_symbol() . number_format( (float) $price, 2 ) ); ?></span>
+							<span class="snaporder-price"><?php echo esc_html( SnapOrder_Settings::get_currency_symbol() . number_format( (float) $price, 2 ) ); ?></span>
 						</div>
 					</article>
 				<?php endwhile; ?>

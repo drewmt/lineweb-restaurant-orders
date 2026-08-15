@@ -33,10 +33,10 @@ class SnapOrder_Featured {
 			return;
 		}
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- The parent save handler has already verified the nonce.
-		if ( isset( $_POST['mfm_featured'] ) ) {
-			update_post_meta( $post_id, '_mfm_featured', '1' );
+		if ( isset( $_POST['snaporder_featured'] ) ) {
+			update_post_meta( $post_id, '_snaporder_featured', '1' );
 		} else {
-			delete_post_meta( $post_id, '_mfm_featured' );
+			delete_post_meta( $post_id, '_snaporder_featured' );
 		}
 	}
 }

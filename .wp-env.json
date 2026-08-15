@@ -1,6 +1,8 @@
 {
   "$schema": "https://schemas.wp.org/trunk/wp-env.json",
   "core": "https://wordpress.org/wordpress-7.0.1.zip",
+  "port": 8894,
+  "testsPort": 8895,
   "plugins": [
     "."
   ],

@@ -22,7 +22,7 @@ Exact package versions are recorded in `package-lock.json`. The release ZIP incl
 
 - Tailwind CSS 4.x — MIT License.
 - Tailwind CLI 4.x — MIT License.
-- Lucide 0.468.0 — ISC License.
+- Lucide 1.31.0 — ISC License.
 - QRCode.js 1.0.0 — MIT License.
 - Stripe.js v3 — loaded directly from `https://js.stripe.com/v3/` only when the administrator enables a fully configured Stripe checkout.
 

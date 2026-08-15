@@ -103,8 +103,19 @@ final class SnapOrder {
 		}
 
 		wp_enqueue_style( 'snaporder-app', SNAPORDER_PLUGIN_URL . 'assets/css/app.css', array(), SNAPORDER_VERSION );
-		wp_enqueue_style( 'mfm-style', SNAPORDER_PLUGIN_URL . 'assets/css/style.css', array(), SNAPORDER_VERSION );
-		wp_enqueue_script( 'snaporder-lucide', SNAPORDER_PLUGIN_URL . 'assets/vendor/lucide/lucide.min.js', array(), '0.468.0', true );
+		wp_enqueue_style( 'snaporder-style', SNAPORDER_PLUGIN_URL . 'assets/css/style.css', array(), SNAPORDER_VERSION );
+		wp_enqueue_script( 'snaporder-lucide', SNAPORDER_PLUGIN_URL . 'assets/vendor/lucide/lucide.min.js', array(), '1.31.0', true );
+
+		$brand_color = sanitize_hex_color( get_option( 'snaporder_primary_color', '#f97316' ) );
+		$brand_color = $brand_color ? $brand_color : '#f97316';
+		wp_add_inline_style(
+			'snaporder-app',
+			sprintf(
+				':root{--snaporder-primary:%1$s;--snaporder-primary-rgb:%2$s;}',
+				$brand_color,
+				$this->hex_to_rgb( $brand_color )
+			)
+		);
 
 		$dependencies = array( 'jquery', 'snaporder-lucide' );
 		if ( in_array( 'stripe', SnapOrder_Settings::get_enabled_payment_methods(), true ) ) {
@@ -114,15 +125,18 @@ final class SnapOrder {
 			$dependencies[] = 'snaporder-stripe';
 		}
 
-		wp_enqueue_script( 'mfm-script', SNAPORDER_PLUGIN_URL . 'assets/js/script.js', $dependencies, SNAPORDER_VERSION, true );
+		wp_enqueue_script( 'snaporder-script', SNAPORDER_PLUGIN_URL . 'assets/js/script.js', $dependencies, SNAPORDER_VERSION, true );
 		$payment_methods = SnapOrder_Settings::get_enabled_payment_methods();
+		$store_closed    = ! SnapOrder_Settings::is_store_open();
 		wp_localize_script(
-			'mfm-script',
-			'mfm_vars',
+			'snaporder-script',
+			'snaporder_vars',
 			array(
 				'ajax_url'        => admin_url( 'admin-ajax.php' ),
 				'nonce'           => wp_create_nonce( 'snaporder_order_nonce' ),
 				'currency'        => SnapOrder_Settings::get_currency_symbol(),
+				'categories'      => is_page_template( 'snaporder-app-view.php' ) ? $this->get_frontend_categories() : array(),
+				'store_closed'    => $store_closed,
 				'stripe_key'      => SnapOrder_Settings::get_stripe_publishable_key(),
 				'default_payment' => ! empty( $payment_methods ) ? $payment_methods[0] : '',
 				'strings'         => array(
@@ -137,18 +151,71 @@ final class SnapOrder {
 	}
 
 	/**
+	 * Converts a validated hex colour to an RGB triplet for CSS variables.
+	 *
+	 * @param string $hex Validated hex colour.
+	 * @return string
+	 */
+	private function hex_to_rgb( $hex ) {
+		$hex = ltrim( $hex, '#' );
+		if ( 3 === strlen( $hex ) ) {
+			$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+		}
+
+		return implode(
+			', ',
+			array(
+				hexdec( substr( $hex, 0, 2 ) ),
+				hexdec( substr( $hex, 2, 2 ) ),
+				hexdec( substr( $hex, 4, 2 ) ),
+			)
+		);
+	}
+
+	/**
+	 * Returns the public category tree needed by the app navigation.
+	 *
+	 * @return array<int,array{id:int,name:string,slug:string,parent:int}>
+	 */
+	private function get_frontend_categories() {
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'snaporder_category',
+				'hide_empty' => true,
+				'orderby'    => 'name',
+				'order'      => 'ASC',
+			)
+		);
+		if ( is_wp_error( $terms ) ) {
+			return array();
+		}
+
+		return array_map(
+			static function ( $term ) {
+				return array(
+					'id'     => (int) $term->term_id,
+					'name'   => (string) $term->name,
+					'slug'   => (string) $term->slug,
+					'parent' => (int) $term->parent,
+				);
+			},
+			$terms
+		);
+	}
+
+	/**
 	 * Determines whether the current request renders SnapOrder UI.
 	 *
 	 * @return bool
 	 */
 	private function is_frontend_surface() {
-		if ( is_page_template( 'mfm-app-view.php' ) ) {
+		if ( is_page_template( 'snaporder-app-view.php' ) ) {
 			return true;
 		}
 
 		global $post;
 
-		return is_singular() && $post instanceof WP_Post && has_shortcode( $post->post_content, 'modern_food_menu' );
+		return is_singular() && $post instanceof WP_Post && has_shortcode( $post->post_content, 'snaporder_restaurant_menu' );
 	}
 
 	/**
@@ -158,17 +225,17 @@ final class SnapOrder {
 	 */
 	public function enqueue_admin( $hook ) {
 		$screen = get_current_screen();
-		if ( ! $screen || ( ! in_array( $screen->post_type, array( 'food_item', 'mfm_order', 'mfm_banner' ), true ) && false === strpos( $hook, 'mfm-' ) ) ) {
+		if ( ! $screen || ( ! in_array( $screen->post_type, array( 'snaporder_item', 'snaporder_order', 'snaporder_banner' ), true ) && false === strpos( $hook, 'snaporder-' ) ) ) {
 			return;
 		}
 
-		wp_enqueue_style( 'mfm-admin-style', SNAPORDER_PLUGIN_URL . 'assets/css/admin-style.css', array(), SNAPORDER_VERSION );
-		wp_enqueue_script( 'mfm-admin-script', SNAPORDER_PLUGIN_URL . 'assets/js/admin-script.js', array( 'jquery' ), SNAPORDER_VERSION, true );
+		wp_enqueue_style( 'snaporder-admin-style', SNAPORDER_PLUGIN_URL . 'assets/css/admin-style.css', array(), SNAPORDER_VERSION );
+		wp_enqueue_script( 'snaporder-admin-script', SNAPORDER_PLUGIN_URL . 'assets/js/admin-script.js', array( 'jquery' ), SNAPORDER_VERSION, true );
 		wp_localize_script(
-			'mfm-admin-script',
-			'mfm_admin_vars',
+			'snaporder-admin-script',
+			'snaporder_admin_vars',
 			array(
-				'nonce' => wp_create_nonce( 'mfm_nonce' ),
+				'nonce' => wp_create_nonce( 'snaporder_nonce' ),
 			)
 		);
 	}
@@ -180,7 +247,7 @@ final class SnapOrder {
 	 * @return string[]
 	 */
 	public function add_settings_link( $links ) {
-		$settings_link = '<a href="' . esc_url( admin_url( 'edit.php?post_type=food_item&page=mfm-settings' ) ) . '">' . esc_html__( 'Settings', 'lineweb-restaurant-orders' ) . '</a>';
+		$settings_link = '<a href="' . esc_url( admin_url( 'edit.php?post_type=snaporder_item&page=snaporder-settings' ) ) . '">' . esc_html__( 'Settings', 'lineweb-restaurant-orders' ) . '</a>';
 		array_unshift( $links, $settings_link );
 
 		return $links;

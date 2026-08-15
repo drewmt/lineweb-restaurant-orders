@@ -210,7 +210,7 @@ class SnapOrder_Stripe_Gateway {
 		$intent   = $event['data']['object'];
 		$order_id = isset( $intent['metadata']['snaporder_order_id'] ) ? absint( $intent['metadata']['snaporder_order_id'] ) : 0;
 
-		if ( ! $order_id || 'mfm_order' !== get_post_type( $order_id ) ) {
+		if ( ! $order_id || 'snaporder_order' !== get_post_type( $order_id ) ) {
 			return new WP_REST_Response( array( 'received' => true ), 200 );
 		}
 

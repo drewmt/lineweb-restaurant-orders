@@ -19,30 +19,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 $snaporder_tracking_order_id = isset( $_GET['order_id'] ) ? absint( $_GET['order_id'] ) : 0;
 
 // Brand settings.
-$snaporder_brand_logo        = get_option( 'mfm_brand_logo', '' );
-$snaporder_brand_color       = sanitize_hex_color( get_option( 'mfm_primary_color', '#f97316' ) );
-$snaporder_brand_color       = $snaporder_brand_color ? $snaporder_brand_color : '#f97316';
+$snaporder_brand_logo        = get_option( 'snaporder_brand_logo', '' );
 $snaporder_currency_symbol   = SnapOrder_Settings::get_currency_symbol();
 $snaporder_placeholder_image = SNAPORDER_PLUGIN_URL . 'assets/images/food-placeholder.svg';
 $snaporder_payment_methods   = SnapOrder_Settings::get_enabled_payment_methods();
 $snaporder_default_payment   = ! empty( $snaporder_payment_methods ) ? $snaporder_payment_methods[0] : '';
-
-/**
- * Converts a validated hex colour into an RGB triplet.
- *
- * @param string $hex Hex colour.
- * @return string
- */
-function snaporder_hex_to_rgb( $hex ) {
-	$hex = ltrim( $hex, '#' );
-	if ( strlen( $hex ) === 3 ) {
-		$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
-	}
-	$r = hexdec( substr( $hex, 0, 2 ) );
-	$g = hexdec( substr( $hex, 2, 2 ) );
-	$b = hexdec( substr( $hex, 4, 2 ) );
-	return "{$r}, {$g}, {$b}";
-}
 
 /**
  * Gets a product image with thumbnail and bundled fallbacks.
@@ -53,7 +34,7 @@ function snaporder_hex_to_rgb( $hex ) {
  * @return string
  */
 function snaporder_get_item_image( $item_id, $size, $fallback ) {
-	$custom_image = get_post_meta( $item_id, '_mfm_custom_image_url', true );
+	$custom_image = get_post_meta( $item_id, '_snaporder_custom_image_url', true );
 	if ( $custom_image ) {
 		return $custom_image;
 	}
@@ -61,8 +42,6 @@ function snaporder_get_item_image( $item_id, $size, $fallback ) {
 	$thumbnail = get_the_post_thumbnail_url( $item_id, $size );
 	return $thumbnail ? $thumbnail : $fallback;
 }
-$snaporder_brand_rgb = snaporder_hex_to_rgb( $snaporder_brand_color );
-
 // Opening hours check uses the WordPress site timezone.
 $snaporder_store_closed   = ! SnapOrder_Settings::is_store_open();
 $snaporder_closed_message = '';
@@ -77,39 +56,8 @@ if ( $snaporder_store_closed ) {
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title><?php wp_title( '|', true, 'right' ); ?></title>
 	<?php wp_head(); ?>
-	<script>
-		window.mfmCurrencySymbol = '<?php echo esc_js( $snaporder_currency_symbol ); ?>';
-		window.mfmStoreClosed    = <?php echo $snaporder_store_closed ? 'true' : 'false'; ?>;
-	</script>
-	<style>
-		:root {
-			--mfm-primary:     <?php echo esc_attr( $snaporder_brand_color ); ?>;
-			--mfm-primary-rgb: <?php echo esc_attr( $snaporder_brand_rgb ); ?>;
-		}
-		body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background-color: #f8fafc; -webkit-tap-highlight-color: transparent; }
-		.hide-scrollbar::-webkit-scrollbar { display: none; }
-		.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-		.mfm-modal { transition: opacity .3s ease-in-out; }
-		.mfm-modal-content { transition: transform .3s cubic-bezier(.16,1,.3,1); }
-		.mfm-text-primary      { color: var(--mfm-primary); }
-		.mfm-text-primary-light{ color: rgba(var(--mfm-primary-rgb), 0.7); }
-		.mfm-bg-primary        { background-color: var(--mfm-primary); }
-		.mfm-bg-primary-50     { background-color: rgba(var(--mfm-primary-rgb), 0.1); }
-		.mfm-border-primary    { border-color: var(--mfm-primary); }
-		.mfm-border-primary-200{ border-color: rgba(var(--mfm-primary-rgb), 0.3); }
-		.mfm-border-primary-100{ border-color: rgba(var(--mfm-primary-rgb), 0.1); }
-		.mfm-shadow-primary    { box-shadow: 0 10px 15px -3px rgba(var(--mfm-primary-rgb), 0.3); }
-		.mfm-ring-primary:focus { box-shadow: 0 0 0 2px rgba(var(--mfm-primary-rgb), 0.2); }
-		.mfm-focus-border-primary:focus { border-color: var(--mfm-primary); }
-		.mfm-hover-bg-primary-dark:hover { filter: brightness(.9); background-color: var(--mfm-primary); }
-		.mfm-hover-text-primary:hover { color: var(--mfm-primary); }
-		.mfm-hover-text-primary-dark:hover { filter: brightness(.9); color: var(--mfm-primary); }
-		.mfm-hover-border-primary-200:hover { border-color: rgba(var(--mfm-primary-rgb), 0.3); }
-		.bottom-nav-item.active { color: var(--mfm-primary); }
-		.bottom-nav-item.active svg { stroke: var(--mfm-primary); }
-	</style>
 </head>
-<body <?php body_class( 'bg-gray-50 pb-20' ); ?>>
+<body <?php body_class( array( 'bg-gray-50', 'pb-20', $snaporder_store_closed ? 'snaporder-store-closed' : 'snaporder-store-open' ) ); ?>>
 <?php wp_body_open(); ?>
 
 <?php if ( $snaporder_store_closed ) : ?>
@@ -119,11 +67,6 @@ if ( $snaporder_store_closed ) {
 			<?php echo esc_html( $snaporder_closed_message ); ?>
 		</div>
 	</div>
-	<style>
-		.bottom-nav-item:nth-child(3), #mfm-bottom-bar, .mfm-list-card button {
-			pointer-events: none; opacity: .5; filter: grayscale(100%);
-		}
-	</style>
 <?php endif; ?>
 
 <?php if ( $snaporder_tracking_order_id ) : ?>
@@ -132,9 +75,9 @@ if ( $snaporder_store_closed ) {
 	<!-- ====================================================== -->
 	<div class="max-w-md mx-auto bg-white min-h-screen relative shadow-2xl overflow-hidden">
 
-		<div class="mfm-bg-primary-50 p-5 text-center border-b mfm-border-primary-100">
+		<div class="snaporder-bg-primary-50 p-5 text-center border-b snaporder-border-primary-100">
 			<div class="w-14 h-14 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm">
-				<i data-lucide="check" class="w-6 h-6 mfm-text-primary"></i>
+				<i data-lucide="check" class="w-6 h-6 snaporder-text-primary"></i>
 			</div>
 			<h1 class="text-2xl font-bold text-gray-900 mb-1"><?php esc_html_e( 'Thank you for your order!', 'lineweb-restaurant-orders' ); ?></h1>
 				<p class="text-gray-500 text-sm"><?php /* translators: %d: order ID. */ printf( esc_html__( 'Order #%d', 'lineweb-restaurant-orders' ), (int) $snaporder_tracking_order_id ); ?></p>
@@ -142,7 +85,7 @@ if ( $snaporder_store_closed ) {
 
 		<div class="p-5" id="order-status-container" data-order-id="<?php echo (int) $snaporder_tracking_order_id; ?>" data-current-status="">
 			<h3 class="font-bold text-gray-900 mb-3 text-base"><?php esc_html_e( 'Order Status', 'lineweb-restaurant-orders' ); ?></h3>
-			<div class="mfm-bg-primary text-white p-3 rounded-xl flex items-center justify-between mb-5 shadow-lg mfm-shadow-primary">
+			<div class="snaporder-bg-primary text-white p-3 rounded-xl flex items-center justify-between mb-5 shadow-lg snaporder-shadow-primary">
 				<div class="flex items-center gap-2">
 					<div class="w-2 h-2 bg-white rounded-full animate-pulse"></div>
 					<span class="font-bold text-lg capitalize" id="live-status-text"><?php esc_html_e( 'Checking order...', 'lineweb-restaurant-orders' ); ?></span>
@@ -168,19 +111,19 @@ if ( $snaporder_store_closed ) {
 			</div>
 		</div>
 
-		<div id="mfm-order-details" class="p-5 border-t border-gray-100 hidden">
+		<div id="snaporder-order-details" class="p-5 border-t border-gray-100 hidden">
 			<h3 class="font-bold text-gray-900 mb-3 text-base"><?php esc_html_e( 'Order Details', 'lineweb-restaurant-orders' ); ?></h3>
-			<div class="bg-gray-50 rounded-xl p-3 space-y-2" id="mfm-order-detail-items"></div>
+			<div class="bg-gray-50 rounded-xl p-3 space-y-2" id="snaporder-order-detail-items"></div>
 			<div class="bg-gray-50 rounded-xl px-3 pb-3">
 				<div class="border-t border-gray-200 pt-2 flex justify-between items-center mt-2">
 					<span class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Total', 'lineweb-restaurant-orders' ); ?></span>
-					<span class="font-bold text-xl mfm-text-primary" id="mfm-order-detail-total"></span>
+					<span class="font-bold text-xl snaporder-text-primary" id="snaporder-order-detail-total"></span>
 				</div>
 			</div>
 		</div>
 
 		<div class="p-5">
-			<a href="<?php echo esc_url( get_permalink() ); ?>" class="block w-full mfm-bg-primary text-white text-center font-bold py-3.5 rounded-xl shadow-lg mfm-shadow-primary mfm-hover-bg-primary-dark transition-all text-base">
+			<a href="<?php echo esc_url( get_permalink() ); ?>" class="block w-full snaporder-bg-primary text-white text-center font-bold py-3.5 rounded-xl shadow-lg snaporder-shadow-primary snaporder-hover-bg-primary-dark transition-all text-base">
 				<?php esc_html_e( 'Back to Menu', 'lineweb-restaurant-orders' ); ?>
 			</a>
 		</div>
@@ -201,10 +144,10 @@ if ( $snaporder_store_closed ) {
 				} elseif ( has_custom_logo() ) {
 					the_custom_logo();
 				} else {
-					echo '<span class="font-black text-xl tracking-tight text-gray-900">SNAP<span class="mfm-text-primary">ORDER</span></span>';
+					echo '<span class="font-black text-xl tracking-tight text-gray-900">SNAP<span class="snaporder-text-primary">ORDER</span></span>';
 				}
-				$snaporder_store_title   = get_option( 'mfm_store_title' );
-				$snaporder_store_tagline = get_option( 'mfm_store_tagline' );
+				$snaporder_store_title   = get_option( 'snaporder_store_title' );
+				$snaporder_store_tagline = get_option( 'snaporder_store_tagline' );
 				if ( $snaporder_store_title || $snaporder_store_tagline ) :
 					?>
 				<div class="flex flex-col">
@@ -222,9 +165,9 @@ if ( $snaporder_store_closed ) {
 			<div class="flex items-center gap-2">
 				<?php
 				$snaporder_social = array(
-					'mfm_facebook_url'  => 'facebook',
-					'mfm_instagram_url' => 'instagram',
-					'mfm_twitter_url'   => 'twitter',
+					'snaporder_facebook_url'  => 'facebook',
+					'snaporder_instagram_url' => 'instagram',
+					'snaporder_twitter_url'   => 'twitter',
 				);
 				foreach ( $snaporder_social as $snaporder_option => $snaporder_icon ) :
 					$snaporder_url = get_option( $snaporder_option );
@@ -244,8 +187,8 @@ endforeach;
 		<div class="px-4 py-3">
 			<div class="relative">
 				<i data-lucide="search" class="absolute left-4 top-3.5 w-4 h-4 text-gray-400"></i>
-				<input type="text" id="mfm-search-input" placeholder="<?php esc_attr_e( 'Search for food...', 'lineweb-restaurant-orders' ); ?>"
-					class="w-full bg-gray-100 text-gray-900 rounded-xl pl-10 pr-4 py-3 font-medium text-base focus:outline-none focus:ring-2 mfm-ring-primary transition-all">
+				<input type="text" id="snaporder-search-input" placeholder="<?php esc_attr_e( 'Search for food...', 'lineweb-restaurant-orders' ); ?>"
+					class="w-full bg-gray-100 text-gray-900 rounded-xl pl-10 pr-4 py-3 font-medium text-base focus:outline-none focus:ring-2 snaporder-ring-primary transition-all">
 			</div>
 		</div>
 
@@ -253,7 +196,7 @@ endforeach;
 		<?php
 		$snaporder_banners = new WP_Query(
 			array(
-				'post_type'      => 'mfm_banner',
+				'post_type'      => 'snaporder_banner',
 				'posts_per_page' => -1,
 				'orderby'        => 'menu_order',
 				'order'          => 'ASC',
@@ -265,16 +208,16 @@ endforeach;
 			<?php
 			while ( $snaporder_banners->have_posts() ) :
 				$snaporder_banners->the_post();
-				$snaporder_bg = get_post_meta( get_the_ID(), '_mfm_custom_image_url', true );
+				$snaporder_bg = get_post_meta( get_the_ID(), '_snaporder_custom_image_url', true );
 				if ( ! $snaporder_bg ) {
 					$snaporder_bg = get_the_post_thumbnail_url( get_the_ID(), 'large' );
 				}
 				if ( ! $snaporder_bg ) {
 					$snaporder_bg = $snaporder_placeholder_image;
 				}
-				$snaporder_subtitle    = get_post_meta( get_the_ID(), '_mfm_banner_subtitle', true );
-				$snaporder_button_text = get_post_meta( get_the_ID(), '_mfm_banner_button_text', true );
-				$snaporder_button_link = get_post_meta( get_the_ID(), '_mfm_banner_button_link', true );
+				$snaporder_subtitle    = get_post_meta( get_the_ID(), '_snaporder_banner_subtitle', true );
+				$snaporder_button_text = get_post_meta( get_the_ID(), '_snaporder_banner_button_text', true );
+				$snaporder_button_link = get_post_meta( get_the_ID(), '_snaporder_banner_button_link', true );
 				?>
 			<div class="snap-center shrink-0 w-[70vw] h-40 rounded-2xl bg-cover bg-center relative overflow-hidden shadow-md flex flex-col justify-end p-6"
 				style="background-image:url('<?php echo esc_url( $snaporder_bg ); ?>');">
@@ -286,7 +229,7 @@ endforeach;
 						?>
 						<p class="text-gray-200 text-base mb-3 line-clamp-2"><?php echo esc_html( $snaporder_subtitle ); ?></p><?php endif; ?>
 					<?php if ( $snaporder_button_text && $snaporder_button_link ) : ?>
-					<a href="<?php echo esc_url( $snaporder_button_link ); ?>" class="inline-block mfm-bg-primary text-white px-4 py-2 rounded-lg font-bold text-base mfm-hover-bg-primary-dark transition-colors shadow-sm">
+					<a href="<?php echo esc_url( $snaporder_button_link ); ?>" class="inline-block snaporder-bg-primary text-white px-4 py-2 rounded-lg font-bold text-base snaporder-hover-bg-primary-dark transition-colors shadow-sm">
 						<?php echo esc_html( $snaporder_button_text ); ?>
 					</a>
 					<?php endif; ?>
@@ -299,50 +242,26 @@ endforeach;
 		</div>
 		<?php endif; ?>
 
-		<!-- Categories data for JS -->
-		<?php
-		$snaporder_categories      = get_terms(
-			array(
-				'taxonomy'   => 'food_category',
-				'hide_empty' => true,
-				'orderby'    => 'name',
-				'order'      => 'ASC',
-			)
-		);
-		$snaporder_categories_data = array();
-		if ( ! is_wp_error( $snaporder_categories ) ) {
-			foreach ( $snaporder_categories as $snaporder_cat ) {
-				$snaporder_categories_data[] = array(
-					'id'     => $snaporder_cat->term_id,
-					'name'   => $snaporder_cat->name,
-					'slug'   => $snaporder_cat->slug,
-					'parent' => $snaporder_cat->parent,
-				);
-			}
-		}
-		?>
-		<script>window.mfmCategories = <?php echo wp_json_encode( $snaporder_categories_data ); ?>;</script>
-
 		<!-- Main Content Wrapper -->
-		<div id="mfm-main-content">
+		<div id="snaporder-main-content">
 			<div class="mb-4 px-4">
-				<div id="mfm-category-nav" class="flex gap-2 overflow-x-auto hide-scrollbar pb-2"></div>
+				<div id="snaporder-category-nav" class="flex gap-2 overflow-x-auto hide-scrollbar pb-2"></div>
 			</div>
 
 			<!-- Recommended / Featured Items -->
-			<section class="mb-8 px-4 mfm-recommended-section">
+			<section class="mb-8 px-4 snaporder-recommended-section">
 				<div class="flex justify-between items-end mb-4">
 					<h2 class="text-2xl font-bold text-gray-900"><?php esc_html_e( 'Recommended', 'lineweb-restaurant-orders' ); ?></h2>
-					<a href="#" onclick="MFMApp.showFeaturedPage(); return false;" class="mfm-text-primary text-base font-bold mfm-hover-text-primary-dark"><?php esc_html_e( 'See all', 'lineweb-restaurant-orders' ); ?></a>
+					<a href="#" onclick="SnapOrderApp.showFeaturedPage(); return false;" class="snaporder-text-primary text-base font-bold snaporder-hover-text-primary-dark"><?php esc_html_e( 'See all', 'lineweb-restaurant-orders' ); ?></a>
 				</div>
 				<div class="flex gap-4 overflow-x-auto hide-scrollbar pb-4">
 					<?php
 					$snaporder_featured_query = new WP_Query(
 						array(
-							'post_type'      => 'food_item',
+							'post_type'      => 'snaporder_item',
 							'posts_per_page' => 5,
 								// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Featured status is stored as product meta.
-							'meta_key'       => '_mfm_featured',
+							'meta_key'       => '_snaporder_featured',
 							'meta_value'     => '1',
 								// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 							'orderby'        => 'menu_order',
@@ -351,13 +270,13 @@ endforeach;
 					);
 					while ( $snaporder_featured_query->have_posts() ) :
 						$snaporder_featured_query->the_post();
-						$snaporder_f_price     = get_post_meta( get_the_ID(), '_mfm_price', true );
+						$snaporder_f_price     = get_post_meta( get_the_ID(), '_snaporder_price', true );
 							$snaporder_f_img   = snaporder_get_item_image( get_the_ID(), 'medium', $snaporder_placeholder_image );
-						$snaporder_f_extras    = get_post_meta( get_the_ID(), '_mfm_extras', true );
-						$snaporder_f_calories  = get_post_meta( get_the_ID(), '_mfm_calories', true );
-						$snaporder_f_dietary   = get_post_meta( get_the_ID(), '_mfm_dietary', true );
-						$snaporder_f_allergens = get_post_meta( get_the_ID(), '_mfm_allergens', true );
-						$snaporder_f_variants  = get_post_meta( get_the_ID(), '_mfm_size', true );
+						$snaporder_f_extras    = get_post_meta( get_the_ID(), '_snaporder_extras', true );
+						$snaporder_f_calories  = get_post_meta( get_the_ID(), '_snaporder_calories', true );
+						$snaporder_f_dietary   = get_post_meta( get_the_ID(), '_snaporder_dietary', true );
+						$snaporder_f_allergens = get_post_meta( get_the_ID(), '_snaporder_allergens', true );
+						$snaporder_f_variants  = get_post_meta( get_the_ID(), '_snaporder_size', true );
 						$snaporder_f_item_data = array(
 							'id'          => get_the_ID(),
 							'title'       => get_the_title(),
@@ -371,14 +290,14 @@ endforeach;
 							'variants'    => is_array( $snaporder_f_variants ) ? $snaporder_f_variants : array(),
 						);
 						?>
-					<div class="mfm-open-item shrink-0 w-[60vw] sm:w-72 bg-white rounded-2xl shadow-sm border border-gray-100 cursor-pointer overflow-hidden group transition-all hover:shadow-md"
-						role="button" tabindex="0" data-mfm-item="<?php echo esc_attr( wp_json_encode( $snaporder_f_item_data ) ); ?>">
+					<div class="snaporder-open-item shrink-0 w-[60vw] sm:w-72 bg-white rounded-2xl shadow-sm border border-gray-100 cursor-pointer overflow-hidden group transition-all hover:shadow-md"
+						role="button" tabindex="0" data-snaporder-item="<?php echo esc_attr( wp_json_encode( $snaporder_f_item_data ) ); ?>">
 						<div class="aspect-square w-full bg-cover bg-center relative" style="background-image:url('<?php echo esc_url( $snaporder_f_img ); ?>');">
 							<div class="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-all"></div>
-							<div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full text-sm font-bold shadow-sm mfm-text-primary"><?php echo esc_html( $snaporder_f_price . $snaporder_currency_symbol ); ?></div>
+							<div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full text-sm font-bold shadow-sm snaporder-text-primary"><?php echo esc_html( $snaporder_f_price . $snaporder_currency_symbol ); ?></div>
 							<?php if ( $snaporder_f_calories ) : ?>
 							<div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded-lg text-xs font-medium text-white flex items-center gap-1">
-								<i data-lucide="flame" class="w-3.5 h-3.5 mfm-text-primary-light"></i> <?php echo esc_html( $snaporder_f_calories ); ?> kcal
+								<i data-lucide="flame" class="w-3.5 h-3.5 snaporder-text-primary-light"></i> <?php echo esc_html( $snaporder_f_calories ); ?> kcal
 							</div>
 							<?php endif; ?>
 						</div>
@@ -401,12 +320,12 @@ endforeach;
 					foreach ( $snaporder_categories as $snaporder_cat ) :
 						$snaporder_cat_query = new WP_Query(
 							array(
-								'post_type'      => 'food_item',
+								'post_type'      => 'snaporder_item',
 								'posts_per_page' => -1,
 									// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Each visible section is intentionally scoped to one menu category.
 								'tax_query'      => array(
 									array(
-										'taxonomy' => 'food_category',
+										'taxonomy' => 'snaporder_category',
 										'field'    => 'slug',
 										'terms'    => $snaporder_cat->slug,
 									),
@@ -420,19 +339,19 @@ endforeach;
 							continue;
 						}
 						?>
-				<div class="mb-6 mfm-category-list cat-<?php echo esc_attr( $snaporder_cat->slug ); ?>">
+				<div class="mb-6 snaporder-category-list cat-<?php echo esc_attr( $snaporder_cat->slug ); ?>">
 					<h3 class="text-xl font-bold text-gray-900 mb-3"><?php echo esc_html( $snaporder_cat->name ); ?></h3>
 					<div class="space-y-3">
 						<?php
 						while ( $snaporder_cat_query->have_posts() ) :
 							$snaporder_cat_query->the_post();
-							$snaporder_m_price     = get_post_meta( get_the_ID(), '_mfm_price', true );
+							$snaporder_m_price     = get_post_meta( get_the_ID(), '_snaporder_price', true );
 								$snaporder_m_img   = snaporder_get_item_image( get_the_ID(), 'thumbnail', $snaporder_placeholder_image );
-							$snaporder_m_extras    = get_post_meta( get_the_ID(), '_mfm_extras', true );
-							$snaporder_m_calories  = get_post_meta( get_the_ID(), '_mfm_calories', true );
-							$snaporder_m_dietary   = get_post_meta( get_the_ID(), '_mfm_dietary', true );
-							$snaporder_m_allergens = get_post_meta( get_the_ID(), '_mfm_allergens', true );
-							$snaporder_m_variants  = get_post_meta( get_the_ID(), '_mfm_size', true );
+							$snaporder_m_extras    = get_post_meta( get_the_ID(), '_snaporder_extras', true );
+							$snaporder_m_calories  = get_post_meta( get_the_ID(), '_snaporder_calories', true );
+							$snaporder_m_dietary   = get_post_meta( get_the_ID(), '_snaporder_dietary', true );
+							$snaporder_m_allergens = get_post_meta( get_the_ID(), '_snaporder_allergens', true );
+							$snaporder_m_variants  = get_post_meta( get_the_ID(), '_snaporder_size', true );
 							$snaporder_m_item_data = array(
 								'id'          => get_the_ID(),
 								'title'       => get_the_title(),
@@ -446,8 +365,8 @@ endforeach;
 								'variants'    => is_array( $snaporder_m_variants ) ? $snaporder_m_variants : array(),
 							);
 							?>
-						<div class="mfm-open-item mfm-list-card mfm-menu-item flex gap-3 bg-white p-2.5 rounded-xl shadow-sm border border-gray-100 cursor-pointer mfm-hover-border-primary-200 transition-all"
-							role="button" tabindex="0" data-mfm-item="<?php echo esc_attr( wp_json_encode( $snaporder_m_item_data ) ); ?>">
+						<div class="snaporder-open-item snaporder-list-card snaporder-menu-item flex gap-3 bg-white p-2.5 rounded-xl shadow-sm border border-gray-100 cursor-pointer snaporder-hover-border-primary-200 transition-all"
+							role="button" tabindex="0" data-snaporder-item="<?php echo esc_attr( wp_json_encode( $snaporder_m_item_data ) ); ?>">
 							<div class="w-20 h-20 bg-gray-100 rounded-lg bg-cover bg-center flex-none relative" style="background-image:url('<?php echo esc_url( $snaporder_m_img ); ?>');">
 								<?php if ( ! empty( $snaporder_m_dietary ) && ( in_array( 'vegetarian', $snaporder_m_dietary, true ) || in_array( 'vegan', $snaporder_m_dietary, true ) ) ) : ?>
 								<div class="absolute -top-1 -left-1 w-5 h-5 rounded-full bg-green-100 flex items-center justify-center shadow-sm border border-white">
@@ -459,7 +378,7 @@ endforeach;
 								<h4 class="font-bold text-gray-900 mb-0.5 text-lg truncate"><?php the_title(); ?></h4>
 								<p class="text-xs text-gray-500 line-clamp-2 mb-1.5 leading-tight"><?php echo esc_html( get_the_excerpt() ); ?></p>
 								<div class="flex items-center gap-2">
-									<div class="font-bold mfm-text-primary text-base"><?php echo esc_html( $snaporder_m_price . $snaporder_currency_symbol ); ?></div>
+									<div class="font-bold snaporder-text-primary text-base"><?php echo esc_html( $snaporder_m_price . $snaporder_currency_symbol ); ?></div>
 									<?php if ( $snaporder_m_calories ) : ?>
 									<div class="text-xs text-red-500 flex items-center gap-0.5 font-medium">
 										<i data-lucide="flame" class="w-3 h-3"></i> <?php echo esc_html( $snaporder_m_calories ); ?>
@@ -484,12 +403,12 @@ endforeach;
 endif;
 				?>
 			</div>
-		</div><!-- End #mfm-main-content -->
+		</div><!-- End #snaporder-main-content -->
 
 		<!-- Featured Items Full-Page (hidden by default) -->
-		<div id="mfm-featured-page" class="hidden px-4 pb-24">
+		<div id="snaporder-featured-page" class="hidden px-4 pb-24">
 			<div class="flex items-center gap-3 mb-6">
-				<button onclick="MFMApp.hideFeaturedPage()" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+				<button onclick="SnapOrderApp.hideFeaturedPage()" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
 					<i data-lucide="arrow-left" class="w-6 h-6 text-gray-900"></i>
 				</button>
 				<h2 class="text-2xl font-bold text-gray-900"><?php esc_html_e( 'Featured Items', 'lineweb-restaurant-orders' ); ?></h2>
@@ -498,10 +417,10 @@ endif;
 				<?php
 				$snaporder_all_featured = new WP_Query(
 					array(
-						'post_type'      => 'food_item',
+						'post_type'      => 'snaporder_item',
 						'posts_per_page' => -1,
 							// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Featured status is stored as product meta.
-						'meta_key'       => '_mfm_featured',
+						'meta_key'       => '_snaporder_featured',
 						'meta_value'     => '1',
 							// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 						'orderby'        => 'menu_order',
@@ -510,13 +429,13 @@ endif;
 				);
 				while ( $snaporder_all_featured->have_posts() ) :
 					$snaporder_all_featured->the_post();
-					$snaporder_af_price     = get_post_meta( get_the_ID(), '_mfm_price', true );
+					$snaporder_af_price     = get_post_meta( get_the_ID(), '_snaporder_price', true );
 						$snaporder_af_img   = snaporder_get_item_image( get_the_ID(), 'medium', $snaporder_placeholder_image );
-					$snaporder_af_extras    = get_post_meta( get_the_ID(), '_mfm_extras', true );
-					$snaporder_af_calories  = get_post_meta( get_the_ID(), '_mfm_calories', true );
-					$snaporder_af_dietary   = get_post_meta( get_the_ID(), '_mfm_dietary', true );
-					$snaporder_af_allergens = get_post_meta( get_the_ID(), '_mfm_allergens', true );
-					$snaporder_af_variants  = get_post_meta( get_the_ID(), '_mfm_size', true );
+					$snaporder_af_extras    = get_post_meta( get_the_ID(), '_snaporder_extras', true );
+					$snaporder_af_calories  = get_post_meta( get_the_ID(), '_snaporder_calories', true );
+					$snaporder_af_dietary   = get_post_meta( get_the_ID(), '_snaporder_dietary', true );
+					$snaporder_af_allergens = get_post_meta( get_the_ID(), '_snaporder_allergens', true );
+					$snaporder_af_variants  = get_post_meta( get_the_ID(), '_snaporder_size', true );
 					$snaporder_af_item_data = array(
 						'id'          => get_the_ID(),
 						'title'       => get_the_title(),
@@ -530,13 +449,13 @@ endif;
 						'variants'    => is_array( $snaporder_af_variants ) ? $snaporder_af_variants : array(),
 					);
 					?>
-				<div class="mfm-open-item bg-white rounded-2xl shadow-sm border border-gray-100 cursor-pointer overflow-hidden group transition-all hover:shadow-md"
-					role="button" tabindex="0" data-mfm-item="<?php echo esc_attr( wp_json_encode( $snaporder_af_item_data ) ); ?>">
+				<div class="snaporder-open-item bg-white rounded-2xl shadow-sm border border-gray-100 cursor-pointer overflow-hidden group transition-all hover:shadow-md"
+					role="button" tabindex="0" data-snaporder-item="<?php echo esc_attr( wp_json_encode( $snaporder_af_item_data ) ); ?>">
 					<div class="aspect-square w-full bg-cover bg-center relative" style="background-image:url('<?php echo esc_url( $snaporder_af_img ); ?>');">
-						<div class="absolute top-2 right-2 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-sm font-bold shadow-sm mfm-text-primary"><?php echo esc_html( $snaporder_af_price . $snaporder_currency_symbol ); ?></div>
+						<div class="absolute top-2 right-2 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-sm font-bold shadow-sm snaporder-text-primary"><?php echo esc_html( $snaporder_af_price . $snaporder_currency_symbol ); ?></div>
 						<?php if ( $snaporder_af_calories ) : ?>
 						<div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-lg text-xs font-medium text-white flex items-center gap-1">
-							<i data-lucide="flame" class="w-3 h-3 mfm-text-primary-light"></i> <?php echo esc_html( $snaporder_af_calories ); ?>
+							<i data-lucide="flame" class="w-3 h-3 snaporder-text-primary-light"></i> <?php echo esc_html( $snaporder_af_calories ); ?>
 						</div>
 						<?php endif; ?>
 					</div>
@@ -556,13 +475,13 @@ endif;
 		</div>
 
 		<!-- Floating Cart Bar -->
-		<div id="mfm-bottom-bar" class="fixed bottom-[70px] left-0 w-full px-4 z-40 hidden transform transition-transform duration-300">
-			<div class="max-w-md mx-auto bg-gray-900 text-white p-3 rounded-xl shadow-2xl flex justify-between items-center cursor-pointer" onclick="MFMCart.openCart()">
+		<div id="snaporder-bottom-bar" class="fixed bottom-[70px] left-0 w-full px-4 z-40 hidden transform transition-transform duration-300">
+			<div class="max-w-md mx-auto bg-gray-900 text-white p-3 rounded-xl shadow-2xl flex justify-between items-center cursor-pointer" onclick="SnapOrderCart.openCart()">
 				<div class="flex items-center gap-3">
-					<div class="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center font-bold text-sm" id="mfm-bar-count">0</div>
+					<div class="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center font-bold text-sm" id="snaporder-bar-count">0</div>
 					<div class="flex flex-col">
 						<span class="text-[10px] text-gray-400"><?php esc_html_e( 'Total', 'lineweb-restaurant-orders' ); ?></span>
-						<span class="font-bold text-base leading-none" id="mfm-bar-total">0.00<?php echo esc_html( $snaporder_currency_symbol ); ?></span>
+						<span class="font-bold text-base leading-none" id="snaporder-bar-total">0.00<?php echo esc_html( $snaporder_currency_symbol ); ?></span>
 					</div>
 				</div>
 				<div class="flex items-center gap-2 font-bold text-xs"><?php esc_html_e( 'View Cart', 'lineweb-restaurant-orders' ); ?> <i data-lucide="chevron-right" class="w-4 h-4"></i></div>
@@ -572,20 +491,20 @@ endif;
 		<!-- Bottom Navigation -->
 		<div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-50 pb-safe">
 			<div class="max-w-md mx-auto flex justify-around items-center h-14 px-2">
-				<a href="<?php echo esc_url( get_permalink() ); ?>" class="bottom-nav-item active flex flex-col items-center justify-center w-full h-full space-y-0.5 text-gray-400 mfm-hover-text-primary">
+				<a href="<?php echo esc_url( get_permalink() ); ?>" class="bottom-nav-item active flex flex-col items-center justify-center w-full h-full space-y-0.5 text-gray-400 snaporder-hover-text-primary">
 					<i data-lucide="home" class="w-6 h-6"></i>
 					<span class="text-xs font-medium"><?php esc_html_e( 'Menu', 'lineweb-restaurant-orders' ); ?></span>
 				</a>
-				<button onclick="document.getElementById('mfm-search-input').focus()" class="bottom-nav-item flex flex-col items-center justify-center w-full h-full space-y-0.5 text-gray-400 mfm-hover-text-primary">
+				<button onclick="document.getElementById('snaporder-search-input').focus()" class="bottom-nav-item flex flex-col items-center justify-center w-full h-full space-y-0.5 text-gray-400 snaporder-hover-text-primary">
 					<i data-lucide="search" class="w-6 h-6"></i>
 					<span class="text-xs font-medium"><?php esc_html_e( 'Search', 'lineweb-restaurant-orders' ); ?></span>
 				</button>
-				<button onclick="MFMCart.openCart()" class="bottom-nav-item flex flex-col items-center justify-center w-full h-full space-y-0.5 text-gray-400 mfm-hover-text-primary relative">
+				<button onclick="SnapOrderCart.openCart()" class="bottom-nav-item flex flex-col items-center justify-center w-full h-full space-y-0.5 text-gray-400 snaporder-hover-text-primary relative">
 					<i data-lucide="shopping-bag" class="w-6 h-6"></i>
 					<span class="text-xs font-medium"><?php esc_html_e( 'Cart', 'lineweb-restaurant-orders' ); ?></span>
-					<span class="mfm-cart-count absolute top-0 right-3 w-4 h-4 mfm-bg-primary text-white text-[9px] font-bold flex items-center justify-center rounded-full border-2 border-white">0</span>
+					<span class="snaporder-cart-count absolute top-0 right-3 w-4 h-4 snaporder-bg-primary text-white text-[9px] font-bold flex items-center justify-center rounded-full border-2 border-white">0</span>
 				</button>
-				<button class="bottom-nav-item flex flex-col items-center justify-center w-full h-full space-y-0.5 text-gray-400 mfm-hover-text-primary">
+				<button class="bottom-nav-item flex flex-col items-center justify-center w-full h-full space-y-0.5 text-gray-400 snaporder-hover-text-primary">
 					<i data-lucide="user" class="w-6 h-6"></i>
 					<span class="text-xs font-medium"><?php esc_html_e( 'Profile', 'lineweb-restaurant-orders' ); ?></span>
 				</button>
@@ -593,56 +512,56 @@ endif;
 		</div>
 
 		<!-- Item Modal -->
-		<div id="mfm-modal" class="fixed inset-0 z-50 hidden">
-			<div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="MFMApp.closeModal()"></div>
-			<div class="mfm-modal-content absolute bottom-0 left-0 w-full bg-white rounded-t-3xl h-[90vh] overflow-y-auto translate-y-full">
+		<div id="snaporder-modal" class="fixed inset-0 z-50 hidden">
+			<div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="SnapOrderApp.closeModal()"></div>
+			<div class="snaporder-modal-content absolute bottom-0 left-0 w-full bg-white rounded-t-3xl h-[90vh] overflow-y-auto translate-y-full">
 				<div class="relative h-60 bg-gray-100">
-					<div class="mfm-modal-image w-full h-full bg-cover bg-center"></div>
-					<button onclick="MFMApp.closeModal()" class="absolute top-4 right-4 w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg z-10">
+					<div class="snaporder-modal-image w-full h-full bg-cover bg-center"></div>
+					<button onclick="SnapOrderApp.closeModal()" class="absolute top-4 right-4 w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg z-10">
 						<i data-lucide="x" class="w-5 h-5 text-gray-900"></i>
 					</button>
 				</div>
 				<div class="p-5 pb-32">
 					<div class="flex justify-between items-start mb-2">
-						<h2 class="mfm-modal-title text-2xl font-bold text-gray-900 w-3/4"></h2>
+						<h2 class="snaporder-modal-title text-2xl font-bold text-gray-900 w-3/4"></h2>
 						<div class="flex flex-col items-end">
-							<span class="mfm-modal-price text-xl font-bold mfm-text-primary"></span>
-							<div class="mfm-modal-dietary flex gap-1 mt-1"></div>
+							<span class="snaporder-modal-price text-xl font-bold snaporder-text-primary"></span>
+							<div class="snaporder-modal-dietary flex gap-1 mt-1"></div>
 						</div>
 					</div>
 					<div class="flex items-center gap-4 mb-4 text-base text-gray-500">
-						<div class="mfm-modal-calories-wrap flex items-center gap-1 text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-lg">
-							<i data-lucide="flame" class="w-4 h-4 mfm-text-primary"></i>
-							<span class="mfm-modal-calories font-medium"></span>
+						<div class="snaporder-modal-calories-wrap flex items-center gap-1 text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-lg">
+							<i data-lucide="flame" class="w-4 h-4 snaporder-text-primary"></i>
+							<span class="snaporder-modal-calories font-medium"></span>
 						</div>
-						<div class="mfm-modal-allergens flex items-center gap-1 hidden text-red-500">
+						<div class="snaporder-modal-allergens flex items-center gap-1 hidden text-red-500">
 							<i data-lucide="alert-circle" class="w-4 h-4"></i>
 							<span></span>
 						</div>
 					</div>
-					<p class="mfm-modal-desc text-gray-500 text-base leading-relaxed mb-6"></p>
-					<div class="mfm-modal-variants-wrapper hidden mb-6">
+					<p class="snaporder-modal-desc text-gray-500 text-base leading-relaxed mb-6"></p>
+					<div class="snaporder-modal-variants-wrapper hidden mb-6">
 						<h3 class="font-bold text-gray-900 mb-3 text-sm"><?php esc_html_e( 'Choose Variant', 'lineweb-restaurant-orders' ); ?></h3>
-						<div class="mfm-modal-variants space-y-2"></div>
+						<div class="snaporder-modal-variants space-y-2"></div>
 					</div>
-					<div class="mfm-modal-extras-wrapper hidden mb-8">
+					<div class="snaporder-modal-extras-wrapper hidden mb-8">
 						<h3 class="font-bold text-gray-900 mb-3 text-sm"><?php esc_html_e( 'Extras', 'lineweb-restaurant-orders' ); ?></h3>
-						<div class="mfm-modal-extras space-y-2"></div>
+						<div class="snaporder-modal-extras space-y-2"></div>
 					</div>
 					<div class="mb-6">
 						<label class="block font-bold text-gray-900 mb-2 text-sm"><?php esc_html_e( 'Special Instructions (Optional)', 'lineweb-restaurant-orders' ); ?></label>
-						<textarea id="mfm-product-notes" class="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 mfm-ring-primary focus:border-transparent resize-none" rows="3" placeholder="<?php esc_attr_e( 'E.g., No onions, extra sauce, well done...', 'lineweb-restaurant-orders' ); ?>"></textarea>
+						<textarea id="snaporder-product-notes" class="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 snaporder-ring-primary focus:border-transparent resize-none" rows="3" placeholder="<?php esc_attr_e( 'E.g., No onions, extra sauce, well done...', 'lineweb-restaurant-orders' ); ?>"></textarea>
 					</div>
 					<div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 p-4 pb-8 shadow-[0_-10px_40px_rgb(0,0,0,0.05)]">
 						<div class="flex items-center justify-between gap-3 max-w-md mx-auto">
 							<div class="flex items-center gap-3 bg-gray-100 rounded-xl p-1">
-								<button class="w-10 h-10 flex items-center justify-center font-bold text-xl hover:bg-white rounded-lg transition-all" onclick="MFMApp.decrementQty()">-</button>
-								<span class="mfm-modal-qty font-bold text-lg w-6 text-center">1</span>
-								<button class="w-10 h-10 flex items-center justify-center font-bold text-xl hover:bg-white rounded-lg transition-all" onclick="MFMApp.incrementQty()">+</button>
+								<button class="w-10 h-10 flex items-center justify-center font-bold text-xl hover:bg-white rounded-lg transition-all" onclick="SnapOrderApp.decrementQty()">-</button>
+								<span class="snaporder-modal-qty font-bold text-lg w-6 text-center">1</span>
+								<button class="w-10 h-10 flex items-center justify-center font-bold text-xl hover:bg-white rounded-lg transition-all" onclick="SnapOrderApp.incrementQty()">+</button>
 							</div>
-							<button class="flex-1 bg-gray-900 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-gray-800 transition-all flex justify-between px-5 text-base" onclick="MFMApp.addToCart()">
+							<button class="flex-1 bg-gray-900 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-gray-800 transition-all flex justify-between px-5 text-base" onclick="SnapOrderApp.addToCart()">
 								<span><?php esc_html_e( 'Add to Order', 'lineweb-restaurant-orders' ); ?></span>
-								<span class="mfm-modal-price-display"></span>
+								<span class="snaporder-modal-price-display"></span>
 							</button>
 						</div>
 					</div>
@@ -651,20 +570,20 @@ endif;
 		</div>
 
 		<!-- Cart Modal -->
-		<div id="mfm-cart-modal" class="fixed inset-0 z-50 hidden">
-			<div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="MFMCart.closeCart()"></div>
-			<div class="mfm-cart-content absolute bottom-0 left-0 w-full bg-white rounded-t-3xl h-[85vh] flex flex-col translate-y-full">
+		<div id="snaporder-cart-modal" class="fixed inset-0 z-50 hidden">
+			<div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="SnapOrderCart.closeCart()"></div>
+			<div class="snaporder-cart-content absolute bottom-0 left-0 w-full bg-white rounded-t-3xl h-[85vh] flex flex-col translate-y-full">
 				<div class="p-4 border-b border-gray-100 flex justify-between items-center">
 					<h2 class="text-lg font-bold"><?php esc_html_e( 'Your Cart', 'lineweb-restaurant-orders' ); ?></h2>
-					<button onclick="MFMCart.closeCart()" class="p-2 bg-gray-100 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
+					<button onclick="SnapOrderCart.closeCart()" class="p-2 bg-gray-100 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
 				</div>
-				<div class="flex-1 overflow-y-auto p-4 space-y-3" id="mfm-cart-items"></div>
+				<div class="flex-1 overflow-y-auto p-4 space-y-3" id="snaporder-cart-items"></div>
 				<div class="p-4 border-t border-gray-100 bg-gray-50 pb-safe">
 					<div class="flex justify-between items-center mb-4">
 						<span class="text-gray-500 text-sm"><?php esc_html_e( 'Total Amount', 'lineweb-restaurant-orders' ); ?></span>
-						<span class="text-xl font-bold text-gray-900" id="mfm-cart-total">0.00<?php echo esc_html( $snaporder_currency_symbol ); ?></span>
+						<span class="text-xl font-bold text-gray-900" id="snaporder-cart-total">0.00<?php echo esc_html( $snaporder_currency_symbol ); ?></span>
 					</div>
-					<button onclick="MFMCart.openCheckout()" class="w-full mfm-bg-primary text-white font-bold py-3.5 rounded-xl shadow-lg mfm-shadow-primary mfm-hover-bg-primary-dark transition-all text-sm">
+					<button onclick="SnapOrderCart.openCheckout()" class="w-full snaporder-bg-primary text-white font-bold py-3.5 rounded-xl shadow-lg snaporder-shadow-primary snaporder-hover-bg-primary-dark transition-all text-sm">
 						<?php esc_html_e( 'Proceed to Checkout', 'lineweb-restaurant-orders' ); ?>
 					</button>
 				</div>
@@ -672,32 +591,32 @@ endif;
 		</div>
 
 		<!-- Checkout Modal -->
-		<div id="mfm-checkout-modal" class="fixed inset-0 z-[60] hidden bg-white overflow-y-auto">
+		<div id="snaporder-checkout-modal" class="fixed inset-0 z-[60] hidden bg-white overflow-y-auto">
 			<div class="max-w-md mx-auto min-h-screen flex flex-col">
 				<div class="p-4 border-b border-gray-100 flex items-center gap-3 sticky top-0 bg-white z-10">
-					<button onclick="MFMCart.closeCheckout()" class="p-2 hover:bg-gray-100 rounded-full"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+					<button onclick="SnapOrderCart.closeCheckout()" class="p-2 hover:bg-gray-100 rounded-full"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
 					<h2 class="text-lg font-bold"><?php esc_html_e( 'Checkout', 'lineweb-restaurant-orders' ); ?></h2>
 				</div>
 				<div class="flex-1 p-5">
-					<form id="mfm-checkout-form" class="space-y-5">
+					<form id="snaporder-checkout-form" class="space-y-5">
 						<!-- Delivery Type -->
 						<div class="bg-gray-100 p-1 rounded-xl flex">
-							<button type="button" id="btn-delivery" class="flex-1 py-3 rounded-lg text-sm font-bold shadow-sm bg-white text-gray-900 transition-all" onclick="MFMCart.setDeliveryType('delivery')"><?php esc_html_e( 'Delivery', 'lineweb-restaurant-orders' ); ?></button>
-							<button type="button" id="btn-pickup"   class="flex-1 py-3 rounded-lg text-sm font-bold text-gray-500 transition-all" onclick="MFMCart.setDeliveryType('pickup')"><?php esc_html_e( 'Pickup', 'lineweb-restaurant-orders' ); ?></button>
-							<?php if ( get_option( 'mfm_dinein_enabled' ) === '1' ) : ?>
-							<button type="button" id="btn-dinein" class="flex-1 py-3 rounded-lg text-sm font-bold text-gray-500 transition-all" onclick="MFMCart.setDeliveryType('dinein')"><?php esc_html_e( 'Dine-In', 'lineweb-restaurant-orders' ); ?></button>
+							<button type="button" id="btn-delivery" class="flex-1 py-3 rounded-lg text-sm font-bold shadow-sm bg-white text-gray-900 transition-all" onclick="SnapOrderCart.setDeliveryType('delivery')"><?php esc_html_e( 'Delivery', 'lineweb-restaurant-orders' ); ?></button>
+							<button type="button" id="btn-pickup"   class="flex-1 py-3 rounded-lg text-sm font-bold text-gray-500 transition-all" onclick="SnapOrderCart.setDeliveryType('pickup')"><?php esc_html_e( 'Pickup', 'lineweb-restaurant-orders' ); ?></button>
+							<?php if ( get_option( 'snaporder_dinein_enabled' ) === '1' ) : ?>
+							<button type="button" id="btn-dinein" class="flex-1 py-3 rounded-lg text-sm font-bold text-gray-500 transition-all" onclick="SnapOrderCart.setDeliveryType('dinein')"><?php esc_html_e( 'Dine-In', 'lineweb-restaurant-orders' ); ?></button>
 							<?php endif; ?>
 						</div>
 						<!-- Contact -->
 						<div class="space-y-3">
 							<h3 class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Contact Info', 'lineweb-restaurant-orders' ); ?></h3>
 							<div id="contact-info-fields" class="space-y-2">
-								<input type="text" name="name"  placeholder="<?php esc_attr_e( 'Full Name', 'lineweb-restaurant-orders' ); ?>"    required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
-								<input type="tel"  name="phone" placeholder="<?php esc_attr_e( 'Phone Number', 'lineweb-restaurant-orders' ); ?>" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
+								<input type="text" name="name"  placeholder="<?php esc_attr_e( 'Full Name', 'lineweb-restaurant-orders' ); ?>"    required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none snaporder-focus-border-primary">
+								<input type="tel"  name="phone" placeholder="<?php esc_attr_e( 'Phone Number', 'lineweb-restaurant-orders' ); ?>" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none snaporder-focus-border-primary">
 							</div>
-							<?php if ( get_option( 'mfm_dinein_enabled' ) === '1' ) : ?>
+							<?php if ( get_option( 'snaporder_dinein_enabled' ) === '1' ) : ?>
 							<div id="dinein-fields" class="hidden">
-								<input type="number" name="table_number" placeholder="<?php esc_attr_e( 'Table Number', 'lineweb-restaurant-orders' ); ?>" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
+								<input type="number" name="table_number" placeholder="<?php esc_attr_e( 'Table Number', 'lineweb-restaurant-orders' ); ?>" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none snaporder-focus-border-primary">
 							</div>
 							<?php endif; ?>
 						</div>
@@ -705,28 +624,28 @@ endif;
 						<div id="delivery-fields" class="space-y-3">
 							<h3 class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Delivery Address', 'lineweb-restaurant-orders' ); ?></h3>
 							<div class="flex gap-2">
-								<input type="text" name="street" placeholder="<?php esc_attr_e( 'Street Name', 'lineweb-restaurant-orders' ); ?>" required class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
-								<input type="text" name="number" placeholder="<?php esc_attr_e( 'No.', 'lineweb-restaurant-orders' ); ?>"         required class="w-24 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
+								<input type="text" name="street" placeholder="<?php esc_attr_e( 'Street Name', 'lineweb-restaurant-orders' ); ?>" required class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none snaporder-focus-border-primary">
+								<input type="text" name="number" placeholder="<?php esc_attr_e( 'No.', 'lineweb-restaurant-orders' ); ?>"         required class="w-24 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none snaporder-focus-border-primary">
 							</div>
 							<div class="flex gap-2">
-								<input type="text" name="city" placeholder="<?php esc_attr_e( 'City', 'lineweb-restaurant-orders' ); ?>" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
-								<input type="text" name="zip"  placeholder="<?php esc_attr_e( 'ZIP', 'lineweb-restaurant-orders' ); ?>"  required class="w-28  bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary">
+								<input type="text" name="city" placeholder="<?php esc_attr_e( 'City', 'lineweb-restaurant-orders' ); ?>" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none snaporder-focus-border-primary">
+								<input type="text" name="zip"  placeholder="<?php esc_attr_e( 'ZIP', 'lineweb-restaurant-orders' ); ?>"  required class="w-28  bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none snaporder-focus-border-primary">
 							</div>
 						</div>
 						<!-- Tips -->
-						<?php if ( get_option( 'mfm_tipping_enabled' ) === '1' ) : ?>
+						<?php if ( get_option( 'snaporder_tipping_enabled' ) === '1' ) : ?>
 						<div class="space-y-3">
 							<h3 class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Add a Tip', 'lineweb-restaurant-orders' ); ?></h3>
 							<div class="grid grid-cols-4 gap-2">
-								<button type="button" class="tip-btn border border-gray-200 rounded-xl py-2 font-medium text-sm hover:border-orange-500 hover:text-orange-500 transition-colors" onclick="MFMCart.setTip(0.05)">5%</button>
-								<button type="button" class="tip-btn border border-gray-200 rounded-xl py-2 font-medium text-sm hover:border-orange-500 hover:text-orange-500 transition-colors" onclick="MFMCart.setTip(0.10)">10%</button>
-								<button type="button" class="tip-btn border border-gray-200 rounded-xl py-2 font-medium text-sm hover:border-orange-500 hover:text-orange-500 transition-colors" onclick="MFMCart.setTip(0.15)">15%</button>
-								<button type="button" class="tip-btn border border-gray-200 rounded-xl py-2 font-medium text-sm hover:border-orange-500 hover:text-orange-500 transition-colors" onclick="MFMCart.toggleCustomTip()"><?php esc_html_e( 'Custom', 'lineweb-restaurant-orders' ); ?></button>
+								<button type="button" class="tip-btn border border-gray-200 rounded-xl py-2 font-medium text-sm hover:border-orange-500 hover:text-orange-500 transition-colors" onclick="SnapOrderCart.setTip(0.05)">5%</button>
+								<button type="button" class="tip-btn border border-gray-200 rounded-xl py-2 font-medium text-sm hover:border-orange-500 hover:text-orange-500 transition-colors" onclick="SnapOrderCart.setTip(0.10)">10%</button>
+								<button type="button" class="tip-btn border border-gray-200 rounded-xl py-2 font-medium text-sm hover:border-orange-500 hover:text-orange-500 transition-colors" onclick="SnapOrderCart.setTip(0.15)">15%</button>
+								<button type="button" class="tip-btn border border-gray-200 rounded-xl py-2 font-medium text-sm hover:border-orange-500 hover:text-orange-500 transition-colors" onclick="SnapOrderCart.toggleCustomTip()"><?php esc_html_e( 'Custom', 'lineweb-restaurant-orders' ); ?></button>
 							</div>
 							<div id="custom-tip-wrap" class="hidden mt-2">
 								<div class="relative">
 									<span class="absolute left-4 top-3.5 text-gray-500 font-bold"><?php echo esc_html( $snaporder_currency_symbol ); ?></span>
-									<input type="number" id="custom-tip-input" step="0.50" min="0" placeholder="0.00" class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-8 pr-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary" oninput="MFMCart.setCustomTip(this.value)">
+									<input type="number" id="custom-tip-input" step="0.50" min="0" placeholder="0.00" class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-8 pr-4 py-3.5 text-base focus:outline-none snaporder-focus-border-primary" oninput="SnapOrderCart.setCustomTip(this.value)">
 								</div>
 							</div>
 							<input type="hidden" name="tip_amount" id="tip-amount-input" value="0">
@@ -739,14 +658,14 @@ endif;
 						<!-- Order Notes -->
 						<div class="space-y-3">
 							<h3 class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Order Notes (Optional)', 'lineweb-restaurant-orders' ); ?></h3>
-							<textarea name="order_notes" id="mfm-order-notes" placeholder="<?php esc_attr_e( 'Any special requests?', 'lineweb-restaurant-orders' ); ?>" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none mfm-focus-border-primary resize-none" rows="3"></textarea>
+							<textarea name="order_notes" id="snaporder-order-notes" placeholder="<?php esc_attr_e( 'Any special requests?', 'lineweb-restaurant-orders' ); ?>" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base focus:outline-none snaporder-focus-border-primary resize-none" rows="3"></textarea>
 						</div>
 						<!-- Payment -->
 						<div class="space-y-3">
 							<h3 class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Payment Method', 'lineweb-restaurant-orders' ); ?></h3>
 							<?php if ( in_array( 'stripe', $snaporder_payment_methods, true ) ) : ?>
-							<div class="payment-option <?php echo 'stripe' === $snaporder_default_payment ? 'selected mfm-border-primary mfm-bg-primary-50' : 'border border-gray-200'; ?> rounded-xl p-4 flex items-center gap-3 cursor-pointer" data-payment-method="stripe" role="button" tabindex="0">
-								<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm"><i data-lucide="credit-card" class="w-5 h-5 mfm-text-primary"></i></div>
+							<div class="payment-option <?php echo 'stripe' === $snaporder_default_payment ? 'selected snaporder-border-primary snaporder-bg-primary-50' : 'border border-gray-200'; ?> rounded-xl p-4 flex items-center gap-3 cursor-pointer" data-payment-method="stripe" role="button" tabindex="0">
+								<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm"><i data-lucide="credit-card" class="w-5 h-5 snaporder-text-primary"></i></div>
 								<span class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Credit/Debit Card', 'lineweb-restaurant-orders' ); ?></span>
 								<input type="radio" name="payment" value="stripe" <?php checked( 'stripe', $snaporder_default_payment ); ?> class="hidden">
 							</div>
@@ -754,8 +673,8 @@ endif;
 							<div id="stripe-card-errors" class="mt-2 text-red-600 text-sm"></div>
 							<?php endif; ?>
 							<?php if ( in_array( 'cod', $snaporder_payment_methods, true ) ) : ?>
-							<div class="payment-option <?php echo 'cod' === $snaporder_default_payment ? 'selected mfm-border-primary mfm-bg-primary-50' : 'border border-gray-200'; ?> rounded-xl p-4 flex items-center gap-3 cursor-pointer" data-payment-method="cod" role="button" tabindex="0">
-								<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm"><i data-lucide="banknote" class="w-5 h-5 mfm-text-primary"></i></div>
+							<div class="payment-option <?php echo 'cod' === $snaporder_default_payment ? 'selected snaporder-border-primary snaporder-bg-primary-50' : 'border border-gray-200'; ?> rounded-xl p-4 flex items-center gap-3 cursor-pointer" data-payment-method="cod" role="button" tabindex="0">
+								<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm"><i data-lucide="banknote" class="w-5 h-5 snaporder-text-primary"></i></div>
 								<span class="font-bold text-gray-900 text-base"><?php esc_html_e( 'Cash on Delivery', 'lineweb-restaurant-orders' ); ?></span>
 								<input type="radio" name="payment" value="cod" <?php checked( 'cod', $snaporder_default_payment ); ?> class="hidden">
 							</div>
@@ -770,18 +689,10 @@ endif;
 					</form>
 				</div>
 			</div>
-		</div><!-- End #mfm-checkout-modal -->
+		</div><!-- End #snaporder-checkout-modal -->
 	</div><!-- End app wrapper -->
 <?php endif; ?>
 
 <?php wp_footer(); ?>
-<script>
-(function($) {
-	// Initialize Lucide icons for PHP-rendered markup
-	if (typeof lucide !== 'undefined') {
-		lucide.createIcons();
-	}
-}(jQuery));
-</script>
 </body>
 </html>

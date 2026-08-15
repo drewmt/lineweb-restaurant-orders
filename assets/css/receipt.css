@@ -1,0 +1,70 @@
+body {
+	width: 80mm;
+	padding: 10px;
+	margin: 0;
+	color: #000;
+	font-family: "Courier New", monospace;
+	font-size: 14px;
+	background: #fff;
+}
+
+.center,
+.footer {
+	text-align: center;
+}
+
+.bold {
+	font-weight: 700;
+}
+
+.line {
+	margin: 10px 0;
+	border-bottom: 1px dashed #000;
+}
+
+.row {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 5px;
+}
+
+.item-row {
+	margin-bottom: 5px;
+}
+
+.item-extras {
+	padding-left: 10px;
+	font-size: 12px;
+}
+
+.footer {
+	margin-top: 20px;
+	font-size: 12px;
+}
+
+.receipt-title {
+	margin: 0;
+}
+
+.receipt-meta {
+	margin: 5px 0;
+}
+
+.receipt-address {
+	display: block;
+}
+
+.receipt-total {
+	font-size: 16px;
+}
+
+@media print {
+	@page {
+		margin: 0;
+	}
+
+	body {
+		width: auto;
+		padding: 0 5mm;
+	}
+}
