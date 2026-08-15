@@ -1,4 +1,4 @@
-.mfm-drag-handle {
+.snaporder-drag-handle {
     cursor: move;
     color: #ccc;
     font-size: 20px;
@@ -8,11 +8,11 @@
     vertical-align: middle;
 }
 
-.mfm-drag-handle:hover {
+.snaporder-drag-handle:hover {
     color: #999;
 }
 
-.mfm-sortable-placeholder {
+.snaporder-sortable-placeholder {
     background: #f9f9f9;
     border: 1px dashed #ccc;
     visibility: visible !important;
@@ -32,7 +32,7 @@
 }
 
 /* Fix column width for sort handle */
-.column-mfm_sort {
+.column-snaporder_sort {
     width: 20px !important;
     text-align: center;
     padding-right: 0 !important;

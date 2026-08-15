@@ -1,12 +1,12 @@
 jQuery(document).ready(function ($) {
     // Click card to open modal
-    $(document).on('click', '.mfm-order-card', function () {
+    $(document).on('click', '.snaporder-order-card', function () {
         const orderId = $(this).data('order-id');
         openOrderModal(orderId);
     });
 
     // List view button click
-    $(document).on('click', '.mfm-view-order-btn', function (e) {
+    $(document).on('click', '.snaporder-view-order-btn', function (e) {
         e.preventDefault();
         e.stopPropagation(); // Prevent row click if we add one
         const orderId = $(this).data('order-id');
@@ -14,17 +14,17 @@ jQuery(document).ready(function ($) {
     });
 
     // Close modal when clicking outside
-    $(document).on('click', '#mfm-order-modal', function (e) {
+    $(document).on('click', '#snaporder-order-modal', function (e) {
         if (e.target === this) {
             closeOrderModal();
         }
     });
 
     // Auto-refresh every 30 seconds
-    if ($('.mfm-orders-wrap').length) {
+    if ($('.snaporder-orders-wrap').length) {
         setInterval(function () {
             // Only refresh if modal is not open
-            if ($('#mfm-order-modal').css('display') === 'none') {
+            if ($('#snaporder-order-modal').css('display') === 'none') {
                 location.reload();
             }
         }, 30000);
@@ -32,24 +32,24 @@ jQuery(document).ready(function ($) {
 });
 
 function openOrderModal(orderId) {
-    const modal = document.getElementById('mfm-order-modal');
-    const content = document.getElementById('mfm-modal-content');
+    const modal = document.getElementById('snaporder-order-modal');
+    const content = document.getElementById('snaporder-modal-content');
 
     modal.style.display = 'flex';
-    content.innerHTML = '<p class="mfm-loading">Loading...</p>';
+    content.innerHTML = '<p class="snaporder-loading">Loading...</p>';
 
     // Fetch order details via AJAX
     fetch(ajaxurl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'action=mfm_get_order_details&order_id=' + orderId + '&nonce=' + mfm_admin_vars.nonce
+        body: 'action=snaporder_get_order_details&order_id=' + orderId + '&nonce=' + snaporder_admin_vars.nonce
     })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 content.innerHTML = data.data.html;
             } else {
-                content.innerHTML = '<p class="mfm-error">Error loading order details</p>';
+                content.innerHTML = '<p class="snaporder-error">Error loading order details</p>';
             }
         })
         .catch(err => {
@@ -58,7 +58,7 @@ function openOrderModal(orderId) {
 }
 
 function closeOrderModal() {
-    document.getElementById('mfm-order-modal').style.display = 'none';
+    document.getElementById('snaporder-order-modal').style.display = 'none';
 }
 
 function updateOrderStatus(orderId, newStatus) {
@@ -70,7 +70,7 @@ function updateOrderStatus(orderId, newStatus) {
     fetch(ajaxurl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'action=mfm_update_order_status&order_id=' + orderId + '&status=' + newStatus + '&nonce=' + mfm_admin_vars.nonce
+        body: 'action=snaporder_update_order_status&order_id=' + orderId + '&status=' + newStatus + '&nonce=' + snaporder_admin_vars.nonce
     })
         .then(response => response.json())
         .then(data => {
@@ -96,7 +96,7 @@ function deleteOrder(orderId) {
     fetch(ajaxurl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'action=mfm_delete_order&order_id=' + orderId + '&nonce=' + mfm_admin_vars.nonce
+        body: 'action=snaporder_delete_order&order_id=' + orderId + '&nonce=' + snaporder_admin_vars.nonce
     })
         .then(response => response.json())
         .then(data => {

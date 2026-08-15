@@ -26,28 +26,28 @@ class SnapOrder_Orders {
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_order_cpt' ) );
-		add_action( 'wp_ajax_mfm_submit_order', array( $this, 'handle_order_submission' ) );
-		add_action( 'wp_ajax_nopriv_mfm_submit_order', array( $this, 'handle_order_submission' ) );
-		add_action( 'wp_ajax_mfm_check_status', array( $this, 'handle_check_status' ) );
-		add_action( 'wp_ajax_nopriv_mfm_check_status', array( $this, 'handle_check_status' ) );
-		add_action( 'wp_ajax_mfm_confirm_stripe_payment', array( $this, 'handle_confirm_stripe_payment' ) );
-		add_action( 'wp_ajax_nopriv_mfm_confirm_stripe_payment', array( $this, 'handle_confirm_stripe_payment' ) );
+		add_action( 'wp_ajax_snaporder_submit_order', array( $this, 'handle_order_submission' ) );
+		add_action( 'wp_ajax_nopriv_snaporder_submit_order', array( $this, 'handle_order_submission' ) );
+		add_action( 'wp_ajax_snaporder_check_status', array( $this, 'handle_check_status' ) );
+		add_action( 'wp_ajax_nopriv_snaporder_check_status', array( $this, 'handle_check_status' ) );
+		add_action( 'wp_ajax_snaporder_confirm_stripe_payment', array( $this, 'handle_confirm_stripe_payment' ) );
+		add_action( 'wp_ajax_nopriv_snaporder_confirm_stripe_payment', array( $this, 'handle_confirm_stripe_payment' ) );
 		add_action( 'snaporder_stripe_payment_succeeded', array( $this, 'complete_stripe_order' ), 10, 2 );
 		add_action( 'snaporder_stripe_payment_failed', array( $this, 'fail_stripe_order' ), 10, 2 );
 		add_action( 'snaporder_cleanup_request_lock', array( $this, 'cleanup_request_lock' ) );
 		add_action( 'add_meta_boxes', array( $this, 'add_order_meta_boxes' ) );
 		add_action( 'save_post', array( $this, 'save_order_meta_boxes' ) );
 
-		add_filter( 'manage_mfm_order_posts_columns', array( $this, 'add_order_columns' ) );
-		add_action( 'manage_mfm_order_posts_custom_column', array( $this, 'render_order_columns' ), 10, 2 );
+		add_filter( 'manage_snaporder_order_posts_columns', array( $this, 'add_order_columns' ) );
+		add_action( 'manage_snaporder_order_posts_custom_column', array( $this, 'render_order_columns' ), 10, 2 );
 		add_action( 'admin_menu', array( $this, 'add_pending_orders_bubble' ), 999 );
 		add_action( 'admin_menu', array( $this, 'add_statistics_menu' ) );
 		add_action( 'admin_menu', array( $this, 'add_orders_management_page' ) );
 		add_action( 'admin_init', array( $this, 'redirect_to_custom_orders_page' ) );
 
-		add_action( 'wp_ajax_mfm_get_order_details', array( $this, 'ajax_get_order_details' ) );
-		add_action( 'wp_ajax_mfm_update_order_status', array( $this, 'ajax_update_order_status' ) );
-		add_action( 'wp_ajax_mfm_delete_order', array( $this, 'ajax_delete_order' ) );
+		add_action( 'wp_ajax_snaporder_get_order_details', array( $this, 'ajax_get_order_details' ) );
+		add_action( 'wp_ajax_snaporder_update_order_status', array( $this, 'ajax_update_order_status' ) );
+		add_action( 'wp_ajax_snaporder_delete_order', array( $this, 'ajax_delete_order' ) );
 	}
 
 	/**
@@ -71,7 +71,7 @@ class SnapOrder_Orders {
 		);
 
 		register_post_type(
-			'mfm_order',
+			'snaporder_order',
 			array(
 				'labels'             => $labels,
 				'public'             => false,
@@ -79,7 +79,7 @@ class SnapOrder_Orders {
 				'show_ui'            => true,
 				'show_in_menu'       => true,
 				'query_var'          => true,
-				'rewrite'            => array( 'slug' => 'mfm-order' ),
+				'rewrite'            => array( 'slug' => 'snaporder-order' ),
 				'capability_type'    => 'post',
 				'capabilities'       => array( 'create_posts' => 'do_not_allow' ),
 				'map_meta_cap'       => true,
@@ -97,15 +97,15 @@ class SnapOrder_Orders {
 	 */
 	public function add_orders_management_page() {
 		global $submenu;
-		if ( isset( $submenu['edit.php?post_type=mfm_order'] ) ) {
-			unset( $submenu['edit.php?post_type=mfm_order'][5] );
+		if ( isset( $submenu['edit.php?post_type=snaporder_order'] ) ) {
+			unset( $submenu['edit.php?post_type=snaporder_order'][5] );
 		}
 		add_submenu_page(
-			'edit.php?post_type=mfm_order',
+			'edit.php?post_type=snaporder_order',
 			__( 'Manage Orders', 'lineweb-restaurant-orders' ),
 			__( 'Manage Orders', 'lineweb-restaurant-orders' ),
 			'manage_options',
-			'mfm-manage-orders',
+			'snaporder-manage-orders',
 			array( $this, 'render_orders_management_page' ),
 			0
 		);
@@ -118,8 +118,8 @@ class SnapOrder_Orders {
 		global $pagenow;
 		// Read-only routing check in wp-admin; no state is changed.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( 'edit.php' === $pagenow && isset( $_GET['post_type'] ) && 'mfm_order' === $_GET['post_type'] && ! isset( $_GET['page'] ) ) {
-			wp_safe_redirect( admin_url( 'edit.php?post_type=mfm_order&page=mfm-manage-orders' ) );
+		if ( 'edit.php' === $pagenow && isset( $_GET['post_type'] ) && 'snaporder_order' === $_GET['post_type'] && ! isset( $_GET['page'] ) ) {
+			wp_safe_redirect( admin_url( 'edit.php?post_type=snaporder_order&page=snaporder-manage-orders' ) );
 			exit;
 		}
 	}
@@ -133,14 +133,14 @@ class SnapOrder_Orders {
 		$pending_count = (int) $wpdb->get_var(
 			"SELECT COUNT(*) FROM {$wpdb->posts} p
 			 INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-			 WHERE p.post_type = 'mfm_order'
+			 WHERE p.post_type = 'snaporder_order'
 			   AND p.post_status = 'publish'
-			   AND pm.meta_key = '_mfm_order_status'
+			   AND pm.meta_key = '_snaporder_order_status'
 			   AND pm.meta_value = 'pending'"
 		);
 		if ( $pending_count > 0 ) {
 			foreach ( $menu as $key => $item ) {
-				if ( 'edit.php?post_type=mfm_order' === $item[2] ) {
+				if ( 'edit.php?post_type=snaporder_order' === $item[2] ) {
 					// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- WordPress requires updating its global admin-menu array.
 					$menu[ $key ][0] .= ' <span class="update-plugins count-' . $pending_count . '"><span class="plugin-count">' . number_format_i18n( $pending_count ) . '</span></span>';
 					break;
@@ -154,11 +154,11 @@ class SnapOrder_Orders {
 	 */
 	public function add_statistics_menu() {
 		add_submenu_page(
-			'edit.php?post_type=mfm_order',
+			'edit.php?post_type=snaporder_order',
 			__( 'Order Statistics', 'lineweb-restaurant-orders' ),
 			__( 'Statistics', 'lineweb-restaurant-orders' ),
 			'manage_options',
-			'mfm-order-statistics',
+			'snaporder-order-statistics',
 			array( $this, 'render_statistics_page' )
 		);
 	}
@@ -174,7 +174,7 @@ class SnapOrder_Orders {
 
 		// Rate limiting — 10 orders per IP per hour.
 		$remote_ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
-		$rate_key  = 'mfm_rate_' . substr( wp_hash( wp_privacy_anonymize_ip( $remote_ip ) ), 0, 32 );
+		$rate_key  = 'snaporder_rate_' . substr( wp_hash( wp_privacy_anonymize_ip( $remote_ip ) ), 0, 32 );
 		$attempts  = (int) get_transient( $rate_key );
 		if ( $attempts >= 10 ) {
 			wp_send_json_error( array( 'message' => __( 'Too many orders submitted. Please wait before trying again.', 'lineweb-restaurant-orders' ) ) );
@@ -195,7 +195,7 @@ class SnapOrder_Orders {
 		$request_id    = $this->limited_text_field( 'request_id', 64 );
 
 		$allowed_delivery_types = array( 'delivery', 'pickup' );
-		if ( '1' === get_option( 'mfm_dinein_enabled' ) ) {
+		if ( '1' === get_option( 'snaporder_dinein_enabled' ) ) {
 			$allowed_delivery_types[] = 'dinein';
 		}
 		if ( ! in_array( $delivery_type, $allowed_delivery_types, true ) ) {
@@ -232,7 +232,7 @@ class SnapOrder_Orders {
 			$raw_cart,
 			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Validated as decimal money by the calculator.
 			isset( $_POST['tip_amount'] ) ? wp_unslash( $_POST['tip_amount'] ) : '0',
-			'1' === get_option( 'mfm_tipping_enabled' )
+			'1' === get_option( 'snaporder_tipping_enabled' )
 		);
 		if ( is_wp_error( $calculation ) ) {
 			wp_send_json_error( array( 'message' => $calculation->get_error_message() ), 400 );
@@ -279,7 +279,7 @@ class SnapOrder_Orders {
 		$post_id = wp_insert_post(
 			array(
 				'post_title'  => $post_title,
-				'post_type'   => 'mfm_order',
+				'post_type'   => 'snaporder_order',
 				'post_status' => 'publish',
 			)
 		);
@@ -292,22 +292,22 @@ class SnapOrder_Orders {
 		// Generate opaque token to allow status polling without ID enumeration.
 		$order_token = wp_generate_password( 32, false, false );
 
-		update_post_meta( $post_id, '_mfm_customer_name', $name );
-		update_post_meta( $post_id, '_mfm_customer_phone', $phone );
-		update_post_meta( $post_id, '_mfm_delivery_type', $delivery_type );
-		update_post_meta( $post_id, '_mfm_table_number', $table_number );
-		update_post_meta( $post_id, '_mfm_tip_amount', $tip_amount );
-		update_post_meta( $post_id, '_mfm_address', trim( $street . ' ' . $house_number ) );
-		update_post_meta( $post_id, '_mfm_street', $street );
-		update_post_meta( $post_id, '_mfm_house_number', $house_number );
-		update_post_meta( $post_id, '_mfm_city', $city );
-		update_post_meta( $post_id, '_mfm_zip', $zip );
-		update_post_meta( $post_id, '_mfm_payment_method', $payment );
-		update_post_meta( $post_id, '_mfm_order_total', $total );
-		update_post_meta( $post_id, '_mfm_cart_items', $cart );
-		update_post_meta( $post_id, '_mfm_order_status', 'stripe' === $payment ? 'awaiting_payment' : 'pending' );
-		update_post_meta( $post_id, '_mfm_order_notes', $order_notes );
-		update_post_meta( $post_id, '_mfm_order_token', $order_token );
+		update_post_meta( $post_id, '_snaporder_customer_name', $name );
+		update_post_meta( $post_id, '_snaporder_customer_phone', $phone );
+		update_post_meta( $post_id, '_snaporder_delivery_type', $delivery_type );
+		update_post_meta( $post_id, '_snaporder_table_number', $table_number );
+		update_post_meta( $post_id, '_snaporder_tip_amount', $tip_amount );
+		update_post_meta( $post_id, '_snaporder_address', trim( $street . ' ' . $house_number ) );
+		update_post_meta( $post_id, '_snaporder_street', $street );
+		update_post_meta( $post_id, '_snaporder_house_number', $house_number );
+		update_post_meta( $post_id, '_snaporder_city', $city );
+		update_post_meta( $post_id, '_snaporder_zip', $zip );
+		update_post_meta( $post_id, '_snaporder_payment_method', $payment );
+		update_post_meta( $post_id, '_snaporder_order_total', $total );
+		update_post_meta( $post_id, '_snaporder_cart_items', $cart );
+		update_post_meta( $post_id, '_snaporder_order_status', 'stripe' === $payment ? 'awaiting_payment' : 'pending' );
+		update_post_meta( $post_id, '_snaporder_order_notes', $order_notes );
+		update_post_meta( $post_id, '_snaporder_order_token', $order_token );
 		update_post_meta( $post_id, '_snaporder_subtotal_cents', $calculation['subtotal_cents'] );
 		update_post_meta( $post_id, '_snaporder_tip_cents', $calculation['tip_cents'] );
 		update_post_meta( $post_id, '_snaporder_order_total_cents', $calculation['total_cents'] );
@@ -325,7 +325,7 @@ class SnapOrder_Orders {
 		wp_schedule_single_event( time() + DAY_IN_SECONDS, 'snaporder_cleanup_request_lock', array( $lock_name ) );
 
 		if ( 'cod' === $payment ) {
-			update_post_meta( $post_id, '_mfm_payment_status', 'pending' );
+			update_post_meta( $post_id, '_snaporder_payment_status', 'pending' );
 			$this->notify_new_order( $post_id );
 			wp_send_json_success(
 				array(
@@ -349,7 +349,7 @@ class SnapOrder_Orders {
 			wp_send_json_error( array( 'message' => $intent->get_error_message() ), 502 );
 		}
 
-		update_post_meta( $post_id, '_mfm_payment_status', 'pending' );
+		update_post_meta( $post_id, '_snaporder_payment_status', 'pending' );
 		update_post_meta( $post_id, '_snaporder_stripe_intent_id', $intent['id'] );
 		update_post_meta( $post_id, '_snaporder_stripe_client_secret', $intent['client_secret'] );
 
@@ -426,13 +426,13 @@ class SnapOrder_Orders {
 	 * @param int $order_id Order post ID.
 	 */
 	private function send_existing_order_response( $order_id ) {
-		if ( 'mfm_order' !== get_post_type( $order_id ) ) {
+		if ( 'snaporder_order' !== get_post_type( $order_id ) ) {
 			wp_send_json_error( array( 'message' => __( 'The existing order could not be resumed.', 'lineweb-restaurant-orders' ) ), 409 );
 		}
 
-		$token          = (string) get_post_meta( $order_id, '_mfm_order_token', true );
-		$payment_method = (string) get_post_meta( $order_id, '_mfm_payment_method', true );
-		$payment_status = (string) get_post_meta( $order_id, '_mfm_payment_status', true );
+		$token          = (string) get_post_meta( $order_id, '_snaporder_order_token', true );
+		$payment_method = (string) get_post_meta( $order_id, '_snaporder_payment_method', true );
+		$payment_status = (string) get_post_meta( $order_id, '_snaporder_payment_status', true );
 
 		if ( 'stripe' === $payment_method && 'paid' !== $payment_status ) {
 			wp_send_json_success(
@@ -475,7 +475,7 @@ class SnapOrder_Orders {
 		$token     = $this->limited_text_field( 'token', 64 );
 		$intent_id = $this->limited_text_field( 'payment_intent', 128 );
 
-		if ( ! $order_id || 'mfm_order' !== get_post_type( $order_id ) || ! $this->order_token_matches( $order_id, $token ) ) {
+		if ( ! $order_id || 'snaporder_order' !== get_post_type( $order_id ) || ! $this->order_token_matches( $order_id, $token ) ) {
 			wp_send_json_error( array( 'message' => __( 'The order could not be verified.', 'lineweb-restaurant-orders' ) ), 403 );
 		}
 
@@ -505,9 +505,9 @@ class SnapOrder_Orders {
 		$expected_intent = (string) get_post_meta( $order_id, '_snaporder_stripe_intent_id', true );
 		$received_intent = is_array( $intent ) && isset( $intent['id'] ) ? (string) $intent['id'] : '';
 		if (
-			'mfm_order' !== get_post_type( $order_id ) ||
-			'stripe' !== get_post_meta( $order_id, '_mfm_payment_method', true ) ||
-			'paid' === get_post_meta( $order_id, '_mfm_payment_status', true ) ||
+			'snaporder_order' !== get_post_type( $order_id ) ||
+			'stripe' !== get_post_meta( $order_id, '_snaporder_payment_method', true ) ||
+			'paid' === get_post_meta( $order_id, '_snaporder_payment_status', true ) ||
 			'' === $expected_intent ||
 			'' === $received_intent ||
 			! hash_equals( $expected_intent, $received_intent )
@@ -515,9 +515,9 @@ class SnapOrder_Orders {
 			return;
 		}
 
-		update_post_meta( $order_id, '_mfm_transaction_id', sanitize_text_field( $received_intent ) );
-		update_post_meta( $order_id, '_mfm_payment_status', 'paid' );
-		update_post_meta( $order_id, '_mfm_order_status', 'pending' );
+		update_post_meta( $order_id, '_snaporder_transaction_id', sanitize_text_field( $received_intent ) );
+		update_post_meta( $order_id, '_snaporder_payment_status', 'paid' );
+		update_post_meta( $order_id, '_snaporder_order_status', 'pending' );
 		delete_post_meta( $order_id, '_snaporder_stripe_client_secret' );
 		$this->notify_new_order( $order_id );
 	}
@@ -532,15 +532,15 @@ class SnapOrder_Orders {
 		$expected_intent = (string) get_post_meta( $order_id, '_snaporder_stripe_intent_id', true );
 		$received_intent = is_array( $intent ) && isset( $intent['id'] ) ? (string) $intent['id'] : '';
 		if (
-			'mfm_order' === get_post_type( $order_id ) &&
-			'stripe' === get_post_meta( $order_id, '_mfm_payment_method', true ) &&
-			'paid' !== get_post_meta( $order_id, '_mfm_payment_status', true ) &&
+			'snaporder_order' === get_post_type( $order_id ) &&
+			'stripe' === get_post_meta( $order_id, '_snaporder_payment_method', true ) &&
+			'paid' !== get_post_meta( $order_id, '_snaporder_payment_status', true ) &&
 			'' !== $expected_intent &&
 			'' !== $received_intent &&
 			hash_equals( $expected_intent, $received_intent )
 		) {
-			update_post_meta( $order_id, '_mfm_payment_status', 'failed' );
-			update_post_meta( $order_id, '_mfm_order_status', 'payment_failed' );
+			update_post_meta( $order_id, '_snaporder_payment_status', 'failed' );
+			update_post_meta( $order_id, '_snaporder_order_status', 'payment_failed' );
 			delete_post_meta( $order_id, '_snaporder_stripe_client_secret' );
 
 			$request_id = (string) get_post_meta( $order_id, '_snaporder_request_id', true );
@@ -564,10 +564,10 @@ class SnapOrder_Orders {
 			'snaporder_new_order_placed',
 			$order_id,
 			array(
-				'name'  => get_post_meta( $order_id, '_mfm_customer_name', true ),
-				'phone' => get_post_meta( $order_id, '_mfm_customer_phone', true ),
-				'total' => get_post_meta( $order_id, '_mfm_order_total', true ),
-				'items' => get_post_meta( $order_id, '_mfm_cart_items', true ),
+				'name'  => get_post_meta( $order_id, '_snaporder_customer_name', true ),
+				'phone' => get_post_meta( $order_id, '_snaporder_customer_phone', true ),
+				'total' => get_post_meta( $order_id, '_snaporder_order_total', true ),
+				'items' => get_post_meta( $order_id, '_snaporder_cart_items', true ),
 			)
 		);
 	}
@@ -580,7 +580,7 @@ class SnapOrder_Orders {
 	 * @return bool
 	 */
 	private function order_token_matches( $order_id, $token ) {
-		$stored_token = (string) get_post_meta( $order_id, '_mfm_order_token', true );
+		$stored_token = (string) get_post_meta( $order_id, '_snaporder_order_token', true );
 		return '' !== $stored_token && '' !== $token && hash_equals( $stored_token, $token );
 	}
 
@@ -593,20 +593,20 @@ class SnapOrder_Orders {
 		$order_id = isset( $_POST['order_id'] ) ? absint( $_POST['order_id'] ) : 0;
 		$token    = isset( $_POST['token'] ) ? sanitize_text_field( wp_unslash( $_POST['token'] ) ) : '';
 
-		if ( ! $order_id || ! $token || 'mfm_order' !== get_post_type( $order_id ) ) {
+		if ( ! $order_id || ! $token || 'snaporder_order' !== get_post_type( $order_id ) ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid request.', 'lineweb-restaurant-orders' ) ) );
 		}
 
-		$stored_token = get_post_meta( $order_id, '_mfm_order_token', true );
+		$stored_token = get_post_meta( $order_id, '_snaporder_order_token', true );
 
 		// Constant-time comparison to prevent timing attacks.
 		if ( ! hash_equals( (string) $stored_token, $token ) ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid order token.', 'lineweb-restaurant-orders' ) ) );
 		}
 
-		$status = get_post_meta( $order_id, '_mfm_order_status', true );
+		$status = get_post_meta( $order_id, '_snaporder_order_status', true );
 		$status = $status ? $status : 'pending';
-		$cart   = get_post_meta( $order_id, '_mfm_cart_items', true );
+		$cart   = get_post_meta( $order_id, '_snaporder_cart_items', true );
 		$items  = array();
 		foreach ( is_array( $cart ) ? $cart : array() as $item ) {
 			$items[] = array(
@@ -620,7 +620,7 @@ class SnapOrder_Orders {
 			array(
 				'status'   => $status,
 				'items'    => $items,
-				'total'    => (string) get_post_meta( $order_id, '_mfm_order_total', true ),
+				'total'    => (string) get_post_meta( $order_id, '_snaporder_order_total', true ),
 				'currency' => SnapOrder_Settings::get_currency_symbol( get_post_meta( $order_id, '_snaporder_currency', true ) ),
 			)
 		);
@@ -630,7 +630,7 @@ class SnapOrder_Orders {
 	 * Returns an escaped order-details fragment to administrators.
 	 */
 	public function ajax_get_order_details() {
-		check_ajax_referer( 'mfm_nonce', 'nonce' );
+		check_ajax_referer( 'snaporder_nonce', 'nonce' );
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'lineweb-restaurant-orders' ) ) );
 		}
@@ -642,48 +642,48 @@ class SnapOrder_Orders {
 		}
 
 		$order = get_post( $order_id );
-		if ( ! $order || 'mfm_order' !== $order->post_type ) {
+		if ( ! $order || 'snaporder_order' !== $order->post_type ) {
 			wp_send_json_error( array( 'message' => __( 'Order not found', 'lineweb-restaurant-orders' ) ) );
 		}
 
-		$customer_name  = get_post_meta( $order_id, '_mfm_customer_name', true );
+		$customer_name  = get_post_meta( $order_id, '_snaporder_customer_name', true );
 		$customer_name  = $customer_name ? $customer_name : __( 'Guest', 'lineweb-restaurant-orders' );
-		$customer_phone = get_post_meta( $order_id, '_mfm_customer_phone', true );
-		$delivery_type  = get_post_meta( $order_id, '_mfm_delivery_type', true );
-		$table_number   = get_post_meta( $order_id, '_mfm_table_number', true );
-		$tip_amount     = get_post_meta( $order_id, '_mfm_tip_amount', true );
-		$address        = get_post_meta( $order_id, '_mfm_address', true );
-		$city           = get_post_meta( $order_id, '_mfm_city', true );
-		$zip            = get_post_meta( $order_id, '_mfm_zip', true );
-		$payment        = get_post_meta( $order_id, '_mfm_payment_method', true );
-		$total          = get_post_meta( $order_id, '_mfm_order_total', true );
-		$cart           = get_post_meta( $order_id, '_mfm_cart_items', true );
-		$status         = get_post_meta( $order_id, '_mfm_order_status', true );
+		$customer_phone = get_post_meta( $order_id, '_snaporder_customer_phone', true );
+		$delivery_type  = get_post_meta( $order_id, '_snaporder_delivery_type', true );
+		$table_number   = get_post_meta( $order_id, '_snaporder_table_number', true );
+		$tip_amount     = get_post_meta( $order_id, '_snaporder_tip_amount', true );
+		$address        = get_post_meta( $order_id, '_snaporder_address', true );
+		$city           = get_post_meta( $order_id, '_snaporder_city', true );
+		$zip            = get_post_meta( $order_id, '_snaporder_zip', true );
+		$payment        = get_post_meta( $order_id, '_snaporder_payment_method', true );
+		$total          = get_post_meta( $order_id, '_snaporder_order_total', true );
+		$cart           = get_post_meta( $order_id, '_snaporder_cart_items', true );
+		$status         = get_post_meta( $order_id, '_snaporder_order_status', true );
 		$status         = $status ? $status : 'pending';
-		$order_notes    = get_post_meta( $order_id, '_mfm_order_notes', true );
+		$order_notes    = get_post_meta( $order_id, '_snaporder_order_notes', true );
 
 		ob_start();
 		?>
-		<div class="mfm-modal-header">
-			<h2 class="mfm-modal-title"><?php echo esc_html( $order->post_title ); ?></h2>
-			<button onclick="closeOrderModal()" class="mfm-modal-close">&times; <?php esc_html_e( 'Close', 'lineweb-restaurant-orders' ); ?></button>
+		<div class="snaporder-modal-header">
+			<h2 class="snaporder-modal-title"><?php echo esc_html( $order->post_title ); ?></h2>
+			<button onclick="closeOrderModal()" class="snaporder-modal-close">&times; <?php esc_html_e( 'Close', 'lineweb-restaurant-orders' ); ?></button>
 		</div>
-		<div class="mfm-modal-grid">
+		<div class="snaporder-modal-grid">
 			<div>
-				<h3 class="mfm-modal-section-title"><?php esc_html_e( 'Customer Info', 'lineweb-restaurant-orders' ); ?></h3>
-				<p class="mfm-info-row"><strong><?php esc_html_e( 'Name:', 'lineweb-restaurant-orders' ); ?></strong> <?php echo esc_html( $customer_name ); ?></p>
-				<p class="mfm-info-row"><strong><?php esc_html_e( 'Phone:', 'lineweb-restaurant-orders' ); ?></strong> <a href="tel:<?php echo esc_attr( $customer_phone ); ?>" class="mfm-phone-link"><?php echo esc_html( $customer_phone ); ?></a></p>
-				<p class="mfm-info-row"><strong><?php esc_html_e( 'Type:', 'lineweb-restaurant-orders' ); ?></strong> <?php echo esc_html( ucfirst( (string) $delivery_type ) ); ?></p>
+				<h3 class="snaporder-modal-section-title"><?php esc_html_e( 'Customer Info', 'lineweb-restaurant-orders' ); ?></h3>
+				<p class="snaporder-info-row"><strong><?php esc_html_e( 'Name:', 'lineweb-restaurant-orders' ); ?></strong> <?php echo esc_html( $customer_name ); ?></p>
+				<p class="snaporder-info-row"><strong><?php esc_html_e( 'Phone:', 'lineweb-restaurant-orders' ); ?></strong> <a href="tel:<?php echo esc_attr( $customer_phone ); ?>" class="snaporder-phone-link"><?php echo esc_html( $customer_phone ); ?></a></p>
+				<p class="snaporder-info-row"><strong><?php esc_html_e( 'Type:', 'lineweb-restaurant-orders' ); ?></strong> <?php echo esc_html( ucfirst( (string) $delivery_type ) ); ?></p>
 				<?php if ( 'delivery' === $delivery_type ) : ?>
-					<p class="mfm-info-row"><strong><?php esc_html_e( 'Address:', 'lineweb-restaurant-orders' ); ?></strong> <?php echo esc_html( "{$address}, {$city} {$zip}" ); ?></p>
+					<p class="snaporder-info-row"><strong><?php esc_html_e( 'Address:', 'lineweb-restaurant-orders' ); ?></strong> <?php echo esc_html( "{$address}, {$city} {$zip}" ); ?></p>
 				<?php elseif ( 'dinein' === $delivery_type ) : ?>
-					<p class="mfm-info-row"><strong><?php esc_html_e( 'Table Number:', 'lineweb-restaurant-orders' ); ?></strong> <?php echo esc_html( $table_number ); ?></p>
+					<p class="snaporder-info-row"><strong><?php esc_html_e( 'Table Number:', 'lineweb-restaurant-orders' ); ?></strong> <?php echo esc_html( $table_number ); ?></p>
 				<?php endif; ?>
-				<p class="mfm-info-row"><strong><?php esc_html_e( 'Payment:', 'lineweb-restaurant-orders' ); ?></strong> <?php echo esc_html( ucfirst( (string) $payment ) ); ?></p>
+				<p class="snaporder-info-row"><strong><?php esc_html_e( 'Payment:', 'lineweb-restaurant-orders' ); ?></strong> <?php echo esc_html( ucfirst( (string) $payment ) ); ?></p>
 			</div>
 			<div>
-				<h3 class="mfm-modal-section-title"><?php esc_html_e( 'Order Status', 'lineweb-restaurant-orders' ); ?></h3>
-				<select onchange="updateOrderStatus(<?php echo (int) $order_id; ?>, this.value)" class="mfm-modal-select">
+				<h3 class="snaporder-modal-section-title"><?php esc_html_e( 'Order Status', 'lineweb-restaurant-orders' ); ?></h3>
+				<select onchange="updateOrderStatus(<?php echo (int) $order_id; ?>, this.value)" class="snaporder-modal-select">
 					<?php
 					$statuses = array(
 						'pending'   => __( 'Pending', 'lineweb-restaurant-orders' ),
@@ -703,43 +703,43 @@ class SnapOrder_Orders {
 					}
 					?>
 				</select>
-				<p class="mfm-modal-date"><?php esc_html_e( 'Order placed:', 'lineweb-restaurant-orders' ); ?> <?php echo esc_html( get_the_date( 'F j, Y g:i a', $order ) ); ?></p>
+				<p class="snaporder-modal-date"><?php esc_html_e( 'Order placed:', 'lineweb-restaurant-orders' ); ?> <?php echo esc_html( get_the_date( 'F j, Y g:i a', $order ) ); ?></p>
 			</div>
 		</div>
 
-		<h3 class="mfm-modal-section-title"><?php esc_html_e( 'Order Items', 'lineweb-restaurant-orders' ); ?></h3>
-		<div class="mfm-order-items-box">
+		<h3 class="snaporder-modal-section-title"><?php esc_html_e( 'Order Items', 'lineweb-restaurant-orders' ); ?></h3>
+		<div class="snaporder-order-items-box">
 			<?php
 			if ( is_array( $cart ) ) :
 				foreach ( $cart as $item ) :
 					?>
-				<div class="mfm-modal-item-row">
-					<div class="mfm-modal-item-content">
+				<div class="snaporder-modal-item-row">
+					<div class="snaporder-modal-item-content">
 						<div>
 							<strong><?php echo esc_html( $item['qty'] ); ?>x <?php echo esc_html( $item['title'] ); ?></strong>
 											<?php if ( ! empty( $item['extras'] ) ) : ?>
-								<br><small class="mfm-item-extras"><?php esc_html_e( 'Extras:', 'lineweb-restaurant-orders' ); ?> <?php echo esc_html( implode( ', ', array_column( $item['extras'], 'name' ) ) ); ?></small>
+								<br><small class="snaporder-item-extras"><?php esc_html_e( 'Extras:', 'lineweb-restaurant-orders' ); ?> <?php echo esc_html( implode( ', ', array_column( $item['extras'], 'name' ) ) ); ?></small>
 							<?php endif; ?>
 											<?php if ( ! empty( $item['variant'] ) ) : ?>
-								<br><small class="mfm-item-variant"><?php esc_html_e( 'Variant:', 'lineweb-restaurant-orders' ); ?> <?php echo esc_html( $item['variant']['name'] ); ?></small>
+								<br><small class="snaporder-item-variant"><?php esc_html_e( 'Variant:', 'lineweb-restaurant-orders' ); ?> <?php echo esc_html( $item['variant']['name'] ); ?></small>
 							<?php endif; ?>
 											<?php if ( ! empty( $item['notes'] ) ) : ?>
-								<br><small class="mfm-item-notes">&#9881; <?php echo esc_html( $item['notes'] ); ?></small>
+								<br><small class="snaporder-item-notes">&#9881; <?php echo esc_html( $item['notes'] ); ?></small>
 							<?php endif; ?>
 						</div>
-						<span class="mfm-font-bold"><?php echo esc_html( SnapOrder_Settings::get_currency_symbol() . number_format( (float) $item['price'], 2 ) ); ?></span>
+						<span class="snaporder-font-bold"><?php echo esc_html( SnapOrder_Settings::get_currency_symbol() . number_format( (float) $item['price'], 2 ) ); ?></span>
 					</div>
 				</div>
 							<?php
 			endforeach;
 endif;
 			?>
-			<div class="mfm-modal-total-row">
+			<div class="snaporder-modal-total-row">
 				<span><?php esc_html_e( 'Total:', 'lineweb-restaurant-orders' ); ?></span>
 				<span><?php echo esc_html( SnapOrder_Settings::get_currency_symbol() . number_format( (float) $total, 2 ) ); ?></span>
 			</div>
 			<?php if ( $tip_amount > 0 ) : ?>
-				<div class="mfm-modal-total-row" style="font-size:0.9em;color:#666;margin-top:5px;">
+				<div class="snaporder-modal-total-row" style="font-size:0.9em;color:#666;margin-top:5px;">
 					<span><?php esc_html_e( 'Tip included:', 'lineweb-restaurant-orders' ); ?></span>
 					<span><?php echo esc_html( SnapOrder_Settings::get_currency_symbol() . number_format( (float) $tip_amount, 2 ) ); ?></span>
 				</div>
@@ -747,16 +747,16 @@ endif;
 		</div>
 
 		<?php if ( ! empty( $order_notes ) ) : ?>
-			<h3 class="mfm-modal-section-title"><?php esc_html_e( 'Order Notes', 'lineweb-restaurant-orders' ); ?></h3>
-			<div class="mfm-notes-box mfm-mb-20">
-				<p class="mfm-notes-text-modal"><?php echo nl2br( esc_html( $order_notes ) ); ?></p>
+			<h3 class="snaporder-modal-section-title"><?php esc_html_e( 'Order Notes', 'lineweb-restaurant-orders' ); ?></h3>
+			<div class="snaporder-notes-box snaporder-mb-20">
+				<p class="snaporder-notes-text-modal"><?php echo nl2br( esc_html( $order_notes ) ); ?></p>
 			</div>
 		<?php endif; ?>
 
-		<div class="mfm-delete-btn-wrap">
+		<div class="snaporder-delete-btn-wrap">
 			<?php do_action( 'snaporder_order_details_actions', $order_id ); ?>
-			<button onclick="deleteOrder(<?php echo (int) $order_id; ?>)" class="mfm-delete-btn">
-				<span class="dashicons dashicons-trash mfm-trash-icon"></span>
+			<button onclick="deleteOrder(<?php echo (int) $order_id; ?>)" class="snaporder-delete-btn">
+				<span class="dashicons dashicons-trash snaporder-trash-icon"></span>
 				<?php esc_html_e( 'Delete Order', 'lineweb-restaurant-orders' ); ?>
 			</button>
 		</div>
@@ -768,7 +768,7 @@ endif;
 	 * Validates and updates an order status.
 	 */
 	public function ajax_update_order_status() {
-		check_ajax_referer( 'mfm_nonce', 'nonce' );
+		check_ajax_referer( 'snaporder_nonce', 'nonce' );
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'lineweb-restaurant-orders' ) ) );
 		}
@@ -777,11 +777,11 @@ endif;
 		$new_status = sanitize_text_field( wp_unslash( $_POST['status'] ?? '' ) );
 
 		$valid_statuses = array( 'pending', 'accepted', 'cooking', 'ready', 'completed', 'rejected' );
-		if ( ! $order_id || 'mfm_order' !== get_post_type( $order_id ) || ! in_array( $new_status, $valid_statuses, true ) ) {
+		if ( ! $order_id || 'snaporder_order' !== get_post_type( $order_id ) || ! in_array( $new_status, $valid_statuses, true ) ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid parameters.', 'lineweb-restaurant-orders' ) ) );
 		}
 
-		update_post_meta( $order_id, '_mfm_order_status', $new_status );
+		update_post_meta( $order_id, '_snaporder_order_status', $new_status );
 		do_action( 'snaporder_order_status_updated', $order_id, $new_status );
 
 		wp_send_json_success( array( 'message' => __( 'Status updated successfully.', 'lineweb-restaurant-orders' ) ) );
@@ -791,13 +791,13 @@ endif;
 	 * Permanently deletes a validated order.
 	 */
 	public function ajax_delete_order() {
-		check_ajax_referer( 'mfm_nonce', 'nonce' );
+		check_ajax_referer( 'snaporder_nonce', 'nonce' );
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( array( 'message' => __( 'Unauthorized.', 'lineweb-restaurant-orders' ) ) );
 		}
 
 		$order_id = intval( $_POST['order_id'] ?? 0 );
-		if ( ! $order_id || 'mfm_order' !== get_post_type( $order_id ) ) {
+		if ( ! $order_id || 'snaporder_order' !== get_post_type( $order_id ) ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid order ID.', 'lineweb-restaurant-orders' ) ) );
 		}
 
@@ -813,18 +813,18 @@ endif;
 	 */
 	public function add_order_meta_boxes() {
 		add_meta_box(
-			'mfm_order_status_box',
+			'snaporder_order_status_box',
 			__( 'Order Status', 'lineweb-restaurant-orders' ),
 			array( $this, 'render_order_status_meta_box' ),
-			'mfm_order',
+			'snaporder_order',
 			'side',
 			'high'
 		);
 		add_meta_box(
-			'mfm_order_details',
+			'snaporder_order_details',
 			__( 'Order Details', 'lineweb-restaurant-orders' ),
 			array( $this, 'render_order_details_meta_box' ),
-			'mfm_order',
+			'snaporder_order',
 			'normal',
 			'high'
 		);
@@ -836,8 +836,8 @@ endif;
 	 * @param WP_Post $post Order post.
 	 */
 	public function render_order_status_meta_box( $post ) {
-		wp_nonce_field( 'mfm_save_order_status', 'mfm_order_status_nonce' );
-		$status   = get_post_meta( $post->ID, '_mfm_order_status', true );
+		wp_nonce_field( 'snaporder_save_order_status', 'snaporder_order_status_nonce' );
+		$status   = get_post_meta( $post->ID, '_snaporder_order_status', true );
 		$status   = $status ? $status : 'pending';
 		$statuses = array(
 			'pending'   => __( 'Pending', 'lineweb-restaurant-orders' ),
@@ -847,7 +847,7 @@ endif;
 			'completed' => __( 'Completed', 'lineweb-restaurant-orders' ),
 			'rejected'  => __( 'Rejected', 'lineweb-restaurant-orders' ),
 		);
-		echo '<select name="mfm_order_status" class="mfm-status-select mfm-mb-10">';
+		echo '<select name="snaporder_order_status" class="snaporder-status-select snaporder-mb-10">';
 		foreach ( $statuses as $key => $label ) {
 			printf(
 				'<option value="%s" %s>%s</option>',
@@ -866,10 +866,10 @@ endif;
 	 * @param int $post_id Order post ID.
 	 */
 	public function save_order_meta_boxes( $post_id ) {
-		if ( ! isset( $_POST['mfm_order_status_nonce'] ) ) {
+		if ( ! isset( $_POST['snaporder_order_status_nonce'] ) ) {
 			return;
 		}
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['mfm_order_status_nonce'] ) ), 'mfm_save_order_status' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['snaporder_order_status_nonce'] ) ), 'snaporder_save_order_status' ) ) {
 			return;
 		}
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
@@ -878,10 +878,10 @@ endif;
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 			return;
 		}
-		if ( isset( $_POST['mfm_order_status'] ) ) {
-			$status = sanitize_key( wp_unslash( $_POST['mfm_order_status'] ) );
+		if ( isset( $_POST['snaporder_order_status'] ) ) {
+			$status = sanitize_key( wp_unslash( $_POST['snaporder_order_status'] ) );
 			if ( in_array( $status, array( 'pending', 'accepted', 'cooking', 'ready', 'completed', 'rejected' ), true ) ) {
-				update_post_meta( $post_id, '_mfm_order_status', $status );
+				update_post_meta( $post_id, '_snaporder_order_status', $status );
 			}
 		}
 	}
@@ -892,18 +892,18 @@ endif;
 	 * @param WP_Post $post Order post.
 	 */
 	public function render_order_details_meta_box( $post ) {
-		$name          = get_post_meta( $post->ID, '_mfm_customer_name', true );
-		$phone         = get_post_meta( $post->ID, '_mfm_customer_phone', true );
-		$delivery_type = get_post_meta( $post->ID, '_mfm_delivery_type', true );
-		$table_number  = get_post_meta( $post->ID, '_mfm_table_number', true );
-		$address       = get_post_meta( $post->ID, '_mfm_address', true );
-		$city          = get_post_meta( $post->ID, '_mfm_city', true );
-		$zip           = get_post_meta( $post->ID, '_mfm_zip', true );
-		$payment       = get_post_meta( $post->ID, '_mfm_payment_method', true );
-		$total         = get_post_meta( $post->ID, '_mfm_order_total', true );
-		$cart          = get_post_meta( $post->ID, '_mfm_cart_items', true );
+		$name          = get_post_meta( $post->ID, '_snaporder_customer_name', true );
+		$phone         = get_post_meta( $post->ID, '_snaporder_customer_phone', true );
+		$delivery_type = get_post_meta( $post->ID, '_snaporder_delivery_type', true );
+		$table_number  = get_post_meta( $post->ID, '_snaporder_table_number', true );
+		$address       = get_post_meta( $post->ID, '_snaporder_address', true );
+		$city          = get_post_meta( $post->ID, '_snaporder_city', true );
+		$zip           = get_post_meta( $post->ID, '_snaporder_zip', true );
+		$payment       = get_post_meta( $post->ID, '_snaporder_payment_method', true );
+		$total         = get_post_meta( $post->ID, '_snaporder_order_total', true );
+		$cart          = get_post_meta( $post->ID, '_snaporder_cart_items', true );
 		?>
-		<div class="mfm-order-details">
+		<div class="snaporder-order-details">
 			<p><strong><?php esc_html_e( 'Customer:', 'lineweb-restaurant-orders' ); ?></strong> <?php echo esc_html( $name ); ?></p>
 			<p><strong><?php esc_html_e( 'Phone:', 'lineweb-restaurant-orders' ); ?></strong> <?php echo esc_html( $phone ); ?></p>
 			<p><strong><?php esc_html_e( 'Type:', 'lineweb-restaurant-orders' ); ?></strong> <?php echo esc_html( ucfirst( (string) $delivery_type ) ); ?></p>
@@ -914,8 +914,8 @@ endif;
 			<?php endif; ?>
 			<p><strong><?php esc_html_e( 'Payment:', 'lineweb-restaurant-orders' ); ?></strong> <?php echo esc_html( ucfirst( (string) $payment ) ); ?></p>
 			<?php
-			$payment_status = get_post_meta( $post->ID, '_mfm_payment_status', true );
-			$transaction_id = get_post_meta( $post->ID, '_mfm_transaction_id', true );
+			$payment_status = get_post_meta( $post->ID, '_snaporder_payment_status', true );
+			$transaction_id = get_post_meta( $post->ID, '_snaporder_transaction_id', true );
 			if ( $payment_status ) :
 				?>
 				<p><strong><?php esc_html_e( 'Payment Status:', 'lineweb-restaurant-orders' ); ?></strong>
@@ -932,7 +932,7 @@ endif;
 				if ( is_array( $cart ) ) :
 					foreach ( $cart as $item ) :
 						?>
-					<li class="mfm-item-row">
+					<li class="snaporder-item-row">
 						<strong><?php echo esc_html( $item['qty'] ); ?>x <?php echo esc_html( $item['title'] ); ?></strong>
 						&mdash; <?php echo esc_html( SnapOrder_Settings::get_currency_symbol() . number_format( (float) $item['price'], 2 ) ); ?>
 											<?php if ( ! empty( $item['extras'] ) ) : ?>
@@ -980,49 +980,49 @@ endif;
 	public function render_order_columns( $column, $post_id ) {
 		switch ( $column ) {
 			case 'order_status':
-				$status = get_post_meta( $post_id, '_mfm_order_status', true );
+				$status = get_post_meta( $post_id, '_snaporder_order_status', true );
 				$status = $status ? $status : 'pending';
-				echo '<span class="mfm-status-badge mfm-status-' . esc_attr( $status ) . '">' . esc_html( ucfirst( $status ) ) . '</span>';
+				echo '<span class="snaporder-status-badge snaporder-status-' . esc_attr( $status ) . '">' . esc_html( ucfirst( $status ) ) . '</span>';
 				break;
 
 			case 'order_total':
-				$total = get_post_meta( $post_id, '_mfm_order_total', true );
+				$total = get_post_meta( $post_id, '_snaporder_order_total', true );
 				if ( $total ) {
-					echo '<span class="mfm-order-total">' . esc_html( SnapOrder_Settings::get_currency_symbol() . number_format( (float) $total, 2 ) ) . '</span>';
+					echo '<span class="snaporder-order-total">' . esc_html( SnapOrder_Settings::get_currency_symbol() . number_format( (float) $total, 2 ) ) . '</span>';
 				} else {
-					echo '<span class="mfm-empty-cell">-</span>';
+					echo '<span class="snaporder-empty-cell">-</span>';
 				}
 				break;
 
 			case 'customer':
-				$name          = get_post_meta( $post_id, '_mfm_customer_name', true );
-				$delivery_type = get_post_meta( $post_id, '_mfm_delivery_type', true );
-				$table_number  = get_post_meta( $post_id, '_mfm_table_number', true );
+				$name          = get_post_meta( $post_id, '_snaporder_customer_name', true );
+				$delivery_type = get_post_meta( $post_id, '_snaporder_delivery_type', true );
+				$table_number  = get_post_meta( $post_id, '_snaporder_table_number', true );
 				if ( $name || ( 'dinein' === $delivery_type && $table_number ) ) {
-					echo '<div class="mfm-customer-cell">';
+					echo '<div class="snaporder-customer-cell">';
 					if ( 'delivery' === $delivery_type ) {
-						echo '<span class="dashicons dashicons-car mfm-delivery-icon"></span>';
+						echo '<span class="dashicons dashicons-car snaporder-delivery-icon"></span>';
 					} elseif ( 'dinein' === $delivery_type ) {
-						echo '<span class="dashicons dashicons-universal-access mfm-pickup-icon"></span>';
+						echo '<span class="dashicons dashicons-universal-access snaporder-pickup-icon"></span>';
 					} else {
-						echo '<span class="dashicons dashicons-store mfm-pickup-icon"></span>';
+						echo '<span class="dashicons dashicons-store snaporder-pickup-icon"></span>';
 					}
-					echo '<span class="mfm-customer-name">' . esc_html( $name ? $name : __( 'Guest', 'lineweb-restaurant-orders' ) );
+					echo '<span class="snaporder-customer-name">' . esc_html( $name ? $name : __( 'Guest', 'lineweb-restaurant-orders' ) );
 					if ( 'dinein' === $delivery_type && $table_number ) {
 						echo ' <span style="color:#888;font-size:12px;">(Table ' . esc_html( $table_number ) . ')</span>';
 					}
 					echo '</span></div>';
 				} else {
-					echo '<span class="mfm-empty-cell">-</span>';
+					echo '<span class="snaporder-empty-cell">-</span>';
 				}
 				break;
 
 			case 'phone':
-				$phone = get_post_meta( $post_id, '_mfm_customer_phone', true );
+				$phone = get_post_meta( $post_id, '_snaporder_customer_phone', true );
 				if ( $phone ) {
-					echo '<a href="tel:' . esc_attr( $phone ) . '" class="mfm-phone-link">' . esc_html( $phone ) . '</a>';
+					echo '<a href="tel:' . esc_attr( $phone ) . '" class="snaporder-phone-link">' . esc_html( $phone ) . '</a>';
 				} else {
-					echo '<span class="mfm-empty-cell">-</span>';
+					echo '<span class="snaporder-empty-cell">-</span>';
 				}
 				break;
 		}
@@ -1032,7 +1032,7 @@ endif;
 	 * Renders the custom order-management view.
 	 */
 	public function render_orders_management_page() {
-		include SNAPORDER_PLUGIN_DIR . 'includes/mfm-orders-page.php';
+		include SNAPORDER_PLUGIN_DIR . 'includes/snaporder-orders-page.php';
 	}
 
 	/**
@@ -1053,12 +1053,12 @@ endif;
 				"SELECT COUNT(p.ID) as count, SUM(pm.meta_value) as revenue
 			 FROM {$wpdb->posts} p
 			 JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-			 WHERE p.post_type = 'mfm_order'
+			 WHERE p.post_type = 'snaporder_order'
 			   AND p.post_status = 'publish'
-			   AND pm.meta_key = '_mfm_order_total'
+			   AND pm.meta_key = '_snaporder_order_total'
 			   AND (
-				EXISTS (SELECT 1 FROM {$wpdb->postmeta} pay_method WHERE pay_method.post_id = p.ID AND pay_method.meta_key = '_mfm_payment_method' AND pay_method.meta_value = 'cod')
-				OR EXISTS (SELECT 1 FROM {$wpdb->postmeta} pay_status WHERE pay_status.post_id = p.ID AND pay_status.meta_key = '_mfm_payment_status' AND pay_status.meta_value = 'paid')
+				EXISTS (SELECT 1 FROM {$wpdb->postmeta} pay_method WHERE pay_method.post_id = p.ID AND pay_method.meta_key = '_snaporder_payment_method' AND pay_method.meta_value = 'cod')
+				OR EXISTS (SELECT 1 FROM {$wpdb->postmeta} pay_status WHERE pay_status.post_id = p.ID AND pay_status.meta_key = '_snaporder_payment_status' AND pay_status.meta_value = 'paid')
 			   )
 			   AND p.post_date >= %s",
 				$date_limit
@@ -1075,12 +1075,12 @@ endif;
 				"SELECT pm.meta_value as cart_items
 			 FROM {$wpdb->posts} p
 			 JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-			 WHERE p.post_type = 'mfm_order'
+			 WHERE p.post_type = 'snaporder_order'
 			   AND p.post_status = 'publish'
-			   AND pm.meta_key = '_mfm_cart_items'
+			   AND pm.meta_key = '_snaporder_cart_items'
 			   AND (
-				EXISTS (SELECT 1 FROM {$wpdb->postmeta} pay_method WHERE pay_method.post_id = p.ID AND pay_method.meta_key = '_mfm_payment_method' AND pay_method.meta_value = 'cod')
-				OR EXISTS (SELECT 1 FROM {$wpdb->postmeta} pay_status WHERE pay_status.post_id = p.ID AND pay_status.meta_key = '_mfm_payment_status' AND pay_status.meta_value = 'paid')
+				EXISTS (SELECT 1 FROM {$wpdb->postmeta} pay_method WHERE pay_method.post_id = p.ID AND pay_method.meta_key = '_snaporder_payment_method' AND pay_method.meta_value = 'cod')
+				OR EXISTS (SELECT 1 FROM {$wpdb->postmeta} pay_status WHERE pay_status.post_id = p.ID AND pay_status.meta_key = '_snaporder_payment_status' AND pay_status.meta_value = 'paid')
 			   )
 			   AND p.post_date >= %s",
 				$date_limit
@@ -1107,15 +1107,15 @@ endif;
 		uasort( $product_sales, fn( $a, $b ) => $b['qty'] - $a['qty'] );
 		$top_products = array_slice( $product_sales, 0, 10, true );
 		?>
-		<div class="wrap mfm-stats-wrap">
-			<h1 class="mfm-page-header">
-				<span class="dashicons dashicons-chart-line mfm-header-icon"></span>
+		<div class="wrap snaporder-stats-wrap">
+			<h1 class="snaporder-page-header">
+				<span class="dashicons dashicons-chart-line snaporder-header-icon"></span>
 				<?php esc_html_e( 'Order Statistics', 'lineweb-restaurant-orders' ); ?>
 			</h1>
-			<form method="get" class="mfm-filter-form">
-				<input type="hidden" name="post_type" value="mfm_order">
-				<input type="hidden" name="page" value="mfm-order-statistics">
-				<select name="days" onchange="this.form.submit()" class="mfm-date-select">
+			<form method="get" class="snaporder-filter-form">
+				<input type="hidden" name="post_type" value="snaporder_order">
+				<input type="hidden" name="page" value="snaporder-order-statistics">
+				<select name="days" onchange="this.form.submit()" class="snaporder-date-select">
 					<?php
 					$period_options = array(
 						1   => __( 'Today', 'lineweb-restaurant-orders' ),
@@ -1130,37 +1130,37 @@ endif;
 					?>
 				</select>
 			</form>
-			<div class="mfm-stats-grid">
-				<div class="mfm-stat-card mfm-card-orders">
-					<div class="mfm-card-content">
-						<span class="dashicons dashicons-cart mfm-card-icon"></span>
+			<div class="snaporder-stats-grid">
+				<div class="snaporder-stat-card snaporder-card-orders">
+					<div class="snaporder-card-content">
+						<span class="dashicons dashicons-cart snaporder-card-icon"></span>
 						<div>
-							<p class="mfm-card-label"><?php esc_html_e( 'Total Orders', 'lineweb-restaurant-orders' ); ?></p>
-							<p class="mfm-card-value"><?php echo $order_stats ? number_format( intval( $order_stats->count ) ) : 0; ?></p>
+							<p class="snaporder-card-label"><?php esc_html_e( 'Total Orders', 'lineweb-restaurant-orders' ); ?></p>
+							<p class="snaporder-card-value"><?php echo $order_stats ? number_format( intval( $order_stats->count ) ) : 0; ?></p>
 						</div>
 					</div>
 				</div>
-				<div class="mfm-stat-card mfm-card-revenue">
-					<div class="mfm-card-content">
-						<span class="dashicons dashicons-money-alt mfm-card-icon"></span>
+				<div class="snaporder-stat-card snaporder-card-revenue">
+					<div class="snaporder-card-content">
+						<span class="dashicons dashicons-money-alt snaporder-card-icon"></span>
 						<div>
-							<p class="mfm-card-label"><?php esc_html_e( 'Total Revenue', 'lineweb-restaurant-orders' ); ?></p>
-							<p class="mfm-card-value"><?php echo esc_html( SnapOrder_Settings::get_currency_symbol() . ( $order_stats ? number_format( (float) $order_stats->revenue, 2 ) : '0.00' ) ); ?></p>
+							<p class="snaporder-card-label"><?php esc_html_e( 'Total Revenue', 'lineweb-restaurant-orders' ); ?></p>
+							<p class="snaporder-card-value"><?php echo esc_html( SnapOrder_Settings::get_currency_symbol() . ( $order_stats ? number_format( (float) $order_stats->revenue, 2 ) : '0.00' ) ); ?></p>
 						</div>
 					</div>
 				</div>
-				<div class="mfm-stat-card mfm-card-avg">
-					<div class="mfm-card-content">
-						<span class="dashicons dashicons-chart-area mfm-card-icon"></span>
+				<div class="snaporder-stat-card snaporder-card-avg">
+					<div class="snaporder-card-content">
+						<span class="dashicons dashicons-chart-area snaporder-card-icon"></span>
 						<div>
-							<p class="mfm-card-label"><?php esc_html_e( 'Average Order Value', 'lineweb-restaurant-orders' ); ?></p>
-							<p class="mfm-card-value"><?php echo esc_html( SnapOrder_Settings::get_currency_symbol() . number_format( $avg_order, 2 ) ); ?></p>
+							<p class="snaporder-card-label"><?php esc_html_e( 'Average Order Value', 'lineweb-restaurant-orders' ); ?></p>
+							<p class="snaporder-card-value"><?php echo esc_html( SnapOrder_Settings::get_currency_symbol() . number_format( $avg_order, 2 ) ); ?></p>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="mfm-top-products-box">
-				<h2 class="mfm-box-title"><?php esc_html_e( 'Top Selling Products', 'lineweb-restaurant-orders' ); ?></h2>
+			<div class="snaporder-top-products-box">
+				<h2 class="snaporder-box-title"><?php esc_html_e( 'Top Selling Products', 'lineweb-restaurant-orders' ); ?></h2>
 				<table class="widefat">
 					<thead>
 						<tr>

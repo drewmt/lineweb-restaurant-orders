@@ -32,7 +32,7 @@ class SnapOrder_WhatsApp {
 	 * @param array $order_data Canonical order summary.
 	 */
 	public function send_new_order_notification( $order_id, $order_data ) {
-		if ( get_option( 'mfm_whatsapp_enabled' ) !== '1' ) {
+		if ( get_option( 'snaporder_whatsapp_enabled' ) !== '1' ) {
 			return;
 		}
 
@@ -58,11 +58,11 @@ class SnapOrder_WhatsApp {
 	 * @param string $new_status New order status.
 	 */
 	public function send_status_update_notification( $order_id, $new_status ) {
-		if ( get_option( 'mfm_whatsapp_enabled' ) !== '1' ) {
+		if ( get_option( 'snaporder_whatsapp_enabled' ) !== '1' ) {
 			return;
 		}
 
-		$phone = get_post_meta( $order_id, '_mfm_customer_phone', true );
+		$phone = get_post_meta( $order_id, '_snaporder_customer_phone', true );
 		if ( ! $phone ) {
 			return;
 		}

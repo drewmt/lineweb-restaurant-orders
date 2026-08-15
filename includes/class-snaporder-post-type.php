@@ -61,7 +61,7 @@ class SnapOrder_Post_Type {
 			'description'         => __( 'Food Menu Items', 'lineweb-restaurant-orders' ),
 			'labels'              => $labels,
 			'supports'            => array( 'title', 'editor', 'thumbnail', 'excerpt', 'page-attributes' ),
-			'taxonomies'          => array( 'food_category' ),
+			'taxonomies'          => array( 'snaporder_category' ),
 			'hierarchical'        => false,
 			'public'              => true,
 			'show_ui'             => true,
@@ -77,7 +77,33 @@ class SnapOrder_Post_Type {
 			'capability_type'     => 'post',
 			'show_in_rest'        => true,
 		);
-		register_post_type( 'food_item', $args );
+		register_post_type( 'snaporder_item', $args );
+
+		$banner_labels = array(
+			'name'          => _x( 'Promotional Banners', 'Post Type General Name', 'lineweb-restaurant-orders' ),
+			'singular_name' => _x( 'Promotional Banner', 'Post Type Singular Name', 'lineweb-restaurant-orders' ),
+			'menu_name'     => __( 'Banners', 'lineweb-restaurant-orders' ),
+			'all_items'     => __( 'All Banners', 'lineweb-restaurant-orders' ),
+			'add_new_item'  => __( 'Add New Banner', 'lineweb-restaurant-orders' ),
+			'edit_item'     => __( 'Edit Banner', 'lineweb-restaurant-orders' ),
+			'new_item'      => __( 'New Banner', 'lineweb-restaurant-orders' ),
+			'view_item'     => __( 'View Banner', 'lineweb-restaurant-orders' ),
+			'search_items'  => __( 'Search Banners', 'lineweb-restaurant-orders' ),
+			'not_found'     => __( 'No banners found.', 'lineweb-restaurant-orders' ),
+		);
+		register_post_type(
+			'snaporder_banner',
+			array(
+				'labels'             => $banner_labels,
+				'public'             => false,
+				'publicly_queryable' => false,
+				'show_ui'            => true,
+				'show_in_menu'       => 'edit.php?post_type=snaporder_item',
+				'show_in_rest'       => true,
+				'supports'           => array( 'title', 'thumbnail', 'page-attributes' ),
+				'menu_icon'          => 'dashicons-images-alt2',
+			)
+		);
 	}
 
 	/**
@@ -117,6 +143,6 @@ class SnapOrder_Post_Type {
 			'show_tagcloud'     => true,
 			'show_in_rest'      => true,
 		);
-		register_taxonomy( 'food_category', array( 'food_item' ), $args_cat );
+		register_taxonomy( 'snaporder_category', array( 'snaporder_item' ), $args_cat );
 	}
 }

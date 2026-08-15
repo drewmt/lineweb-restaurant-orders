@@ -19,7 +19,7 @@ class SnapOrder_Sound {
 	 */
 	public function __construct() {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_sound_scripts' ) );
-		add_action( 'wp_ajax_mfm_check_new_orders', array( $this, 'check_new_orders' ) );
+		add_action( 'wp_ajax_snaporder_check_new_orders', array( $this, 'check_new_orders' ) );
 	}
 
 	/**
@@ -32,12 +32,12 @@ class SnapOrder_Sound {
 		// Read-only screen selection; no state is changed.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
-		if ( 'mfm-manage-orders' !== $page ) {
+		if ( 'snaporder-manage-orders' !== $page ) {
 			return;
 		}
 
 		wp_enqueue_script(
-			'mfm-sound-script',
+			'snaporder-sound-script',
 			SNAPORDER_PLUGIN_URL . 'assets/js/admin-sound.js',
 			array( 'jquery' ),
 			SNAPORDER_VERSION,
@@ -45,11 +45,11 @@ class SnapOrder_Sound {
 		);
 
 		wp_localize_script(
-			'mfm-sound-script',
-			'mfm_sound_vars',
+			'snaporder-sound-script',
+			'snaporder_sound_vars',
 			array(
 				'ajax_url'        => admin_url( 'admin-ajax.php' ),
-				'nonce'           => wp_create_nonce( 'mfm_sound_nonce' ),
+				'nonce'           => wp_create_nonce( 'snaporder_sound_nonce' ),
 				'latest_order_id' => $this->get_latest_order_id(),
 			)
 		);
@@ -63,7 +63,7 @@ class SnapOrder_Sound {
 	private function get_latest_order_id() {
 		$latest = get_posts(
 			array(
-				'post_type'      => 'mfm_order',
+				'post_type'      => 'snaporder_order',
 				'posts_per_page' => 1,
 				'orderby'        => 'ID',
 				'order'          => 'DESC',
@@ -79,7 +79,7 @@ class SnapOrder_Sound {
 	 * Returns whether a newer actionable order exists.
 	 */
 	public function check_new_orders() {
-		check_ajax_referer( 'mfm_sound_nonce', 'nonce' );
+		check_ajax_referer( 'snaporder_sound_nonce', 'nonce' );
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( array( 'message' => 'Unauthorized' ) );
 		}
@@ -88,7 +88,7 @@ class SnapOrder_Sound {
 
 		$new_orders = get_posts(
 			array(
-				'post_type'      => 'mfm_order',
+				'post_type'      => 'snaporder_order',
 				'posts_per_page' => 1,
 				'orderby'        => 'ID',
 				'order'          => 'DESC',

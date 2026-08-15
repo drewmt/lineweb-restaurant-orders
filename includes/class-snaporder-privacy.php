@@ -53,7 +53,7 @@ class SnapOrder_Privacy {
 	 * Anonymizes completed orders whose retention period has expired.
 	 */
 	public function anonymize_expired_orders() {
-		$retention_days = absint( get_option( 'mfm_order_retention_days', 0 ) );
+		$retention_days = absint( get_option( 'snaporder_order_retention_days', 0 ) );
 		if ( 0 === $retention_days ) {
 			return;
 		}
@@ -61,7 +61,7 @@ class SnapOrder_Privacy {
 		$expires_before = current_datetime()->modify( '-' . $retention_days . ' days' )->format( 'Y-m-d H:i:s' );
 		$order_ids      = get_posts(
 			array(
-				'post_type'      => 'mfm_order',
+				'post_type'      => 'snaporder_order',
 				'post_status'    => 'publish',
 				'fields'         => 'ids',
 				'posts_per_page' => 100,
@@ -73,7 +73,7 @@ class SnapOrder_Privacy {
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Cleanup must select terminal order states before anonymization.
 				'meta_query'     => array(
 					array(
-						'key'     => '_mfm_order_status',
+						'key'     => '_snaporder_order_status',
 						'value'   => array( 'completed', 'rejected', 'payment_failed' ),
 						'compare' => 'IN',
 					),
@@ -92,18 +92,18 @@ class SnapOrder_Privacy {
 	 * @param int $order_id Order post ID.
 	 */
 	private function anonymize_order( $order_id ) {
-		update_post_meta( $order_id, '_mfm_customer_name', __( 'Anonymized customer', 'lineweb-restaurant-orders' ) );
-		foreach ( array( '_mfm_customer_phone', '_mfm_address', '_mfm_street', '_mfm_house_number', '_mfm_city', '_mfm_zip', '_mfm_order_notes', '_mfm_order_token', '_mfm_transaction_id', '_snaporder_stripe_intent_id', '_snaporder_stripe_client_secret', '_snaporder_request_id' ) as $meta_key ) {
+		update_post_meta( $order_id, '_snaporder_customer_name', __( 'Anonymized customer', 'lineweb-restaurant-orders' ) );
+		foreach ( array( '_snaporder_customer_phone', '_snaporder_address', '_snaporder_street', '_snaporder_house_number', '_snaporder_city', '_snaporder_zip', '_snaporder_order_notes', '_snaporder_order_token', '_snaporder_transaction_id', '_snaporder_stripe_intent_id', '_snaporder_stripe_client_secret', '_snaporder_request_id' ) as $meta_key ) {
 			delete_post_meta( $order_id, $meta_key );
 		}
 
-		$items = get_post_meta( $order_id, '_mfm_cart_items', true );
+		$items = get_post_meta( $order_id, '_snaporder_cart_items', true );
 		if ( is_array( $items ) ) {
 			foreach ( $items as &$item ) {
 				$item['notes'] = '';
 			}
 			unset( $item );
-			update_post_meta( $order_id, '_mfm_cart_items', $items );
+			update_post_meta( $order_id, '_snaporder_cart_items', $items );
 		}
 	}
 }

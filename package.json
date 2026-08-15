@@ -1,6 +1,6 @@
 {
   "name": "lineweb-restaurant-orders",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Build and test tooling for the Lineweb Restaurant Orders WordPress plugin.",
   "author": "Andrew Matia / Lineweb (https://www.lineweb.gr/)",
@@ -10,14 +10,14 @@
     "build:vendor": "node ./tools/copy-vendor-assets.mjs",
     "build": "npm run build:css && npm run build:vendor",
     "build:release": "bash ./tools/build-release.sh",
-    "test:js:syntax": "node --check assets/js/script.js && node --check assets/js/admin-script.js && node --check assets/js/admin-settings.js && node --check assets/js/admin-sorting.js && node --check assets/js/admin-sound.js && node --check assets/js/admin-product-options.js",
+    "test:js:syntax": "node --check assets/js/script.js && node --check assets/js/admin-script.js && node --check assets/js/admin-settings.js && node --check assets/js/admin-sorting.js && node --check assets/js/admin-sound.js && node --check assets/js/admin-product-options.js && node --check assets/js/admin-qr-code.js && node --check assets/js/pwa-register.js && node --check assets/js/receipt.js",
     "test:php": "wp-env run tests-wordpress php /var/www/html/wp-content/plugins/snaporder/vendor/bin/phpunit -c /var/www/html/wp-content/plugins/snaporder/phpunit.xml.dist",
     "wp-env": "wp-env"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.0.0",
     "@wordpress/env": "^10.0.0",
-    "lucide": "^0.468.0",
+    "lucide": "^1.31.0",
     "qrcodejs": "^1.0.0",
     "tailwindcss": "^4.0.0"
   }

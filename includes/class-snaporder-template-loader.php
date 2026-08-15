@@ -31,7 +31,7 @@ class SnapOrder_Template_Loader {
 	 * @return array Modified templates.
 	 */
 	public function add_page_template( $templates ) {
-		$templates['mfm-app-view.php'] = __( 'Food Menu App View', 'lineweb-restaurant-orders' );
+		$templates['snaporder-app-view.php'] = __( 'Food Menu App View', 'lineweb-restaurant-orders' );
 		return $templates;
 	}
 
@@ -44,7 +44,7 @@ class SnapOrder_Template_Loader {
 	public function load_page_template( $template ) {
 		if ( is_page() ) {
 			$meta = get_post_meta( get_the_ID(), '_wp_page_template', true );
-			if ( 'mfm-app-view.php' === $meta ) {
+			if ( 'snaporder-app-view.php' === $meta ) {
 				$template_name = 'app-view.php';
 
 				// Check the child theme.

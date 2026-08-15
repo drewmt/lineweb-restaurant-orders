@@ -18,8 +18,8 @@ class SnapOrder_Statistics {
 	 * Registers tracking and reporting hooks.
 	 */
 	public function __construct() {
-		add_action( 'wp_ajax_nopriv_mfm_track_view', array( $this, 'track_view' ) );
-		add_action( 'wp_ajax_mfm_track_view', array( $this, 'track_view' ) );
+		add_action( 'wp_ajax_nopriv_snaporder_track_view', array( $this, 'track_view' ) );
+		add_action( 'wp_ajax_snaporder_track_view', array( $this, 'track_view' ) );
 		add_action( 'admin_menu', array( $this, 'add_menu' ) );
 	}
 
@@ -29,7 +29,7 @@ class SnapOrder_Statistics {
 	public static function create_stats_table() {
 		global $wpdb;
 
-		$table_name      = $wpdb->prefix . 'mfm_stats';
+		$table_name      = $wpdb->prefix . 'snaporder_stats';
 		$charset_collate = $wpdb->get_charset_collate();
 
 		$sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
@@ -52,7 +52,7 @@ class SnapOrder_Statistics {
 		check_ajax_referer( 'snaporder_order_nonce', 'nonce' );
 
 		$item_id = isset( $_POST['item_id'] ) ? absint( $_POST['item_id'] ) : 0;
-		if ( ! $item_id || 'food_item' !== get_post_type( $item_id ) ) {
+		if ( ! $item_id || 'snaporder_item' !== get_post_type( $item_id ) ) {
 			wp_send_json_error();
 		}
 
@@ -64,7 +64,7 @@ class SnapOrder_Statistics {
 		set_transient( $view_key, 1, 5 * MINUTE_IN_SECONDS );
 
 		global $wpdb;
-		$table = $wpdb->prefix . 'mfm_stats';
+		$table = $wpdb->prefix . 'snaporder_stats';
 		$today = current_time( 'Y-m-d' );
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Atomic aggregate counter; no reusable object cache entry exists.
@@ -85,11 +85,11 @@ class SnapOrder_Statistics {
 	 */
 	public function add_menu() {
 		add_submenu_page(
-			'edit.php?post_type=food_item',
+			'edit.php?post_type=snaporder_item',
 			__( 'View Statistics', 'lineweb-restaurant-orders' ),
 			__( 'Statistics', 'lineweb-restaurant-orders' ),
 			'manage_options',
-			'mfm-statistics',
+			'snaporder-statistics',
 			array( $this, 'render_admin_page' )
 		);
 	}
@@ -104,7 +104,7 @@ class SnapOrder_Statistics {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$days       = isset( $_GET['days'] ) ? intval( $_GET['days'] ) : 7;
 		$days       = in_array( $days, array( 1, 7, 30, 90 ), true ) ? $days : 7;
-		$table      = $wpdb->prefix . 'mfm_stats';
+		$table      = $wpdb->prefix . 'snaporder_stats';
 		$date_limit = current_datetime()->modify( '-' . $days . ' days' )->format( 'Y-m-d' );
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Read-only aggregate report from the plugin table.
@@ -124,8 +124,8 @@ class SnapOrder_Statistics {
 		<div class="wrap">
 			<h1><?php esc_html_e( 'Menu View Statistics', 'lineweb-restaurant-orders' ); ?></h1>
 			<form method="get">
-				<input type="hidden" name="post_type" value="food_item">
-				<input type="hidden" name="page" value="mfm-statistics">
+				<input type="hidden" name="post_type" value="snaporder_item">
+				<input type="hidden" name="page" value="snaporder-statistics">
 				<select name="days" onchange="this.form.submit()">
 					<?php
 					$periods = array(

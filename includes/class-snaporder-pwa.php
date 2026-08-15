@@ -21,11 +21,11 @@ class SnapOrder_PWA {
 	 * Registers PWA hooks when the feature is enabled.
 	 */
 	public function __construct() {
-		if ( get_option( 'mfm_pwa_enabled' ) === '1' ) {
+		if ( get_option( 'snaporder_pwa_enabled' ) === '1' ) {
 			add_action( 'wp_head', array( $this, 'output_meta_tags' ) );
 			add_action( 'template_redirect', array( $this, 'render_manifest' ) );
 			add_action( 'template_redirect', array( $this, 'render_service_worker' ) );
-			add_action( 'wp_footer', array( $this, 'register_service_worker' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_registration_script' ) );
 		}
 	}
 
@@ -33,13 +33,13 @@ class SnapOrder_PWA {
 	 * Outputs manifest and mobile-app metadata on the app template.
 	 */
 	public function output_meta_tags() {
-		if ( ! is_page_template( 'mfm-app-view.php' ) ) {
+		if ( ! is_page_template( 'snaporder-app-view.php' ) ) {
 			return;
 		}
-		$color = sanitize_hex_color( get_option( 'mfm_pwa_theme_color', '#10b981' ) );
+		$color = sanitize_hex_color( get_option( 'snaporder_pwa_theme_color', '#10b981' ) );
 		$color = $color ? $color : '#10b981';
 		?>
-		<link rel="manifest" href="<?php echo esc_url( site_url( '/?mfm-manifest=1' ) ); ?>">
+		<link rel="manifest" href="<?php echo esc_url( site_url( '/?snaporder-manifest=1' ) ); ?>">
 		<meta name="theme-color" content="<?php echo esc_attr( $color ); ?>">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -52,13 +52,13 @@ class SnapOrder_PWA {
 	public function render_manifest() {
 		// Public, read-only endpoint selected by an exact query flag.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( ! isset( $_GET['mfm-manifest'] ) || '1' !== $_GET['mfm-manifest'] ) {
+		if ( ! isset( $_GET['snaporder-manifest'] ) || '1' !== $_GET['snaporder-manifest'] ) {
 			return;
 		}
 
-		$name       = get_option( 'mfm_pwa_name', get_bloginfo( 'name' ) );
-		$short_name = get_option( 'mfm_pwa_short_name', 'Restaurant' );
-		$color      = get_option( 'mfm_pwa_theme_color', '#10b981' );
+		$name       = get_option( 'snaporder_pwa_name', get_bloginfo( 'name' ) );
+		$short_name = get_option( 'snaporder_pwa_short_name', 'Restaurant' );
+		$color      = get_option( 'snaporder_pwa_theme_color', '#10b981' );
 		$app_url    = $this->get_app_url();
 
 		$manifest = array(
@@ -95,7 +95,7 @@ class SnapOrder_PWA {
 	public function render_service_worker() {
 		// Public, read-only endpoint selected by an exact query flag.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( ! isset( $_GET['mfm-sw'] ) || '1' !== $_GET['mfm-sw'] ) {
+		if ( ! isset( $_GET['snaporder-sw'] ) || '1' !== $_GET['snaporder-sw'] ) {
 			return;
 		}
 
@@ -145,20 +145,28 @@ self.addEventListener('fetch', event => {
 	}
 
 	/**
-	 * Registers the service worker for the menu app scope.
+	 * Enqueues service-worker registration on the menu app only.
 	 */
-	public function register_service_worker() {
-		if ( ! is_page_template( 'mfm-app-view.php' ) ) {
+	public function enqueue_registration_script() {
+		if ( ! is_page_template( 'snaporder-app-view.php' ) ) {
 			return;
 		}
-		?>
-		<script>
-		if ('serviceWorker' in navigator) {
-			navigator.serviceWorker.register('<?php echo esc_url( site_url( '/?mfm-sw=1' ) ); ?>', { scope: '<?php echo esc_js( $this->get_app_scope() ); ?>' })
-				.catch(function(err) { console.warn('SW registration failed:', err); });
-		}
-		</script>
-		<?php
+
+		wp_enqueue_script(
+			'snaporder-pwa-register',
+			SNAPORDER_PLUGIN_URL . 'assets/js/pwa-register.js',
+			array(),
+			SNAPORDER_VERSION,
+			true
+		);
+		wp_localize_script(
+			'snaporder-pwa-register',
+			'snaporder_pwa_vars',
+			array(
+				'service_worker_url' => site_url( '/?snaporder-sw=1' ),
+				'scope'              => $this->get_app_scope(),
+			)
+		);
 	}
 
 	/**
@@ -171,7 +179,7 @@ self.addEventListener('fetch', event => {
 			array(
 				// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Page-template meta is the canonical WordPress lookup.
 				'meta_key'   => '_wp_page_template',
-				'meta_value' => 'mfm-app-view.php',
+				'meta_value' => 'snaporder-app-view.php',
 				// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				'number'     => 1,
 			)

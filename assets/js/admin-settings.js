@@ -5,11 +5,11 @@
  */
 jQuery(document).ready(function ($) {
     // Color Picker
-    $('.mfm-color-field').wpColorPicker();
+    $('.snaporder-color-field').wpColorPicker();
 
     // Media Uploader
     var mediaUploader;
-    $('#mfm-upload-logo').click(function (e) {
+    $('#snaporder-upload-logo').click(function (e) {
         e.preventDefault();
         if (mediaUploader) {
             mediaUploader.open();
@@ -24,32 +24,32 @@ jQuery(document).ready(function ($) {
         });
         mediaUploader.on('select', function () {
             var attachment = mediaUploader.state().get('selection').first().toJSON();
-            $('#mfm_brand_logo').val(attachment.url);
+            $('#snaporder_brand_logo').val(attachment.url);
             const image = $('<img>', {
                 src: attachment.url,
                 alt: '',
                 css: { maxWidth: '150px', height: 'auto' }
             });
-            $('#mfm-logo-preview').empty().append(image);
-            $('#mfm-remove-logo').show();
+            $('#snaporder-logo-preview').empty().append(image);
+            $('#snaporder-remove-logo').show();
         });
         mediaUploader.open();
     });
 
-    $('#mfm-remove-logo').click(function (e) {
+    $('#snaporder-remove-logo').click(function (e) {
         e.preventDefault();
-        $('#mfm_brand_logo').val('');
-        $('#mfm-logo-preview').html('');
+        $('#snaporder_brand_logo').val('');
+        $('#snaporder-logo-preview').html('');
         $(this).hide();
     });
 
     // Settings Tabs
     function switchTab(tabId) {
 
-        $('.mfm-tab-link').removeClass('active');
-        $('.mfm-tab-link[href="#' + tabId + '"]').addClass('active');
+        $('.snaporder-tab-link').removeClass('active');
+        $('.snaporder-tab-link[href="#' + tabId + '"]').addClass('active');
 
-        $('.mfm-settings-section').removeClass('active');
+        $('.snaporder-settings-section').removeClass('active');
         $('#' + tabId).addClass('active');
 
         // Update URL hash without jumping
@@ -60,7 +60,7 @@ jQuery(document).ready(function ($) {
         }
     }
 
-    $(document).on('click', '.mfm-tab-link', function (e) {
+    $(document).on('click', '.snaporder-tab-link', function (e) {
         e.preventDefault();
         var tabId = $(this).attr('href').substring(1);
         switchTab(tabId);
@@ -72,6 +72,6 @@ jQuery(document).ready(function ($) {
         switchTab(hash);
     } else {
         // Default to first tab
-        $('.mfm-tab-link:first').click();
+        $('.snaporder-tab-link:first').click();
     }
 });

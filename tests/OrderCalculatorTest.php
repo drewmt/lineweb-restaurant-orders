@@ -14,16 +14,16 @@ class SnapOrder_Order_Calculator_Test extends WP_UnitTestCase {
 
 		$this->product_id = self::factory()->post->create(
 			array(
-				'post_type'   => 'food_item',
+				'post_type'   => 'snaporder_item',
 				'post_status' => 'publish',
 				'post_title'  => 'House Burger',
 			)
 		);
 
-		update_post_meta( $this->product_id, '_mfm_price', '10.00' );
+		update_post_meta( $this->product_id, '_snaporder_price', '10.00' );
 		update_post_meta(
 			$this->product_id,
-			'_mfm_size',
+			'_snaporder_size',
 			array(
 				array(
 					'name'  => 'Large',
@@ -33,7 +33,7 @@ class SnapOrder_Order_Calculator_Test extends WP_UnitTestCase {
 		);
 		update_post_meta(
 			$this->product_id,
-			'_mfm_extras',
+			'_snaporder_extras',
 			array(
 				array(
 					'name'  => 'Cheese',

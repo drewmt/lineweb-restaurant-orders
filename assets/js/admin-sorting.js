@@ -6,8 +6,8 @@ jQuery(document).ready(function ($) {
     }
 
     list.sortable({
-        handle: '.mfm-drag-handle',
-        placeholder: 'mfm-sortable-placeholder',
+        handle: '.snaporder-drag-handle',
+        placeholder: 'snaporder-sortable-placeholder',
         forcePlaceholderSize: true,
         helper: function (e, ui) {
             ui.children().each(function () {
@@ -30,16 +30,16 @@ jQuery(document).ready(function ($) {
             });
 
             // Show saving indicator
-            $('.mfm-drag-handle').css('cursor', 'wait');
+            $('.snaporder-drag-handle').css('cursor', 'wait');
 
             $.ajax({
-                url: mfm_sorting.ajax_url,
+                url: snaporder_sorting.ajax_url,
                 type: 'POST',
                 data: {
-                    action: 'mfm_update_order',
-                    nonce: mfm_sorting.nonce,
+                    action: 'snaporder_update_order',
+                    nonce: snaporder_sorting.nonce,
                     order: order,
-                    type: mfm_sorting.type
+                    type: snaporder_sorting.type
                 },
                 success: function (response) {
                     if (response.success) {
@@ -52,11 +52,11 @@ jQuery(document).ready(function ($) {
                     } else {
                         alert('Error updating order');
                     }
-                    $('.mfm-drag-handle').css('cursor', 'move');
+                    $('.snaporder-drag-handle').css('cursor', 'move');
                 },
                 error: function () {
                     alert('Error updating order');
-                    $('.mfm-drag-handle').css('cursor', 'move');
+                    $('.snaporder-drag-handle').css('cursor', 'move');
                 }
             });
         }

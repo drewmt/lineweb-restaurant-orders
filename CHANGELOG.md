@@ -1,8 +1,13 @@
 # Lineweb Restaurant Orders changelog
 
-## Unreleased
+## 1.0.1 - 2026-08-15
 
 - Added current desktop and mobile product screenshots, including the mobile menu homepage, to the public README.
+- Adopted the distinctive `snaporder` prefix for options, metadata, hooks, post types, taxonomies, JavaScript globals, and CSS selectors.
+- Added a one-time migration that preserves settings, products, categories, orders, banners, templates, shortcodes, metadata, and view statistics from 1.0.0.
+- Replaced raw inline script and style output with properly enqueued frontend, PWA, QR, receipt, and admin assets.
+- Updated the bundled Lucide icon library to 1.31.0.
+- Restored the promotional banner content type and its secure admin fields.
 
 ## 1.0.0 - 2026-07-18
 

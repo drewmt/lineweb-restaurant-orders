@@ -31,9 +31,9 @@ class SnapOrder_Product_Options {
 	public function enqueue_scripts( $hook ) {
 		if ( 'post.php' === $hook || 'post-new.php' === $hook ) {
 			$screen = get_current_screen();
-			if ( $screen && 'food_item' === $screen->post_type ) {
+			if ( $screen && 'snaporder_item' === $screen->post_type ) {
 				wp_enqueue_script(
-					'mfm-product-options',
+					'snaporder-product-options',
 					SNAPORDER_PLUGIN_URL . 'assets/js/admin-product-options.js',
 					array( 'jquery' ),
 					SNAPORDER_VERSION,
@@ -49,8 +49,8 @@ class SnapOrder_Product_Options {
 	 * @param WP_Post $post Food item post.
 	 */
 	public function render_options_metabox( $post ) {
-		$sizes  = get_post_meta( $post->ID, '_mfm_size', true );
-		$extras = get_post_meta( $post->ID, '_mfm_extras', true );
+		$sizes  = get_post_meta( $post->ID, '_snaporder_size', true );
+		$extras = get_post_meta( $post->ID, '_snaporder_extras', true );
 
 		if ( ! is_array( $sizes ) ) {
 			$sizes = array();
@@ -71,40 +71,40 @@ class SnapOrder_Product_Options {
 			);
 		}
 		?>
-		<div class="mfm-row">
+		<div class="snaporder-row">
 			<label><?php esc_html_e( 'Variants', 'lineweb-restaurant-orders' ); ?></label>
-			<div id="mfm-sizes-wrapper">
+			<div id="snaporder-sizes-wrapper">
 				<?php foreach ( $sizes as $index => $size ) : ?>
-					<div class="mfm-size-item" style="margin-bottom:10px;display:flex;gap:10px;">
-						<input type="text" name="mfm_size[<?php echo (int) $index; ?>][name]"
+					<div class="snaporder-size-item" style="margin-bottom:10px;display:flex;gap:10px;">
+						<input type="text" name="snaporder_size[<?php echo (int) $index; ?>][name]"
 							value="<?php echo esc_attr( $size['name'] ); ?>"
 							placeholder="<?php esc_attr_e( 'Variant Name (e.g. Large)', 'lineweb-restaurant-orders' ); ?>">
-						<input type="text" name="mfm_size[<?php echo (int) $index; ?>][price]"
+						<input type="text" name="snaporder_size[<?php echo (int) $index; ?>][price]"
 							value="<?php echo esc_attr( $size['price'] ); ?>"
 							placeholder="<?php esc_attr_e( 'Price (+)', 'lineweb-restaurant-orders' ); ?>">
-						<button type="button" class="button mfm-remove-size">&times;</button>
+						<button type="button" class="button snaporder-remove-size">&times;</button>
 					</div>
 				<?php endforeach; ?>
 			</div>
-			<button type="button" class="button" id="mfm-add-size"><?php esc_html_e( 'Add Variant', 'lineweb-restaurant-orders' ); ?></button>
+			<button type="button" class="button" id="snaporder-add-size"><?php esc_html_e( 'Add Variant', 'lineweb-restaurant-orders' ); ?></button>
 		</div>
 
-		<div class="mfm-row">
+		<div class="snaporder-row">
 			<label><?php esc_html_e( 'Extras', 'lineweb-restaurant-orders' ); ?></label>
-			<div id="mfm-extras-wrapper">
+			<div id="snaporder-extras-wrapper">
 				<?php foreach ( $extras as $index => $extra ) : ?>
-					<div class="mfm-extra-item" style="margin-bottom:10px;display:flex;gap:10px;">
-						<input type="text" name="mfm_extras[<?php echo (int) $index; ?>][name]"
+					<div class="snaporder-extra-item" style="margin-bottom:10px;display:flex;gap:10px;">
+						<input type="text" name="snaporder_extras[<?php echo (int) $index; ?>][name]"
 							value="<?php echo esc_attr( $extra['name'] ); ?>"
 							placeholder="<?php esc_attr_e( 'Extra Name (e.g. Extra Cheese)', 'lineweb-restaurant-orders' ); ?>">
-						<input type="text" name="mfm_extras[<?php echo (int) $index; ?>][price]"
+						<input type="text" name="snaporder_extras[<?php echo (int) $index; ?>][price]"
 							value="<?php echo esc_attr( $extra['price'] ); ?>"
 							placeholder="<?php esc_attr_e( 'Price (e.g. 1.50)', 'lineweb-restaurant-orders' ); ?>">
-						<button type="button" class="button mfm-remove-extra">&times;</button>
+						<button type="button" class="button snaporder-remove-extra">&times;</button>
 					</div>
 				<?php endforeach; ?>
 			</div>
-			<button type="button" class="button" id="mfm-add-extra"><?php esc_html_e( 'Add Extra', 'lineweb-restaurant-orders' ); ?></button>
+			<button type="button" class="button" id="snaporder-add-extra"><?php esc_html_e( 'Add Extra', 'lineweb-restaurant-orders' ); ?></button>
 		</div>
 		<?php
 	}
@@ -117,8 +117,8 @@ class SnapOrder_Product_Options {
 	public function save_options_metabox( $post_id ) {
 		// The parent food-details save handler verifies the form nonce first.
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
-		$submitted_sizes = isset( $_POST['mfm_size'] ) && is_array( $_POST['mfm_size'] )
-			? map_deep( wp_unslash( $_POST['mfm_size'] ), 'sanitize_text_field' )
+		$submitted_sizes = isset( $_POST['snaporder_size'] ) && is_array( $_POST['snaporder_size'] )
+			? map_deep( wp_unslash( $_POST['snaporder_size'] ), 'sanitize_text_field' )
 			: array();
 		if ( ! empty( $submitted_sizes ) ) {
 			$sizes = array();
@@ -134,13 +134,13 @@ class SnapOrder_Product_Options {
 					);
 				}
 			}
-			update_post_meta( $post_id, '_mfm_size', $sizes );
+			update_post_meta( $post_id, '_snaporder_size', $sizes );
 		} else {
-			delete_post_meta( $post_id, '_mfm_size' );
+			delete_post_meta( $post_id, '_snaporder_size' );
 		}
 
-		$submitted_extras = isset( $_POST['mfm_extras'] ) && is_array( $_POST['mfm_extras'] )
-			? map_deep( wp_unslash( $_POST['mfm_extras'] ), 'sanitize_text_field' )
+		$submitted_extras = isset( $_POST['snaporder_extras'] ) && is_array( $_POST['snaporder_extras'] )
+			? map_deep( wp_unslash( $_POST['snaporder_extras'] ), 'sanitize_text_field' )
 			: array();
 		if ( ! empty( $submitted_extras ) ) {
 			$extras = array();
@@ -156,9 +156,9 @@ class SnapOrder_Product_Options {
 					);
 				}
 			}
-			update_post_meta( $post_id, '_mfm_extras', $extras );
+			update_post_meta( $post_id, '_snaporder_extras', $extras );
 		} else {
-			delete_post_meta( $post_id, '_mfm_extras' );
+			delete_post_meta( $post_id, '_snaporder_extras' );
 		}
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 	}

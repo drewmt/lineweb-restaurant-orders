@@ -24,8 +24,8 @@ jQuery(document).ready(function ($) {
 
 	// Helper: Get children of a category
 	function getCategoryChildren(parentId) {
-		if (!window.mfmCategories) return [];
-		return window.mfmCategories.filter(cat => cat.parent == parentId);
+		if (!snaporder_vars.categories) return [];
+		return snaporder_vars.categories.filter(cat => cat.parent == parentId);
 	}
 
 	// Helper: Get all descendant category IDs (recursive)
@@ -41,19 +41,19 @@ jQuery(document).ready(function ($) {
 
 	// Helper: Get category by ID
 	function getCategoryById(id) {
-		if (!window.mfmCategories) return null;
-		return window.mfmCategories.find(cat => cat.id == id);
+		if (!snaporder_vars.categories) return null;
+		return snaporder_vars.categories.find(cat => cat.id == id);
 	}
 
 	// Render category navigation
 	function renderCategoryNav() {
-		var nav = $('#mfm-category-nav');
+		var nav = $('#snaporder-category-nav');
 		nav.empty();
 
 		if (currentParentCategory === 0) {
 			// Root level: Show "All" + top-level categories
 			var allBtn = $('<button>')
-				.addClass('mfm-filter-btn active whitespace-nowrap px-6 py-3 rounded-lg mfm-bg-primary text-white text-base font-bold mfm-shadow-primary transition-all transform hover:scale-105')
+				.addClass('snaporder-filter-btn active whitespace-nowrap px-6 py-3 rounded-lg snaporder-bg-primary text-white text-base font-bold snaporder-shadow-primary transition-all transform hover:scale-105')
 				.attr('data-filter', '*')
 				.attr('data-id', '0')
 				.text('All');
@@ -66,7 +66,7 @@ jQuery(document).ready(function ($) {
 					return;
 				}
 				var btn = $('<button>')
-					.addClass('mfm-filter-btn whitespace-nowrap px-6 py-3 rounded-lg bg-white text-gray-600 border border-gray-100 text-base font-bold shadow-sm hover:shadow-md hover:bg-gray-50 transition-all transform hover:scale-105')
+					.addClass('snaporder-filter-btn whitespace-nowrap px-6 py-3 rounded-lg bg-white text-gray-600 border border-gray-100 text-base font-bold shadow-sm hover:shadow-md hover:bg-gray-50 transition-all transform hover:scale-105')
 					.attr('data-filter', '.cat-' + cat.slug)
 					.attr('data-id', cat.id)
 					.attr('data-has-children', getCategoryChildren(cat.id).length > 0 ? '1' : '0')
@@ -76,7 +76,7 @@ jQuery(document).ready(function ($) {
 		} else {
 			// Sub-category level: Show "Back" + children
 			var backBtn = $('<button>')
-				.addClass('mfm-filter-btn whitespace-nowrap px-6 py-3 rounded-lg mfm-bg-primary text-white text-base font-bold mfm-shadow-primary transition-all transform hover:scale-105')
+				.addClass('snaporder-filter-btn whitespace-nowrap px-6 py-3 rounded-lg snaporder-bg-primary text-white text-base font-bold snaporder-shadow-primary transition-all transform hover:scale-105')
 				.attr('data-action', 'back')
 				.html('<i data-lucide="arrow-left" class="w-4 h-4 inline-block mr-1"></i> Back');
 			nav.append(backBtn);
@@ -88,7 +88,7 @@ jQuery(document).ready(function ($) {
 					return;
 				}
 				var btn = $('<button>')
-					.addClass('mfm-filter-btn whitespace-nowrap px-6 py-3 rounded-lg bg-white text-gray-600 border border-gray-100 text-base font-bold shadow-sm hover:shadow-md hover:bg-gray-50 transition-all transform hover:scale-105')
+					.addClass('snaporder-filter-btn whitespace-nowrap px-6 py-3 rounded-lg bg-white text-gray-600 border border-gray-100 text-base font-bold shadow-sm hover:shadow-md hover:bg-gray-50 transition-all transform hover:scale-105')
 					.attr('data-filter', '.cat-' + cat.slug)
 					.attr('data-id', cat.id)
 					.attr('data-has-children', getCategoryChildren(cat.id).length > 0 ? '1' : '0')
@@ -107,8 +107,8 @@ jQuery(document).ready(function ($) {
 	function filterByCategory(categoryId, categorySlug) {
 		if (categoryId == 0) {
 			// Show all
-			$('.mfm-category-list').show();
-			$('.mfm-recommended-section').fadeIn();
+			$('.snaporder-category-list').show();
+			$('.snaporder-recommended-section').fadeIn();
 		} else {
 			// Get all descendant IDs
 			var descendantIds = getAllDescendantIds(categoryId);
@@ -120,16 +120,16 @@ jQuery(document).ready(function ($) {
 				return cat ? '.cat-' + cat.slug : '';
 			}).filter(s => s).join(', ');
 
-			$('.mfm-category-list').hide();
+			$('.snaporder-category-list').hide();
 			if (selectors) {
 				$(selectors).show();
 			}
-			$('.mfm-recommended-section').hide();
+			$('.snaporder-recommended-section').hide();
 		}
 	}
 
 	// Handle category button clicks
-	$(document).on('click', '.mfm-filter-btn', function () {
+	$(document).on('click', '.snaporder-filter-btn', function () {
 		var $btn = $(this);
 		var action = $btn.attr('data-action');
 		var catId = parseInt($btn.attr('data-id'));
@@ -156,7 +156,7 @@ jQuery(document).ready(function ($) {
 
 			// Track Category View
 			if (catId !== 0) {
-				MFMApp.recordView('category_view', catId);
+				SnapOrderApp.recordView('category_view', catId);
 			}
 
 			// Filter to this category and descendants
@@ -164,14 +164,14 @@ jQuery(document).ready(function ($) {
 			filterByCategory(catId, cat.slug);
 		} else {
 			// Leaf category - just filter
-			$('.mfm-filter-btn').removeClass('active');
-			$('.mfm-filter-btn').removeClass('mfm-bg-primary text-white mfm-shadow-primary').addClass('bg-white text-gray-600 border border-gray-100');
+			$('.snaporder-filter-btn').removeClass('active');
+			$('.snaporder-filter-btn').removeClass('snaporder-bg-primary text-white snaporder-shadow-primary').addClass('bg-white text-gray-600 border border-gray-100');
 			$btn.addClass('active');
-			$btn.removeClass('bg-white text-gray-600 border border-gray-100').addClass('mfm-bg-primary text-white mfm-shadow-primary');
+			$btn.removeClass('bg-white text-gray-600 border border-gray-100').addClass('snaporder-bg-primary text-white snaporder-shadow-primary');
 
 			// Track Category View
 			if (catId && catId !== 0) {
-				MFMApp.recordView('category_view', catId);
+				SnapOrderApp.recordView('category_view', catId);
 			}
 
 			if (filterValue === '*') {
@@ -184,13 +184,13 @@ jQuery(document).ready(function ($) {
 	});
 
 	// Initialize category navigation
-	if (window.mfmCategories) {
+	if (snaporder_vars.categories) {
 		renderCategoryNav();
 	}
 
 	// Initialize Stripe if enabled
-	if (typeof Stripe !== 'undefined' && mfm_vars.stripe_key) {
-		window.stripe = Stripe(mfm_vars.stripe_key);
+	if (typeof Stripe !== 'undefined' && snaporder_vars.stripe_key) {
+		window.stripe = Stripe(snaporder_vars.stripe_key);
 		window.elements = window.stripe.elements();
 		window.cardElement = window.elements.create('card', {
 			style: {
@@ -221,7 +221,7 @@ jQuery(document).ready(function ($) {
 });
 
 // App View Logic
-var MFMApp = {
+var SnapOrderApp = {
 	currentItem: null,
 	currentQty: 1,
 	currentExtras: [],
@@ -235,11 +235,11 @@ var MFMApp = {
 			return;
 		}
 		var data = new FormData();
-		data.append('action', 'mfm_track_view');
-		data.append('nonce', mfm_vars.nonce);
+		data.append('action', 'snaporder_track_view');
+		data.append('nonce', snaporder_vars.nonce);
 		data.append('item_id', id);
 
-		fetch(mfm_vars.ajax_url, {
+		fetch(snaporder_vars.ajax_url, {
 			method: 'POST',
 			body: data
 		})
@@ -250,19 +250,19 @@ var MFMApp = {
 				// Success
 			})
 			.catch(err => {
-				console.error('MFMApp.recordView: Error', err);
+				console.error('SnapOrderApp.recordView: Error', err);
 			});
 	},
 
 	showFeaturedPage: function () {
 		// Hide main content wrapper
-		var mainContent = document.getElementById('mfm-main-content');
+		var mainContent = document.getElementById('snaporder-main-content');
 		if (mainContent) {
 			mainContent.style.display = 'none';
 		}
 
 		// Show featured page
-		var featuredPage = document.getElementById('mfm-featured-page');
+		var featuredPage = document.getElementById('snaporder-featured-page');
 		if (featuredPage) {
 			featuredPage.classList.remove('hidden');
 			featuredPage.style.display = 'block';
@@ -279,14 +279,14 @@ var MFMApp = {
 
 	hideFeaturedPage: function () {
 		// Hide featured page
-		var featuredPage = document.getElementById('mfm-featured-page');
+		var featuredPage = document.getElementById('snaporder-featured-page');
 		if (featuredPage) {
 			featuredPage.classList.add('hidden');
 			featuredPage.style.display = 'none';
 		}
 
 		// Show main content wrapper
-		var mainContent = document.getElementById('mfm-main-content');
+		var mainContent = document.getElementById('snaporder-main-content');
 		if (mainContent) {
 			mainContent.style.display = 'block';
 		}
@@ -303,21 +303,21 @@ var MFMApp = {
 		this.currentQty = 1;
 		this.currentExtras = [];
 
-		var modal = document.getElementById('mfm-modal');
-		var content = modal.querySelector('.mfm-modal-content');
+		var modal = document.getElementById('snaporder-modal');
+		var content = modal.querySelector('.snaporder-modal-content');
 
 		// Populate data
-		modal.querySelector('.mfm-modal-title').textContent = data.title;
+		modal.querySelector('.snaporder-modal-title').textContent = data.title;
 		// Description HTML is filtered with wp_kses_post() before it reaches this data attribute.
-		modal.querySelector('.mfm-modal-desc').innerHTML = data.description;
-		modal.querySelector('.mfm-modal-qty').textContent = '1';
+		modal.querySelector('.snaporder-modal-desc').innerHTML = data.description;
+		modal.querySelector('.snaporder-modal-qty').textContent = '1';
 
 		// Variant Initialization
 		this.currentVariant = null;
 
 		// Nutritional Info
-		var calEl = modal.querySelector('.mfm-modal-calories');
-		var calWrap = modal.querySelector('.mfm-modal-calories-wrap');
+		var calEl = modal.querySelector('.snaporder-modal-calories');
+		var calWrap = modal.querySelector('.snaporder-modal-calories-wrap');
 		if (data.calories) {
 			calEl.textContent = data.calories + ' kcal';
 			calWrap.classList.remove('hidden');
@@ -327,12 +327,12 @@ var MFMApp = {
 		}
 
 		// Insert Meta Container (Variants) AFTER Description/Nutrition
-		var metaContainer = modal.querySelector('.mfm-modal-meta');
+		var metaContainer = modal.querySelector('.snaporder-modal-meta');
 		if (!metaContainer) {
 			metaContainer = document.createElement('div');
-			metaContainer.className = 'mfm-modal-meta mb-6 space-y-6';
+			metaContainer.className = 'snaporder-modal-meta mb-6 space-y-6';
 			// Insert before the Extras wrapper
-			var extrasWrapper = modal.querySelector('.mfm-modal-extras-wrapper');
+			var extrasWrapper = modal.querySelector('.snaporder-modal-extras-wrapper');
 			extrasWrapper.parentNode.insertBefore(metaContainer, extrasWrapper);
 		}
 		metaContainer.innerHTML = '';
@@ -348,11 +348,11 @@ var MFMApp = {
 				var isSelected = false;
 				variantHtml += `
                     <button type="button" 
-                            class="mfm-variant-btn flex-shrink-0 px-4 py-2.5 rounded-lg border-2 transition-all text-center flex items-center gap-2 whitespace-nowrap ${isSelected ? 'mfm-border-primary mfm-bg-primary-50' : 'border-gray-200 bg-white hover:border-gray-300'}" 
+                            class="snaporder-variant-btn flex-shrink-0 px-4 py-2.5 rounded-lg border-2 transition-all text-center flex items-center gap-2 whitespace-nowrap ${isSelected ? 'snaporder-border-primary snaporder-bg-primary-50' : 'border-gray-200 bg-white hover:border-gray-300'}"
                             data-variant-index="${index}" 
-                            onclick="MFMApp.updateVariant(${index})">
+                            onclick="SnapOrderApp.updateVariant(${index})">
 						<span class="font-medium text-sm ${isSelected ? 'text-gray-900' : 'text-gray-700'}">${snaporderEscapeHtml(variant.name)}</span>
-						${variant.price > 0 ? `<span class="text-xs font-bold ${isSelected ? 'mfm-text-primary' : 'text-gray-500'}">+${snaporderEscapeHtml(variant.price)}${snaporderEscapeHtml(window.mfmCurrencySymbol || '€')}</span>` : ''}
+						${variant.price > 0 ? `<span class="text-xs font-bold ${isSelected ? 'snaporder-text-primary' : 'text-gray-500'}">+${snaporderEscapeHtml(variant.price)}${snaporderEscapeHtml(snaporder_vars.currency || '€')}</span>` : ''}
                     </button>
                 `;
 			});
@@ -360,7 +360,7 @@ var MFMApp = {
 			metaContainer.insertAdjacentHTML('beforeend', variantHtml);
 		}
 
-		var algEl = modal.querySelector('.mfm-modal-allergens');
+		var algEl = modal.querySelector('.snaporder-modal-allergens');
 		if (data.allergens) {
 			algEl.querySelector('span').textContent = 'Contains: ' + data.allergens;
 			algEl.classList.remove('hidden');
@@ -368,7 +368,7 @@ var MFMApp = {
 			algEl.classList.add('hidden');
 		}
 
-		var dietEl = modal.querySelector('.mfm-modal-dietary');
+		var dietEl = modal.querySelector('.snaporder-modal-dietary');
 		dietEl.innerHTML = '';
 		if (data.dietary && Array.isArray(data.dietary)) {
 			if (data.dietary.includes('vegetarian') || data.dietary.includes('vegan')) {
@@ -399,15 +399,15 @@ var MFMApp = {
 
 		var modalImageUrl = snaporderSafeUrl(data.image);
 		if (modalImageUrl) {
-			modal.querySelector('.mfm-modal-image').style.backgroundImage = 'url("' + modalImageUrl + '")';
-			modal.querySelector('.mfm-modal-image').style.display = 'block';
+			modal.querySelector('.snaporder-modal-image').style.backgroundImage = 'url("' + modalImageUrl + '")';
+			modal.querySelector('.snaporder-modal-image').style.display = 'block';
 		} else {
-			modal.querySelector('.mfm-modal-image').style.display = 'none';
+			modal.querySelector('.snaporder-modal-image').style.display = 'none';
 		}
 
 		// Extras
-		var extrasWrapper = modal.querySelector('.mfm-modal-extras-wrapper');
-		var extrasContainer = modal.querySelector('.mfm-modal-extras');
+		var extrasWrapper = modal.querySelector('.snaporder-modal-extras-wrapper');
+		var extrasContainer = modal.querySelector('.snaporder-modal-extras');
 		extrasContainer.innerHTML = '';
 
 		if (data.extras && data.extras.length > 0) {
@@ -418,12 +418,12 @@ var MFMApp = {
                     <div class="flex justify-between items-center p-3 bg-gray-50 rounded-xl border border-gray-100">
 						<div class="flex items-center gap-3">
 							<span class="font-medium text-gray-700">${snaporderEscapeHtml(extra.name)}</span>
-							<span class="font-bold text-gray-900">+${snaporderEscapeHtml(extra.price)}${snaporderEscapeHtml(window.mfmCurrencySymbol || '€')}</span>
+							<span class="font-bold text-gray-900">+${snaporderEscapeHtml(extra.price)}${snaporderEscapeHtml(snaporder_vars.currency || '€')}</span>
 						</div>
 						<div class="flex items-center gap-3 bg-gray-100 rounded-lg p-1">
-							<button class="w-6 h-6 flex items-center justify-center font-bold text-gray-600" onclick="MFMApp.updateExtraQty(${index}, -1)">-</button>
+							<button class="w-6 h-6 flex items-center justify-center font-bold text-gray-600" onclick="SnapOrderApp.updateExtraQty(${index}, -1)">-</button>
 							<span class="text-sm font-bold w-4 text-center" id="extra-qty-${index}">0</span>
-							<button class="w-6 h-6 flex items-center justify-center font-bold mfm-text-primary" onclick="MFMApp.updateExtraQty(${index}, 1)">+</button>
+							<button class="w-6 h-6 flex items-center justify-center font-bold snaporder-text-primary" onclick="SnapOrderApp.updateExtraQty(${index}, 1)">+</button>
 						</div>
 					</div>
 	`;
@@ -441,8 +441,8 @@ var MFMApp = {
 	},
 
 	closeModal: function () {
-		var modal = document.getElementById('mfm-modal');
-		var content = modal.querySelector('.mfm-modal-content');
+		var modal = document.getElementById('snaporder-modal');
+		var content = modal.querySelector('.snaporder-modal-content');
 		content.classList.add('translate-y-full');
 		setTimeout(() => {
 			modal.classList.add('hidden');
@@ -452,14 +452,14 @@ var MFMApp = {
 
 	incrementQty: function () {
 		this.currentQty = Math.min(this.currentQty + 1, 99);
-		document.querySelector('.mfm-modal-qty').textContent = this.currentQty;
+		document.querySelector('.snaporder-modal-qty').textContent = this.currentQty;
 		this.updatePriceDisplay();
 	},
 
 	decrementQty: function () {
 		if (this.currentQty > 1) {
 			this.currentQty--;
-			document.querySelector('.mfm-modal-qty').textContent = this.currentQty;
+			document.querySelector('.snaporder-modal-qty').textContent = this.currentQty;
 			this.updatePriceDisplay();
 		}
 	},
@@ -506,28 +506,28 @@ var MFMApp = {
 		}
 
 		// Update button styles
-		var buttons = document.querySelectorAll('.mfm-variant-btn');
+		var buttons = document.querySelectorAll('.snaporder-variant-btn');
 		buttons.forEach((btn, i) => {
 			if (i === index && this.currentVariant) {
 				// Selected state
 				btn.classList.remove('border-gray-200', 'bg-white', 'hover:border-gray-300');
-				btn.classList.add('mfm-border-primary', 'mfm-bg-primary-50');
+				btn.classList.add('snaporder-border-primary', 'snaporder-bg-primary-50');
 				btn.querySelector('span:first-child').classList.remove('text-gray-700');
 				btn.querySelector('span:first-child').classList.add('text-gray-900');
 				var priceSpan = btn.querySelector('span:last-child');
 				if (priceSpan && priceSpan !== btn.querySelector('span:first-child')) {
 					priceSpan.classList.remove('text-gray-500');
-					priceSpan.classList.add('mfm-text-primary');
+					priceSpan.classList.add('snaporder-text-primary');
 				}
 			} else {
 				// Unselected state
-				btn.classList.remove('mfm-border-primary', 'mfm-bg-primary-50');
+				btn.classList.remove('snaporder-border-primary', 'snaporder-bg-primary-50');
 				btn.classList.add('border-gray-200', 'bg-white', 'hover:border-gray-300');
 				btn.querySelector('span:first-child').classList.remove('text-gray-900');
 				btn.querySelector('span:first-child').classList.add('text-gray-700');
 				var priceSpan = btn.querySelector('span:last-child');
 				if (priceSpan && priceSpan !== btn.querySelector('span:first-child')) {
-					priceSpan.classList.remove('mfm-text-primary');
+					priceSpan.classList.remove('snaporder-text-primary');
 					priceSpan.classList.add('text-gray-500');
 				}
 			}
@@ -544,9 +544,9 @@ var MFMApp = {
 
 		var total = (basePrice + extrasTotal + variantPrice) * this.currentQty;
 
-		var formatted = total.toFixed(2) + (window.mfmCurrencySymbol || '€');
-		document.querySelector('.mfm-modal-price').textContent = formatted;
-		document.querySelector('.mfm-modal-price-display').textContent = formatted;
+		var formatted = total.toFixed(2) + (snaporder_vars.currency || '€');
+		document.querySelector('.snaporder-modal-price').textContent = formatted;
+		document.querySelector('.snaporder-modal-price-display').textContent = formatted;
 	},
 
 	addToCart: function () {
@@ -557,7 +557,7 @@ var MFMApp = {
 		var unitPrice = basePrice + extrasTotal + variantPrice;
 
 		// Get product notes
-		var productNotes = document.getElementById('mfm-product-notes').value.trim();
+		var productNotes = document.getElementById('snaporder-product-notes').value.trim();
 
 		var cartItem = {
 			id: this.currentItem.id,
@@ -570,7 +570,7 @@ var MFMApp = {
 			notes: productNotes
 		};
 
-		MFMCart.addItem(cartItem);
+		SnapOrderCart.addItem(cartItem);
 		this.closeModal();
 
 		// Show feedback
@@ -578,30 +578,30 @@ var MFMApp = {
 	},
 
 	closeModal: function () {
-		document.getElementById('mfm-modal').classList.add('hidden');
+		document.getElementById('snaporder-modal').classList.add('hidden');
 		document.body.style.overflow = '';
 		// Clear notes field for next product
-		document.getElementById('mfm-product-notes').value = '';
+		document.getElementById('snaporder-product-notes').value = '';
 	}
 };
 
 // Cart Logic
-var MFMCart = {
+var SnapOrderCart = {
 	items: [],
-	selectedPayment: mfm_vars.default_payment || '',
+	selectedPayment: snaporder_vars.default_payment || '',
 	deliveryType: 'delivery',
 	tipAmount: 0,
 	pendingRequestId: '',
 
 	init: function () {
-		var stored = localStorage.getItem('mfm_cart');
+		var stored = localStorage.getItem('snaporder_cart');
 		if (stored) {
 			try {
 				var parsed = JSON.parse(stored);
 				this.items = this.normalizeStoredItems(parsed);
 			} catch (error) {
 				this.items = [];
-				localStorage.removeItem('mfm_cart');
+				localStorage.removeItem('snaporder_cart');
 			}
 		}
 		this.updateUI();
@@ -609,7 +609,7 @@ var MFMCart = {
 
 	addItem: function (item) {
 		if (this.items.length >= 50) {
-			window.alert(mfm_vars.strings.order_error);
+			window.alert(snaporder_vars.strings.order_error);
 			return;
 		}
 		this.items.push(item);
@@ -641,11 +641,11 @@ var MFMCart = {
 	},
 
 	save: function () {
-		localStorage.setItem('mfm_cart', JSON.stringify(this.items));
+		localStorage.setItem('snaporder_cart', JSON.stringify(this.items));
 	},
 
 	restore: function () {
-		var stored = localStorage.getItem('mfm_cart');
+		var stored = localStorage.getItem('snaporder_cart');
 		if (stored) {
 			try {
 				var parsed = JSON.parse(stored);
@@ -759,7 +759,7 @@ var MFMCart = {
 		// Update Display
 		if (this.tipAmount > 0) {
 			jQuery('#tip-display-row').removeClass('hidden');
-			jQuery('#tip-display-amount').text(mfm_vars.currency + this.tipAmount.toFixed(2));
+			jQuery('#tip-display-amount').text(snaporder_vars.currency + this.tipAmount.toFixed(2));
 		} else {
 			jQuery('#tip-display-row').addClass('hidden');
 		}
@@ -776,15 +776,15 @@ var MFMCart = {
 		var count = this.getCount();
 
 		// Update Bottom Bar
-		var bar = document.getElementById('mfm-bottom-bar');
-		var barCount = document.getElementById('mfm-bar-count');
-		var barTotal = document.getElementById('mfm-bar-total');
+		var bar = document.getElementById('snaporder-bottom-bar');
+		var barCount = document.getElementById('snaporder-bar-count');
+		var barTotal = document.getElementById('snaporder-bar-total');
 
 		if (barCount) barCount.textContent = count;
-		if (barTotal) barTotal.textContent = total + (window.mfmCurrencySymbol || '€');
+		if (barTotal) barTotal.textContent = total + (snaporder_vars.currency || '€');
 
 		// Update Top Icon
-		var topCount = document.querySelector('.mfm-cart-count');
+		var topCount = document.querySelector('.snaporder-cart-count');
 		if (topCount) topCount.textContent = count;
 		var topBadge = document.querySelector('.cart-btn span');
 		if (topBadge) topBadge.textContent = count;
@@ -799,11 +799,11 @@ var MFMCart = {
 	},
 
 	openCart: function () {
-		var modal = document.getElementById('mfm-cart-modal');
-		var content = modal.querySelector('.mfm-cart-content');
+		var modal = document.getElementById('snaporder-cart-modal');
+		var content = modal.querySelector('.snaporder-cart-content');
 
 		this.renderCartItems();
-		document.getElementById('mfm-cart-total').textContent = this.getTotal().toFixed(2) + (window.mfmCurrencySymbol || '€');
+		document.getElementById('snaporder-cart-total').textContent = this.getTotal().toFixed(2) + (snaporder_vars.currency || '€');
 
 		modal.classList.remove('hidden');
 		setTimeout(() => {
@@ -813,8 +813,8 @@ var MFMCart = {
 	},
 
 	closeCart: function () {
-		var modal = document.getElementById('mfm-cart-modal');
-		var content = modal.querySelector('.mfm-cart-content');
+		var modal = document.getElementById('snaporder-cart-modal');
+		var content = modal.querySelector('.snaporder-cart-content');
 		content.classList.add('translate-y-full');
 		setTimeout(() => {
 			modal.classList.add('hidden');
@@ -823,14 +823,14 @@ var MFMCart = {
 	},
 
 	renderCartItems: function () {
-		var container = document.getElementById('mfm-cart-items');
+		var container = document.getElementById('snaporder-cart-items');
 		container.innerHTML = '';
 
 		if (this.items.length === 0) {
 			container.innerHTML = `
                 <div class="text-center text-gray-500 py-10">
 					<i data-lucide="shopping-basket" class="w-16 h-16 mx-auto mb-4 text-gray-300"></i>
-				<p>${snaporderEscapeHtml(mfm_vars.strings.empty_cart)}</p>
+				<p>${snaporderEscapeHtml(snaporder_vars.strings.empty_cart)}</p>
 				</div>
 	`;
 			lucide.createIcons();
@@ -852,10 +852,10 @@ var MFMCart = {
 						${extrasHtml}
 						<div class="flex justify-between items-center mt-1">
 							<span class="text-base text-gray-500">x${item.qty}</span>
-							<span class="font-bold mfm-text-primary text-base">${(item.price * item.qty).toFixed(2)}${window.mfmCurrencySymbol || '€'}</span>
+							<span class="font-bold snaporder-text-primary text-base">${(item.price * item.qty).toFixed(2)}${snaporder_vars.currency || '€'}</span>
 						</div>
 					</div>
-					<button class="text-gray-400 hover:text-red-500" onclick="MFMCart.removeItem(${index})">
+					<button class="text-gray-400 hover:text-red-500" onclick="SnapOrderCart.removeItem(${index})">
 						<i data-lucide="trash-2" class="w-5 h-5"></i>
 					</button>
 				</div>
@@ -867,16 +867,16 @@ var MFMCart = {
 
 	openCheckout: function () {
 		if (!this.items.length) {
-			window.alert(mfm_vars.strings.empty_cart);
+			window.alert(snaporder_vars.strings.empty_cart);
 			return;
 		}
 		this.closeCart();
-		var modal = document.getElementById('mfm-checkout-modal');
+		var modal = document.getElementById('snaporder-checkout-modal');
 		modal.classList.remove('hidden');
 	},
 
 	closeCheckout: function () {
-		var modal = document.getElementById('mfm-checkout-modal');
+		var modal = document.getElementById('snaporder-checkout-modal');
 		modal.classList.add('hidden');
 	},
 
@@ -885,19 +885,19 @@ var MFMCart = {
 			this.pendingRequestId = '';
 		}
 		// UI Update
-		jQuery('.payment-option').removeClass('selected mfm-border-primary mfm-bg-primary-50').addClass('border-gray-200');
+		jQuery('.payment-option').removeClass('selected snaporder-border-primary snaporder-bg-primary-50').addClass('border-gray-200');
 
 		// Reset icons/text
 		jQuery('.payment-option').each(function () {
 			const $icon = jQuery(this).find('svg, i');
-			$icon.removeClass('mfm-text-primary').addClass('text-gray-400');
+			$icon.removeClass('snaporder-text-primary').addClass('text-gray-400');
 			jQuery(this).find('span').removeClass('text-gray-900').addClass('text-gray-500');
 		});
 
 		if (element) {
 			var $el = jQuery(element);
-			$el.removeClass('border-gray-200').addClass('selected mfm-border-primary mfm-bg-primary-50');
-			$el.find('svg, i').removeClass('text-gray-400').addClass('mfm-text-primary');
+			$el.removeClass('border-gray-200').addClass('selected snaporder-border-primary snaporder-bg-primary-50');
+			$el.find('svg, i').removeClass('text-gray-400').addClass('snaporder-text-primary');
 			$el.find('span').removeClass('text-gray-500').addClass('text-gray-900');
 			// Update Radio
 			$el.find('input[type="radio"]').prop('checked', true);
@@ -915,7 +915,7 @@ var MFMCart = {
 
 	submitOrder: function (form) {
 		if (!this.items.length || !this.selectedPayment) {
-			window.alert(mfm_vars.strings.order_error);
+			window.alert(snaporder_vars.strings.order_error);
 			return;
 		}
 
@@ -938,13 +938,13 @@ var MFMCart = {
 			try {
 				this.pendingRequestId = this.createRequestId();
 			} catch (error) {
-				window.alert(mfm_vars.strings.order_error);
+				window.alert(snaporder_vars.strings.order_error);
 				return;
 			}
 		}
 
-		formData.append('action', 'mfm_submit_order');
-		formData.append('nonce', mfm_vars.nonce);
+		formData.append('action', 'snaporder_submit_order');
+		formData.append('nonce', snaporder_vars.nonce);
 		formData.append('cart', JSON.stringify(canonicalSelections));
 		formData.append('request_id', this.pendingRequestId);
 		formData.append('deliveryType', this.deliveryType);
@@ -975,7 +975,7 @@ var MFMCart = {
 			self.closeCheckout();
 			form.reset();
 			if (data.token) {
-				localStorage.setItem('mfm_order_token_' + data.order_id, data.token);
+				localStorage.setItem('snaporder_order_token_' + data.order_id, data.token);
 			}
 			window.location.href = window.location.pathname + '?order_id=' + encodeURIComponent(data.order_id);
 		};
@@ -985,9 +985,9 @@ var MFMCart = {
 		};
 
 		var confirmOrderPayment = function (orderData, paymentIntent) {
-			jQuery.post(mfm_vars.ajax_url, {
-				action: 'mfm_confirm_stripe_payment',
-				nonce: mfm_vars.nonce,
+			jQuery.post(snaporder_vars.ajax_url, {
+				action: 'snaporder_confirm_stripe_payment',
+				nonce: snaporder_vars.nonce,
 				order_id: orderData.order_id,
 				token: orderData.token,
 				payment_intent: paymentIntent.id
@@ -996,10 +996,10 @@ var MFMCart = {
 					finishOrder(response.data);
 					return;
 				}
-				jQuery('#stripe-card-errors').text(response.data.message || mfm_vars.strings.payment_error);
+				jQuery('#stripe-card-errors').text(response.data.message || snaporder_vars.strings.payment_error);
 				restoreButton();
 			}).fail(function (xhr) {
-				var message = xhr.responseJSON && xhr.responseJSON.data ? xhr.responseJSON.data.message : mfm_vars.strings.payment_error;
+				var message = xhr.responseJSON && xhr.responseJSON.data ? xhr.responseJSON.data.message : snaporder_vars.strings.payment_error;
 				jQuery('#stripe-card-errors').text(message);
 				restoreButton();
 			});
@@ -1007,7 +1007,7 @@ var MFMCart = {
 
 		var processServerResponse = function (response) {
 			if (!response.success) {
-				window.alert(response.data.message || mfm_vars.strings.order_error);
+				window.alert(response.data.message || snaporder_vars.strings.order_error);
 				restoreButton();
 				return;
 			}
@@ -1018,7 +1018,7 @@ var MFMCart = {
 			}
 
 			if (!window.stripe || !window.cardElement || !response.data.client_secret) {
-				jQuery('#stripe-card-errors').text(mfm_vars.strings.payment_error);
+				jQuery('#stripe-card-errors').text(snaporder_vars.strings.payment_error);
 				restoreButton();
 				return;
 			}
@@ -1027,7 +1027,7 @@ var MFMCart = {
 				payment_method: {card: window.cardElement}
 			}).then(function (result) {
 				if (result.error) {
-					jQuery('#stripe-card-errors').text(result.error.message || mfm_vars.strings.payment_error);
+					jQuery('#stripe-card-errors').text(result.error.message || snaporder_vars.strings.payment_error);
 					restoreButton();
 					return;
 				}
@@ -1037,14 +1037,14 @@ var MFMCart = {
 
 		var sendRequest = function () {
 			jQuery.ajax({
-				url: mfm_vars.ajax_url,
+				url: snaporder_vars.ajax_url,
 				type: 'POST',
 				data: formData,
 				processData: false,
 				contentType: false,
 				success: processServerResponse,
 				error: function (xhr) {
-					var message = xhr.responseJSON && xhr.responseJSON.data ? xhr.responseJSON.data.message : mfm_vars.strings.order_error;
+					var message = xhr.responseJSON && xhr.responseJSON.data ? xhr.responseJSON.data.message : snaporder_vars.strings.order_error;
 					window.alert(message);
 					restoreButton();
 				}
@@ -1137,18 +1137,22 @@ var MFMCart = {
 
 // Initialize
 jQuery(document).ready(function ($) {
-	// Initialize Cart
-	MFMCart.init();
+	if (typeof lucide !== 'undefined') {
+		lucide.createIcons();
+	}
 
-	$(document).on('click keydown', '.mfm-open-item', function (event) {
+	// Initialize Cart
+	SnapOrderCart.init();
+
+	$(document).on('click keydown', '.snaporder-open-item', function (event) {
 		if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') {
 			return;
 		}
 		event.preventDefault();
 		try {
-			MFMApp.openItem(JSON.parse($(this).attr('data-mfm-item')));
+			SnapOrderApp.openItem(JSON.parse($(this).attr('data-snaporder-item')));
 		} catch (error) {
-			window.alert(mfm_vars.strings.order_error);
+			window.alert(snaporder_vars.strings.order_error);
 		}
 	});
 
@@ -1157,16 +1161,16 @@ jQuery(document).ready(function ($) {
 			return;
 		}
 		event.preventDefault();
-		MFMCart.selectPayment($(this).attr('data-payment-method'), this);
+		SnapOrderCart.selectPayment($(this).attr('data-payment-method'), this);
 	});
 
-	$(document).on('click', '.mfm-shortcode-cat-pill', function () {
+	$(document).on('click', '.snaporder-shortcode-cat-pill', function () {
 		var $button = $(this);
-		var $menu = $button.closest('.mfm-shortcode-menu');
+		var $menu = $button.closest('.snaporder-shortcode-menu');
 		var filter = $button.attr('data-filter');
-		$menu.find('.mfm-shortcode-cat-pill').removeClass('active');
+		$menu.find('.snaporder-shortcode-cat-pill').removeClass('active');
 		$button.addClass('active');
-		$menu.find('.mfm-shortcode-item').each(function () {
+		$menu.find('.snaporder-shortcode-item').each(function () {
 			var categories = String($(this).attr('data-categories') || '').split(' ');
 			$(this).toggle(filter === 'all' || categories.includes(filter));
 		});
@@ -1175,38 +1179,38 @@ jQuery(document).ready(function ($) {
 	// Open cart from top icon
 	$('.cart-btn').on('click', function (e) {
 		e.preventDefault();
-		MFMCart.openCart();
+		SnapOrderCart.openCart();
 	});
 
 	// Handle Checkout Submission
-	$('#mfm-checkout-form').on('submit', function (e) {
+	$('#snaporder-checkout-form').on('submit', function (e) {
 		e.preventDefault();
-		MFMCart.submitOrder(this);
+		SnapOrderCart.submitOrder(this);
 	});
 
 	// Live Order Tracking Polling
 	const $statusContainer = $('#order-status-container');
 	if ($statusContainer.length) {
 		const orderId = $statusContainer.data('order-id');
-		const orderToken = localStorage.getItem('mfm_order_token_' + orderId) || '';
+		const orderToken = localStorage.getItem('snaporder_order_token_' + orderId) || '';
 		let currentStatus = $statusContainer.data('current-status');
 		let pollingTimer = null;
 
 		if (!orderToken) {
-			$('#live-status-text').text(mfm_vars.strings.invalid_link);
+			$('#live-status-text').text(snaporder_vars.strings.invalid_link);
 			return;
 		}
 
 		function checkStatus() {
-			$.post(mfm_vars.ajax_url, {
-				action: 'mfm_check_status',
-				nonce: mfm_vars.nonce,
+			$.post(snaporder_vars.ajax_url, {
+				action: 'snaporder_check_status',
+				nonce: snaporder_vars.nonce,
 				order_id: orderId,
 				// Token authenticates the poll — prevents order status enumeration.
 				token: orderToken
 			}, function (response) {
 				if (!response.success) {
-					$('#live-status-text').text(mfm_vars.strings.invalid_link);
+					$('#live-status-text').text(snaporder_vars.strings.invalid_link);
 					if (pollingTimer) {
 						window.clearInterval(pollingTimer);
 					}
@@ -1228,9 +1232,9 @@ jQuery(document).ready(function ($) {
 			var html = data.items.map(function (item) {
 				return `<div class="flex justify-between text-sm"><div><span class="font-bold text-gray-900">${Number(item.qty)}x</span> <span class="text-gray-700">${snaporderEscapeHtml(item.title)}</span></div><span class="font-medium text-gray-900">${snaporderEscapeHtml(item.line_total)}${snaporderEscapeHtml(data.currency)}</span></div>`;
 			}).join('');
-			$('#mfm-order-detail-items').html(html);
-			$('#mfm-order-detail-total').text(data.total + data.currency);
-			$('#mfm-order-details').removeClass('hidden');
+			$('#snaporder-order-detail-items').html(html);
+			$('#snaporder-order-detail-total').text(data.total + data.currency);
+			$('#snaporder-order-details').removeClass('hidden');
 		}
 
 		function updateStatusUI(status) {
@@ -1248,10 +1252,10 @@ jQuery(document).ready(function ($) {
 				if (isActive) passed = false;
 
 				if (passed || isActive) {
-					$dot.removeClass('bg-gray-200 border-gray-200').addClass('mfm-bg-primary mfm-border-primary');
+					$dot.removeClass('bg-gray-200 border-gray-200').addClass('snaporder-bg-primary snaporder-border-primary');
 					$text.removeClass('text-gray-400').addClass('text-gray-900');
 				} else {
-					$dot.removeClass('mfm-bg-primary mfm-border-primary').addClass('bg-gray-200 border-gray-200');
+					$dot.removeClass('snaporder-bg-primary snaporder-border-primary').addClass('bg-gray-200 border-gray-200');
 					$text.removeClass('text-gray-900').addClass('text-gray-400');
 				}
 			});
@@ -1262,12 +1266,12 @@ jQuery(document).ready(function ($) {
 	}
 
 	// Search Logic
-	const searchInput = document.getElementById('mfm-search-input');
+	const searchInput = document.getElementById('snaporder-search-input');
 	if (searchInput) {
 		searchInput.addEventListener('keyup', function () {
 			var val = this.value.toLowerCase();
-			var items = document.querySelectorAll('.mfm-list-card');
-			var sections = document.querySelectorAll('.mfm-category-list');
+			var items = document.querySelectorAll('.snaporder-list-card');
+			var sections = document.querySelectorAll('.snaporder-category-list');
 
 			items.forEach(function (item) {
 				var title = item.querySelector('h4').textContent.toLowerCase();
@@ -1283,7 +1287,7 @@ jQuery(document).ready(function ($) {
 			// Hide empty sections
 			sections.forEach(function (section) {
 				var hasVisible = false;
-				section.querySelectorAll('.mfm-list-card').forEach(function (item) {
+				section.querySelectorAll('.snaporder-list-card').forEach(function (item) {
 					if (!item.classList.contains('hidden')) hasVisible = true;
 				});
 

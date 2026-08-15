@@ -28,11 +28,11 @@ class SnapOrder_Settings {
 	 */
 	public function add_admin_menu() {
 		add_submenu_page(
-			'edit.php?post_type=food_item',
+			'edit.php?post_type=snaporder_item',
 			__( 'Settings', 'lineweb-restaurant-orders' ),
 			__( 'Settings', 'lineweb-restaurant-orders' ),
 			'manage_options',
-			'mfm-settings',
+			'snaporder-settings',
 			array( $this, 'render_settings_page' )
 		);
 	}
@@ -42,40 +42,40 @@ class SnapOrder_Settings {
 	 */
 	public function register_settings() {
 		// Branding.
-		register_setting( 'mfm_settings_group', 'mfm_brand_logo', array( 'sanitize_callback' => 'esc_url_raw' ) );
-		register_setting( 'mfm_settings_group', 'mfm_primary_color', array( 'sanitize_callback' => 'sanitize_hex_color' ) );
-		register_setting( 'mfm_settings_group', 'mfm_store_title', array( 'sanitize_callback' => 'sanitize_text_field' ) );
-		register_setting( 'mfm_settings_group', 'mfm_store_tagline', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_brand_logo', array( 'sanitize_callback' => 'esc_url_raw' ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_primary_color', array( 'sanitize_callback' => 'sanitize_hex_color' ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_store_title', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_store_tagline', array( 'sanitize_callback' => 'sanitize_text_field' ) );
 		// Opening hours.
-		register_setting( 'mfm_settings_group', 'mfm_opening_hours', array( 'sanitize_callback' => array( $this, 'sanitize_opening_hours' ) ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_opening_hours', array( 'sanitize_callback' => array( $this, 'sanitize_opening_hours' ) ) );
 		// General.
-		register_setting( 'mfm_settings_group', 'mfm_currency', array( 'sanitize_callback' => array( $this, 'sanitize_currency' ) ) );
-		register_setting( 'mfm_settings_group', 'mfm_enable_cod', array( 'sanitize_callback' => array( $this, 'sanitize_checkbox' ) ) );
-		register_setting( 'mfm_settings_group', 'mfm_dinein_enabled', array( 'sanitize_callback' => array( $this, 'sanitize_checkbox' ) ) );
-		register_setting( 'mfm_settings_group', 'mfm_delete_data_on_uninstall', array( 'sanitize_callback' => array( $this, 'sanitize_checkbox' ) ) );
-		register_setting( 'mfm_settings_group', 'mfm_order_retention_days', array( 'sanitize_callback' => array( $this, 'sanitize_retention_days' ) ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_currency', array( 'sanitize_callback' => array( $this, 'sanitize_currency' ) ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_enable_cod', array( 'sanitize_callback' => array( $this, 'sanitize_checkbox' ) ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_dinein_enabled', array( 'sanitize_callback' => array( $this, 'sanitize_checkbox' ) ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_delete_data_on_uninstall', array( 'sanitize_callback' => array( $this, 'sanitize_checkbox' ) ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_order_retention_days', array( 'sanitize_callback' => array( $this, 'sanitize_retention_days' ) ) );
 		// Social.
-		register_setting( 'mfm_settings_group', 'mfm_facebook_url', array( 'sanitize_callback' => 'esc_url_raw' ) );
-		register_setting( 'mfm_settings_group', 'mfm_instagram_url', array( 'sanitize_callback' => 'esc_url_raw' ) );
-		register_setting( 'mfm_settings_group', 'mfm_twitter_url', array( 'sanitize_callback' => 'esc_url_raw' ) );
-		register_setting( 'mfm_settings_group', 'mfm_tiktok_url', array( 'sanitize_callback' => 'esc_url_raw' ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_facebook_url', array( 'sanitize_callback' => 'esc_url_raw' ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_instagram_url', array( 'sanitize_callback' => 'esc_url_raw' ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_twitter_url', array( 'sanitize_callback' => 'esc_url_raw' ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_tiktok_url', array( 'sanitize_callback' => 'esc_url_raw' ) );
 		// Stripe.
-		register_setting( 'mfm_settings_group', 'mfm_enable_stripe', array( 'sanitize_callback' => array( $this, 'sanitize_checkbox' ) ) );
-		register_setting( 'mfm_settings_group', 'mfm_stripe_publishable_key', array( 'sanitize_callback' => 'sanitize_text_field' ) );
-		register_setting( 'mfm_settings_group', 'mfm_stripe_secret_key', array( 'sanitize_callback' => array( $this, 'sanitize_stripe_secret' ) ) );
-		register_setting( 'mfm_settings_group', 'mfm_stripe_webhook_secret', array( 'sanitize_callback' => array( $this, 'sanitize_webhook_secret' ) ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_enable_stripe', array( 'sanitize_callback' => array( $this, 'sanitize_checkbox' ) ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_stripe_publishable_key', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_stripe_secret_key', array( 'sanitize_callback' => array( $this, 'sanitize_stripe_secret' ) ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_stripe_webhook_secret', array( 'sanitize_callback' => array( $this, 'sanitize_webhook_secret' ) ) );
 		// Tipping.
-		register_setting( 'mfm_settings_group', 'mfm_tipping_enabled', array( 'sanitize_callback' => array( $this, 'sanitize_checkbox' ) ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_tipping_enabled', array( 'sanitize_callback' => array( $this, 'sanitize_checkbox' ) ) );
 		// WhatsApp and Twilio.
-		register_setting( 'mfm_settings_group', 'mfm_whatsapp_enabled', array( 'sanitize_callback' => array( $this, 'sanitize_checkbox' ) ) );
-		register_setting( 'mfm_settings_group', 'mfm_twilio_sid', array( 'sanitize_callback' => 'sanitize_text_field' ) );
-		register_setting( 'mfm_settings_group', 'mfm_twilio_token', array( 'sanitize_callback' => array( $this, 'sanitize_twilio_token' ) ) );
-		register_setting( 'mfm_settings_group', 'mfm_twilio_phone', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_whatsapp_enabled', array( 'sanitize_callback' => array( $this, 'sanitize_checkbox' ) ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_twilio_sid', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_twilio_token', array( 'sanitize_callback' => array( $this, 'sanitize_twilio_token' ) ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_twilio_phone', array( 'sanitize_callback' => 'sanitize_text_field' ) );
 		// Progressive web app.
-		register_setting( 'mfm_settings_group', 'mfm_pwa_enabled', array( 'sanitize_callback' => array( $this, 'sanitize_checkbox' ) ) );
-		register_setting( 'mfm_settings_group', 'mfm_pwa_name', array( 'sanitize_callback' => 'sanitize_text_field' ) );
-		register_setting( 'mfm_settings_group', 'mfm_pwa_short_name', array( 'sanitize_callback' => 'sanitize_text_field' ) );
-		register_setting( 'mfm_settings_group', 'mfm_pwa_theme_color', array( 'sanitize_callback' => 'sanitize_hex_color' ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_pwa_enabled', array( 'sanitize_callback' => array( $this, 'sanitize_checkbox' ) ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_pwa_name', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_pwa_short_name', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+		register_setting( 'snaporder_settings_group', 'snaporder_pwa_theme_color', array( 'sanitize_callback' => 'sanitize_hex_color' ) );
 	}
 
 	/**
@@ -107,7 +107,7 @@ class SnapOrder_Settings {
 	 */
 	public function sanitize_stripe_secret( $value ) {
 		$value = sanitize_text_field( $value );
-		return '' === $value ? get_option( 'mfm_stripe_secret_key', '' ) : $value;
+		return '' === $value ? get_option( 'snaporder_stripe_secret_key', '' ) : $value;
 	}
 
 	/**
@@ -118,7 +118,7 @@ class SnapOrder_Settings {
 	 */
 	public function sanitize_webhook_secret( $value ) {
 		$value = sanitize_text_field( $value );
-		return '' === $value ? get_option( 'mfm_stripe_webhook_secret', '' ) : $value;
+		return '' === $value ? get_option( 'snaporder_stripe_webhook_secret', '' ) : $value;
 	}
 
 	/**
@@ -129,7 +129,7 @@ class SnapOrder_Settings {
 	 */
 	public function sanitize_twilio_token( $value ) {
 		$value = sanitize_text_field( $value );
-		return '' === $value ? get_option( 'mfm_twilio_token', '' ) : $value;
+		return '' === $value ? get_option( 'snaporder_twilio_token', '' ) : $value;
 	}
 
 	/**
@@ -177,12 +177,12 @@ class SnapOrder_Settings {
 	 * @param string $hook Current admin page hook.
 	 */
 	public function enqueue_admin_scripts( $hook ) {
-		if ( 'food_item_page_mfm-settings' !== $hook ) {
+		if ( 'snaporder_item_page_snaporder-settings' !== $hook ) {
 			return;
 		}
 		wp_enqueue_media();
 		wp_enqueue_style( 'wp-color-picker' );
-		wp_enqueue_script( 'mfm-settings-script', SNAPORDER_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery', 'wp-color-picker' ), SNAPORDER_VERSION, true );
+		wp_enqueue_script( 'snaporder-settings-script', SNAPORDER_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery', 'wp-color-picker' ), SNAPORDER_VERSION, true );
 	}
 
 	/**
@@ -190,62 +190,62 @@ class SnapOrder_Settings {
 	 */
 	public function render_settings_page() {
 		?>
-		<div class="wrap mfm-wrap">
-			<h1 class="mfm-page-title"><?php esc_html_e( 'Lineweb Restaurant Orders Settings', 'lineweb-restaurant-orders' ); ?></h1>
+		<div class="wrap snaporder-wrap">
+			<h1 class="snaporder-page-title"><?php esc_html_e( 'Lineweb Restaurant Orders Settings', 'lineweb-restaurant-orders' ); ?></h1>
 
 			<form method="post" action="options.php">
-				<?php settings_fields( 'mfm_settings_group' ); ?>
+				<?php settings_fields( 'snaporder_settings_group' ); ?>
 
-				<div class="mfm-settings-container">
+				<div class="snaporder-settings-container">
 					<!-- Tabs -->
-					<div class="mfm-settings-tabs">
-						<a href="#general" class="mfm-tab-link active">
-							<span class="dashicons dashicons-admin-generic mfm-tab-icon"></span>
+					<div class="snaporder-settings-tabs">
+						<a href="#general" class="snaporder-tab-link active">
+							<span class="dashicons dashicons-admin-generic snaporder-tab-icon"></span>
 							<?php esc_html_e( 'General', 'lineweb-restaurant-orders' ); ?>
 						</a>
-						<a href="#branding" class="mfm-tab-link">
-							<span class="dashicons dashicons-art mfm-tab-icon"></span>
+						<a href="#branding" class="snaporder-tab-link">
+							<span class="dashicons dashicons-art snaporder-tab-icon"></span>
 							<?php esc_html_e( 'Branding', 'lineweb-restaurant-orders' ); ?>
 						</a>
-						<a href="#hours" class="mfm-tab-link">
-							<span class="dashicons dashicons-clock mfm-tab-icon"></span>
+						<a href="#hours" class="snaporder-tab-link">
+							<span class="dashicons dashicons-clock snaporder-tab-icon"></span>
 							<?php esc_html_e( 'Opening Hours', 'lineweb-restaurant-orders' ); ?>
 						</a>
-						<a href="#payment" class="mfm-tab-link">
-							<span class="dashicons dashicons-money mfm-tab-icon"></span>
+						<a href="#payment" class="snaporder-tab-link">
+							<span class="dashicons dashicons-money snaporder-tab-icon"></span>
 							<?php esc_html_e( 'Payment', 'lineweb-restaurant-orders' ); ?>
 						</a>
-						<a href="#notifications" class="mfm-tab-link">
-							<span class="dashicons dashicons-bell mfm-tab-icon"></span>
+						<a href="#notifications" class="snaporder-tab-link">
+							<span class="dashicons dashicons-bell snaporder-tab-icon"></span>
 							<?php esc_html_e( 'Notifications', 'lineweb-restaurant-orders' ); ?>
 						</a>
-						<a href="#pwa" class="mfm-tab-link">
-							<span class="dashicons dashicons-smartphone mfm-tab-icon"></span>
+						<a href="#pwa" class="snaporder-tab-link">
+							<span class="dashicons dashicons-smartphone snaporder-tab-icon"></span>
 							<?php esc_html_e( 'PWA', 'lineweb-restaurant-orders' ); ?>
 						</a>
 					</div>
 
-					<div class="mfm-settings-content">
+					<div class="snaporder-settings-content">
 
 						<!-- General -->
-						<div id="general" class="mfm-settings-section active">
+						<div id="general" class="snaporder-settings-section active">
 							<h2><?php esc_html_e( 'General Settings', 'lineweb-restaurant-orders' ); ?></h2>
 							<table class="form-table">
 								<tr>
 									<th><?php esc_html_e( 'Store Title', 'lineweb-restaurant-orders' ); ?></th>
 									<td>
-										<input type="text" name="mfm_store_title" value="<?php echo esc_attr( get_option( 'mfm_store_title', 'My Restaurant' ) ); ?>" class="regular-text">
+										<input type="text" name="snaporder_store_title" value="<?php echo esc_attr( get_option( 'snaporder_store_title', 'My Restaurant' ) ); ?>" class="regular-text">
 										<p class="description"><?php esc_html_e( 'Displayed in the app header and browser tab.', 'lineweb-restaurant-orders' ); ?></p>
 									</td>
 								</tr>
 								<tr>
 									<th><?php esc_html_e( 'Store Tagline', 'lineweb-restaurant-orders' ); ?></th>
-									<td><input type="text" name="mfm_store_tagline" value="<?php echo esc_attr( get_option( 'mfm_store_tagline' ) ); ?>" class="regular-text"></td>
+									<td><input type="text" name="snaporder_store_tagline" value="<?php echo esc_attr( get_option( 'snaporder_store_tagline' ) ); ?>" class="regular-text"></td>
 								</tr>
 								<tr>
 									<th><?php esc_html_e( 'Currency', 'lineweb-restaurant-orders' ); ?></th>
 									<td>
-										<select name="mfm_currency">
+										<select name="snaporder_currency">
 											<?php
 											$currencies = array(
 												'EUR' => '€ (EUR)',
@@ -254,7 +254,7 @@ class SnapOrder_Settings {
 												'AUD' => 'A$ (AUD)',
 												'CAD' => 'C$ (CAD)',
 											);
-											$current    = get_option( 'mfm_currency', 'EUR' );
+											$current    = get_option( 'snaporder_currency', 'EUR' );
 											foreach ( $currencies as $code => $label ) {
 												echo '<option value="' . esc_attr( $code ) . '" ' . selected( $current, $code, false ) . '>' . esc_html( $label ) . '</option>';
 											}
@@ -266,7 +266,7 @@ class SnapOrder_Settings {
 									<th><?php esc_html_e( 'Dine-In', 'lineweb-restaurant-orders' ); ?></th>
 									<td>
 										<label>
-											<input type="checkbox" name="mfm_dinein_enabled" value="1" <?php checked( get_option( 'mfm_dinein_enabled' ), '1' ); ?>>
+											<input type="checkbox" name="snaporder_dinein_enabled" value="1" <?php checked( get_option( 'snaporder_dinein_enabled' ), '1' ); ?>>
 											<?php esc_html_e( 'Enable Dine-In ordering (table number instead of delivery address)', 'lineweb-restaurant-orders' ); ?>
 										</label>
 									</td>
@@ -275,16 +275,16 @@ class SnapOrder_Settings {
 									<th><?php esc_html_e( 'Data removal', 'lineweb-restaurant-orders' ); ?></th>
 									<td>
 										<label>
-											<input type="checkbox" name="mfm_delete_data_on_uninstall" value="1" <?php checked( get_option( 'mfm_delete_data_on_uninstall' ), '1' ); ?>>
+											<input type="checkbox" name="snaporder_delete_data_on_uninstall" value="1" <?php checked( get_option( 'snaporder_delete_data_on_uninstall' ), '1' ); ?>>
 											<?php esc_html_e( 'Permanently delete Lineweb Restaurant Orders products, orders, settings, and statistics when the plugin is deleted.', 'lineweb-restaurant-orders' ); ?>
 										</label>
 										<p class="description"><?php esc_html_e( 'Leave this disabled to preserve business and order data.', 'lineweb-restaurant-orders' ); ?></p>
 									</td>
 								</tr>
 								<tr>
-									<th><label for="mfm_order_retention_days"><?php esc_html_e( 'Order data retention', 'lineweb-restaurant-orders' ); ?></label></th>
+									<th><label for="snaporder_order_retention_days"><?php esc_html_e( 'Order data retention', 'lineweb-restaurant-orders' ); ?></label></th>
 									<td>
-										<input type="number" id="mfm_order_retention_days" name="mfm_order_retention_days" value="<?php echo esc_attr( get_option( 'mfm_order_retention_days', 0 ) ); ?>" min="0" max="3650" class="small-text">
+										<input type="number" id="snaporder_order_retention_days" name="snaporder_order_retention_days" value="<?php echo esc_attr( get_option( 'snaporder_order_retention_days', 0 ) ); ?>" min="0" max="3650" class="small-text">
 										<?php esc_html_e( 'days', 'lineweb-restaurant-orders' ); ?>
 										<p class="description"><?php esc_html_e( 'Personal data in completed, rejected, and failed orders is anonymized after this period. Use 0 to retain it until manually removed.', 'lineweb-restaurant-orders' ); ?></p>
 									</td>
@@ -293,10 +293,10 @@ class SnapOrder_Settings {
 									<th><?php esc_html_e( 'Social Media', 'lineweb-restaurant-orders' ); ?></th>
 									<td>
 										<div style="display:flex;flex-direction:column;gap:8px;">
-											<input type="url" name="mfm_facebook_url"  value="<?php echo esc_attr( get_option( 'mfm_facebook_url' ) ); ?>"  class="regular-text" placeholder="Facebook URL">
-											<input type="url" name="mfm_instagram_url" value="<?php echo esc_attr( get_option( 'mfm_instagram_url' ) ); ?>" class="regular-text" placeholder="Instagram URL">
-											<input type="url" name="mfm_twitter_url"   value="<?php echo esc_attr( get_option( 'mfm_twitter_url' ) ); ?>"   class="regular-text" placeholder="Twitter/X URL">
-											<input type="url" name="mfm_tiktok_url"    value="<?php echo esc_attr( get_option( 'mfm_tiktok_url' ) ); ?>"    class="regular-text" placeholder="TikTok URL">
+											<input type="url" name="snaporder_facebook_url"  value="<?php echo esc_attr( get_option( 'snaporder_facebook_url' ) ); ?>"  class="regular-text" placeholder="Facebook URL">
+											<input type="url" name="snaporder_instagram_url" value="<?php echo esc_attr( get_option( 'snaporder_instagram_url' ) ); ?>" class="regular-text" placeholder="Instagram URL">
+											<input type="url" name="snaporder_twitter_url"   value="<?php echo esc_attr( get_option( 'snaporder_twitter_url' ) ); ?>"   class="regular-text" placeholder="Twitter/X URL">
+											<input type="url" name="snaporder_tiktok_url"    value="<?php echo esc_attr( get_option( 'snaporder_tiktok_url' ) ); ?>"    class="regular-text" placeholder="TikTok URL">
 										</div>
 									</td>
 								</tr>
@@ -304,18 +304,18 @@ class SnapOrder_Settings {
 						</div>
 
 						<!-- Branding -->
-						<div id="branding" class="mfm-settings-section">
+						<div id="branding" class="snaporder-settings-section">
 							<h2><?php esc_html_e( 'Branding', 'lineweb-restaurant-orders' ); ?></h2>
 							<?php
-							$logo  = get_option( 'mfm_brand_logo' );
-							$color = get_option( 'mfm_primary_color', '#f97316' );
+							$logo  = get_option( 'snaporder_brand_logo' );
+							$color = get_option( 'snaporder_primary_color', '#f97316' );
 							?>
 							<table class="form-table">
 								<tr>
 									<th><?php esc_html_e( 'Brand Logo', 'lineweb-restaurant-orders' ); ?></th>
 									<td>
-										<input type="hidden" name="mfm_brand_logo" id="mfm_brand_logo" value="<?php echo esc_attr( $logo ); ?>">
-										<div id="mfm-logo-preview" style="margin-bottom:15px;background:#f9f9f9;padding:20px;border-radius:8px;display:inline-block;">
+										<input type="hidden" name="snaporder_brand_logo" id="snaporder_brand_logo" value="<?php echo esc_attr( $logo ); ?>">
+										<div id="snaporder-logo-preview" style="margin-bottom:15px;background:#f9f9f9;padding:20px;border-radius:8px;display:inline-block;">
 											<?php
 											if ( $logo ) :
 												?>
@@ -325,14 +325,14 @@ else :
 	?>
 												<span class="dashicons dashicons-format-image" style="font-size:48px;height:48px;width:48px;color:#ccc;"></span><?php endif; ?>
 										</div><br>
-										<button id="mfm-upload-logo" class="button"><?php esc_html_e( 'Upload Logo', 'lineweb-restaurant-orders' ); ?></button>
-										<button id="mfm-remove-logo" class="button button-link-delete" style="<?php echo $logo ? '' : 'display:none;'; ?>"><?php esc_html_e( 'Remove', 'lineweb-restaurant-orders' ); ?></button>
+										<button id="snaporder-upload-logo" class="button"><?php esc_html_e( 'Upload Logo', 'lineweb-restaurant-orders' ); ?></button>
+										<button id="snaporder-remove-logo" class="button button-link-delete" style="<?php echo $logo ? '' : 'display:none;'; ?>"><?php esc_html_e( 'Remove', 'lineweb-restaurant-orders' ); ?></button>
 									</td>
 								</tr>
 								<tr>
 									<th><?php esc_html_e( 'Primary Colour', 'lineweb-restaurant-orders' ); ?></th>
 									<td>
-										<input type="text" name="mfm_primary_color" value="<?php echo esc_attr( $color ); ?>" class="mfm-color-field" data-default-color="#f97316">
+										<input type="text" name="snaporder_primary_color" value="<?php echo esc_attr( $color ); ?>" class="snaporder-color-field" data-default-color="#f97316">
 										<p class="description"><?php esc_html_e( 'Used for buttons, links, and accents.', 'lineweb-restaurant-orders' ); ?></p>
 									</td>
 								</tr>
@@ -341,7 +341,7 @@ else :
 						</div>
 
 						<!-- Opening Hours -->
-						<div id="hours" class="mfm-settings-section">
+						<div id="hours" class="snaporder-settings-section">
 							<h2><?php esc_html_e( 'Store Opening Hours', 'lineweb-restaurant-orders' ); ?></h2>
 							<p class="description" style="margin-bottom:20px;"><?php esc_html_e( 'Uncheck "Open" to mark a day as closed.', 'lineweb-restaurant-orders' ); ?></p>
 							<?php
@@ -354,7 +354,7 @@ else :
 								'saturday'  => 'Saturday',
 								'sunday'    => 'Sunday',
 							);
-							$stored_hours = get_option( 'mfm_opening_hours', array() );
+							$stored_hours = get_option( 'snaporder_opening_hours', array() );
 							?>
 							<table class="widefat striped" style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
 								<thead>
@@ -374,9 +374,9 @@ else :
 										?>
 									<tr>
 										<td style="font-weight:500;"><?php echo esc_html( $label ); ?></td>
-										<td style="text-align:center;"><input type="checkbox" name="mfm_opening_hours[<?php echo esc_attr( $key ); ?>][is_open]" value="1" <?php checked( $is_open, '1' ); ?>></td>
-										<td><input type="time" name="mfm_opening_hours[<?php echo esc_attr( $key ); ?>][open]"  value="<?php echo esc_attr( $open_time ); ?>"></td>
-										<td><input type="time" name="mfm_opening_hours[<?php echo esc_attr( $key ); ?>][close]" value="<?php echo esc_attr( $close_time ); ?>"></td>
+										<td style="text-align:center;"><input type="checkbox" name="snaporder_opening_hours[<?php echo esc_attr( $key ); ?>][is_open]" value="1" <?php checked( $is_open, '1' ); ?>></td>
+										<td><input type="time" name="snaporder_opening_hours[<?php echo esc_attr( $key ); ?>][open]"  value="<?php echo esc_attr( $open_time ); ?>"></td>
+										<td><input type="time" name="snaporder_opening_hours[<?php echo esc_attr( $key ); ?>][close]" value="<?php echo esc_attr( $close_time ); ?>"></td>
 									</tr>
 									<?php endforeach; ?>
 								</tbody>
@@ -384,14 +384,14 @@ else :
 						</div>
 
 						<!-- Payment -->
-						<div id="payment" class="mfm-settings-section">
+						<div id="payment" class="snaporder-settings-section">
 							<h2><?php esc_html_e( 'Payment Settings', 'lineweb-restaurant-orders' ); ?></h2>
 							<table class="form-table">
 								<tr>
 									<th><?php esc_html_e( 'Cash on Delivery', 'lineweb-restaurant-orders' ); ?></th>
 									<td>
 										<label>
-											<input type="checkbox" name="mfm_enable_cod" value="1" <?php checked( get_option( 'mfm_enable_cod', '1' ), '1' ); ?>>
+											<input type="checkbox" name="snaporder_enable_cod" value="1" <?php checked( get_option( 'snaporder_enable_cod', '1' ), '1' ); ?>>
 											<?php esc_html_e( 'Enable Cash on Delivery / Pay at Counter', 'lineweb-restaurant-orders' ); ?>
 										</label>
 									</td>
@@ -402,7 +402,7 @@ else :
 									<th colspan="2" style="padding-top:20px;">
 										<h3 style="margin:0 0 5px;">
 											<label>
-												<input type="checkbox" name="mfm_enable_stripe" value="1" <?php checked( get_option( 'mfm_enable_stripe' ), '1' ); ?>>
+												<input type="checkbox" name="snaporder_enable_stripe" value="1" <?php checked( get_option( 'snaporder_enable_stripe' ), '1' ); ?>>
 												<?php esc_html_e( 'Enable Stripe Payments', 'lineweb-restaurant-orders' ); ?>
 											</label>
 										</h3>
@@ -411,20 +411,20 @@ else :
 								<tr>
 									<th><?php esc_html_e( 'Publishable Key', 'lineweb-restaurant-orders' ); ?></th>
 									<td>
-										<input type="text" name="mfm_stripe_publishable_key" value="<?php echo esc_attr( get_option( 'mfm_stripe_publishable_key' ) ); ?>" class="regular-text" placeholder="pk_live_...">
+										<input type="text" name="snaporder_stripe_publishable_key" value="<?php echo esc_attr( get_option( 'snaporder_stripe_publishable_key' ) ); ?>" class="regular-text" placeholder="pk_live_...">
 											<p class="description"><?php esc_html_e( 'Keys may be stored in wp-config.php with SNAPORDER_STRIPE_PUBLISHABLE_KEY and SNAPORDER_STRIPE_SECRET.', 'lineweb-restaurant-orders' ); ?></p>
 									</td>
 								</tr>
 								<tr>
 									<th><?php esc_html_e( 'Secret Key', 'lineweb-restaurant-orders' ); ?></th>
 									<td>
-											<input type="password" name="mfm_stripe_secret_key" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo get_option( 'mfm_stripe_secret_key' ) ? esc_attr__( 'Configured - enter a new key to replace it', 'lineweb-restaurant-orders' ) : 'sk_live_...'; ?>">
+											<input type="password" name="snaporder_stripe_secret_key" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo get_option( 'snaporder_stripe_secret_key' ) ? esc_attr__( 'Configured - enter a new key to replace it', 'lineweb-restaurant-orders' ) : 'sk_live_...'; ?>">
 										</td>
 									</tr>
 									<tr>
 										<th><?php esc_html_e( 'Webhook signing secret', 'lineweb-restaurant-orders' ); ?></th>
 										<td>
-											<input type="password" name="mfm_stripe_webhook_secret" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo get_option( 'mfm_stripe_webhook_secret' ) ? esc_attr__( 'Configured - enter a new secret to replace it', 'lineweb-restaurant-orders' ) : 'whsec_...'; ?>">
+											<input type="password" name="snaporder_stripe_webhook_secret" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo get_option( 'snaporder_stripe_webhook_secret' ) ? esc_attr__( 'Configured - enter a new secret to replace it', 'lineweb-restaurant-orders' ) : 'whsec_...'; ?>">
 											<p class="description">
 												<?php
 												printf(
@@ -442,7 +442,7 @@ else :
 									<th colspan="2" style="padding-top:20px;">
 										<h3 style="margin:0 0 5px;">
 											<label>
-												<input type="checkbox" name="mfm_tipping_enabled" value="1" <?php checked( get_option( 'mfm_tipping_enabled' ), '1' ); ?>>
+												<input type="checkbox" name="snaporder_tipping_enabled" value="1" <?php checked( get_option( 'snaporder_tipping_enabled' ), '1' ); ?>>
 												<?php esc_html_e( 'Enable Tipping at Checkout', 'lineweb-restaurant-orders' ); ?>
 											</label>
 										</h3>
@@ -453,14 +453,14 @@ else :
 						</div>
 
 						<!-- Notifications (WhatsApp) -->
-						<div id="notifications" class="mfm-settings-section">
+						<div id="notifications" class="snaporder-settings-section">
 							<h2><?php esc_html_e( 'WhatsApp Notifications', 'lineweb-restaurant-orders' ); ?></h2>
 							<p class="description" style="margin-bottom:20px;"><?php esc_html_e( 'Send automatic WhatsApp messages to customers via Twilio when orders are placed or updated.', 'lineweb-restaurant-orders' ); ?></p>
 							<table class="form-table">
 								<tr>
 									<th colspan="2">
 										<label>
-											<input type="checkbox" name="mfm_whatsapp_enabled" value="1" <?php checked( get_option( 'mfm_whatsapp_enabled' ), '1' ); ?>>
+											<input type="checkbox" name="snaporder_whatsapp_enabled" value="1" <?php checked( get_option( 'snaporder_whatsapp_enabled' ), '1' ); ?>>
 											<?php esc_html_e( 'Enable WhatsApp Notifications (via Twilio)', 'lineweb-restaurant-orders' ); ?>
 										</label>
 									</th>
@@ -468,18 +468,18 @@ else :
 								<tr>
 									<th><?php esc_html_e( 'Twilio Account SID', 'lineweb-restaurant-orders' ); ?></th>
 									<td>
-										<input type="text" name="mfm_twilio_sid" value="<?php echo esc_attr( get_option( 'mfm_twilio_sid' ) ); ?>" class="regular-text">
+										<input type="text" name="snaporder_twilio_sid" value="<?php echo esc_attr( get_option( 'snaporder_twilio_sid' ) ); ?>" class="regular-text">
 									<p class="description"><?php esc_html_e( 'Tip: store credentials in wp-config.php as SNAPORDER_TWILIO_SID and SNAPORDER_TWILIO_TOKEN for better security.', 'lineweb-restaurant-orders' ); ?></p>
 									</td>
 								</tr>
 								<tr>
 									<th><?php esc_html_e( 'Twilio Auth Token', 'lineweb-restaurant-orders' ); ?></th>
-								<td><input type="password" name="mfm_twilio_token" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo get_option( 'mfm_twilio_token' ) ? esc_attr__( 'Configured - enter a new token to replace it', 'lineweb-restaurant-orders' ) : ''; ?>"></td>
+								<td><input type="password" name="snaporder_twilio_token" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo get_option( 'snaporder_twilio_token' ) ? esc_attr__( 'Configured - enter a new token to replace it', 'lineweb-restaurant-orders' ) : ''; ?>"></td>
 								</tr>
 								<tr>
 									<th><?php esc_html_e( 'Twilio Phone Number', 'lineweb-restaurant-orders' ); ?></th>
 									<td>
-										<input type="text" name="mfm_twilio_phone" value="<?php echo esc_attr( get_option( 'mfm_twilio_phone' ) ); ?>" class="regular-text" placeholder="whatsapp:+14155238886">
+										<input type="text" name="snaporder_twilio_phone" value="<?php echo esc_attr( get_option( 'snaporder_twilio_phone' ) ); ?>" class="regular-text" placeholder="whatsapp:+14155238886">
 										<p class="description"><?php esc_html_e( 'Format: whatsapp:+1234567890. Use the Twilio Sandbox number for testing.', 'lineweb-restaurant-orders' ); ?></p>
 									</td>
 								</tr>
@@ -487,35 +487,35 @@ else :
 						</div>
 
 						<!-- PWA -->
-						<div id="pwa" class="mfm-settings-section">
+						<div id="pwa" class="snaporder-settings-section">
 							<h2><?php esc_html_e( 'Progressive Web App (PWA)', 'lineweb-restaurant-orders' ); ?></h2>
 							<p class="description" style="margin-bottom:20px;"><?php esc_html_e( 'Allow customers to install the restaurant menu as an app on their phone.', 'lineweb-restaurant-orders' ); ?></p>
 							<table class="form-table">
 								<tr>
 									<th colspan="2">
 										<label>
-											<input type="checkbox" name="mfm_pwa_enabled" value="1" <?php checked( get_option( 'mfm_pwa_enabled' ), '1' ); ?>>
+											<input type="checkbox" name="snaporder_pwa_enabled" value="1" <?php checked( get_option( 'snaporder_pwa_enabled' ), '1' ); ?>>
 											<?php esc_html_e( 'Enable PWA', 'lineweb-restaurant-orders' ); ?>
 										</label>
 									</th>
 								</tr>
 								<tr>
 									<th><?php esc_html_e( 'App Name', 'lineweb-restaurant-orders' ); ?></th>
-									<td><input type="text" name="mfm_pwa_name" value="<?php echo esc_attr( get_option( 'mfm_pwa_name', get_bloginfo( 'name' ) ) ); ?>" class="regular-text"></td>
+									<td><input type="text" name="snaporder_pwa_name" value="<?php echo esc_attr( get_option( 'snaporder_pwa_name', get_bloginfo( 'name' ) ) ); ?>" class="regular-text"></td>
 								</tr>
 								<tr>
 									<th><?php esc_html_e( 'Short Name', 'lineweb-restaurant-orders' ); ?></th>
-									<td><input type="text" name="mfm_pwa_short_name" value="<?php echo esc_attr( get_option( 'mfm_pwa_short_name', 'Restaurant' ) ); ?>" class="regular-text"></td>
+									<td><input type="text" name="snaporder_pwa_short_name" value="<?php echo esc_attr( get_option( 'snaporder_pwa_short_name', 'Restaurant' ) ); ?>" class="regular-text"></td>
 								</tr>
 								<tr>
 									<th><?php esc_html_e( 'Theme Color', 'lineweb-restaurant-orders' ); ?></th>
-									<td><input type="text" name="mfm_pwa_theme_color" value="<?php echo esc_attr( get_option( 'mfm_pwa_theme_color', '#10b981' ) ); ?>" class="regular-text" placeholder="#10b981"></td>
+									<td><input type="text" name="snaporder_pwa_theme_color" value="<?php echo esc_attr( get_option( 'snaporder_pwa_theme_color', '#10b981' ) ); ?>" class="regular-text" placeholder="#10b981"></td>
 								</tr>
 							</table>
 						</div>
 
 						<div style="margin-top:40px;padding-top:20px;border-top:1px solid #eee;">
-							<?php submit_button( __( 'Save Changes', 'lineweb-restaurant-orders' ), 'primary mfm-btn-primary', 'submit', false ); ?>
+							<?php submit_button( __( 'Save Changes', 'lineweb-restaurant-orders' ), 'primary snaporder-btn-primary', 'submit', false ); ?>
 						</div>
 					</div>
 				</div>
@@ -548,7 +548,7 @@ else :
 	 */
 	public static function get_currency_symbol( $currency = null ) {
 		if ( ! $currency ) {
-			$currency = get_option( 'mfm_currency', 'EUR' );
+			$currency = get_option( 'snaporder_currency', 'EUR' );
 		}
 		switch ( strtoupper( $currency ) ) {
 			case 'EUR':
@@ -572,7 +572,7 @@ else :
 	 * @return string
 	 */
 	public static function get_currency_code() {
-		$currency = strtoupper( (string) get_option( 'mfm_currency', 'EUR' ) );
+		$currency = strtoupper( (string) get_option( 'snaporder_currency', 'EUR' ) );
 		return in_array( $currency, array( 'EUR', 'USD', 'GBP', 'AUD', 'CAD' ), true ) ? $currency : 'EUR';
 	}
 
@@ -585,7 +585,7 @@ else :
 		if ( defined( 'SNAPORDER_STRIPE_PUBLISHABLE_KEY' ) ) {
 			return SNAPORDER_STRIPE_PUBLISHABLE_KEY;
 		}
-		return get_option( 'mfm_stripe_publishable_key', '' );
+		return get_option( 'snaporder_stripe_publishable_key', '' );
 	}
 
 	/**
@@ -595,10 +595,10 @@ else :
 		if ( defined( 'SNAPORDER_STRIPE_SECRET' ) ) {
 			return SNAPORDER_STRIPE_SECRET;
 		}
-		if ( defined( 'MFM_STRIPE_SECRET' ) ) {
-			return MFM_STRIPE_SECRET; // Legacy constant.
+		if ( defined( 'SNAPORDER_STRIPE_SECRET' ) ) {
+			return SNAPORDER_STRIPE_SECRET; // Legacy constant.
 		}
-		return get_option( 'mfm_stripe_secret_key', '' );
+		return get_option( 'snaporder_stripe_secret_key', '' );
 	}
 
 	/**
@@ -610,7 +610,7 @@ else :
 		if ( defined( 'SNAPORDER_STRIPE_WEBHOOK_SECRET' ) ) {
 			return SNAPORDER_STRIPE_WEBHOOK_SECRET;
 		}
-		return get_option( 'mfm_stripe_webhook_secret', '' );
+		return get_option( 'snaporder_stripe_webhook_secret', '' );
 	}
 
 	/**
@@ -625,14 +625,14 @@ else :
 		$secret_key      = self::get_stripe_secret();
 		$webhook_secret  = self::get_stripe_webhook_secret();
 		if (
-			'1' === get_option( 'mfm_enable_stripe' ) &&
+			'1' === get_option( 'snaporder_enable_stripe' ) &&
 			preg_match( '/^pk_(?:test|live)_[A-Za-z0-9]+$/', $publishable_key ) &&
 			preg_match( '/^sk_(?:test|live)_[A-Za-z0-9]+$/', $secret_key ) &&
 			preg_match( '/^whsec_[A-Za-z0-9]+$/', $webhook_secret )
 		) {
 			$methods[] = 'stripe';
 		}
-		if ( '1' === get_option( 'mfm_enable_cod', '1' ) ) {
+		if ( '1' === get_option( 'snaporder_enable_cod', '1' ) ) {
 			$methods[] = 'cod';
 		}
 
@@ -644,9 +644,9 @@ else :
 	 */
 	public static function get_twilio_credentials() {
 		return array(
-			'sid'   => defined( 'SNAPORDER_TWILIO_SID' ) ? SNAPORDER_TWILIO_SID : ( defined( 'MFM_TWILIO_SID' ) ? MFM_TWILIO_SID : get_option( 'mfm_twilio_sid', '' ) ),
-			'token' => defined( 'SNAPORDER_TWILIO_TOKEN' ) ? SNAPORDER_TWILIO_TOKEN : ( defined( 'MFM_TWILIO_TOKEN' ) ? MFM_TWILIO_TOKEN : get_option( 'mfm_twilio_token', '' ) ),
-			'phone' => get_option( 'mfm_twilio_phone', '' ),
+			'sid'   => defined( 'SNAPORDER_TWILIO_SID' ) ? SNAPORDER_TWILIO_SID : ( defined( 'SNAPORDER_TWILIO_SID' ) ? SNAPORDER_TWILIO_SID : get_option( 'snaporder_twilio_sid', '' ) ),
+			'token' => defined( 'SNAPORDER_TWILIO_TOKEN' ) ? SNAPORDER_TWILIO_TOKEN : ( defined( 'SNAPORDER_TWILIO_TOKEN' ) ? SNAPORDER_TWILIO_TOKEN : get_option( 'snaporder_twilio_token', '' ) ),
+			'phone' => get_option( 'snaporder_twilio_phone', '' ),
 		);
 	}
 
@@ -656,7 +656,7 @@ else :
 	 * @return bool
 	 */
 	public static function is_store_open() {
-		$opening_hours = get_option( 'mfm_opening_hours', array() );
+		$opening_hours = get_option( 'snaporder_opening_hours', array() );
 		if ( empty( $opening_hours ) ) {
 			return true; // No hours configured means always open.
 		}

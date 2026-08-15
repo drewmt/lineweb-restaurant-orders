@@ -248,19 +248,19 @@ class SnapOrder_Order_Calculator {
 	private function load_product( $product_id ) {
 		$product = get_post( $product_id );
 
-		if ( ! $product || 'food_item' !== $product->post_type || 'publish' !== $product->post_status ) {
+		if ( ! $product || 'snaporder_item' !== $product->post_type || 'publish' !== $product->post_status ) {
 			return new WP_Error( 'snaporder_invalid_product', __( 'A selected product is unavailable.', 'lineweb-restaurant-orders' ) );
 		}
 
 		$image    = get_the_post_thumbnail_url( $product_id, 'thumbnail' );
-		$variants = get_post_meta( $product_id, '_mfm_size', true );
-		$extras   = get_post_meta( $product_id, '_mfm_extras', true );
+		$variants = get_post_meta( $product_id, '_snaporder_size', true );
+		$extras   = get_post_meta( $product_id, '_snaporder_extras', true );
 
 		return array(
 			'id'       => $product_id,
 			'title'    => get_the_title( $product_id ),
 			'image'    => $image ? $image : '',
-			'price'    => get_post_meta( $product_id, '_mfm_price', true ),
+			'price'    => get_post_meta( $product_id, '_snaporder_price', true ),
 			'variants' => is_array( $variants ) ? $variants : array(),
 			'extras'   => is_array( $extras ) ? $extras : array(),
 		);
