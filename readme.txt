@@ -4,7 +4,7 @@ Tags: food ordering, restaurant menu, online ordering, stripe, qr code
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -105,6 +105,9 @@ Order contact, delivery, cart, notes, total, and payment-status data are stored 
 6. QR-code generator.
 
 == Changelog ==
+
+= 1.0.2 =
+* Preserved the current menu page when redirecting customers to order tracking on sites using plain permalinks.
 
 = 1.0.1 =
 * Adopted the distinctive `snaporder` prefix across plugin identifiers and added a safe migration for existing 1.0.0 installations.

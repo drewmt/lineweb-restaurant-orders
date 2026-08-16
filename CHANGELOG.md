@@ -1,5 +1,9 @@
 # Lineweb Restaurant Orders changelog
 
+## 1.0.2 - 2026-08-16
+
+- Preserved the current menu page when redirecting customers to order tracking on sites using plain permalinks.
+
 ## 1.0.1 - 2026-08-15
 
 - Added current desktop and mobile product screenshots, including the mobile menu homepage, to the public README.

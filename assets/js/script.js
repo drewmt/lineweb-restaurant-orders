@@ -977,7 +977,10 @@ var SnapOrderCart = {
 			if (data.token) {
 				localStorage.setItem('snaporder_order_token_' + data.order_id, data.token);
 			}
-			window.location.href = window.location.pathname + '?order_id=' + encodeURIComponent(data.order_id);
+			var trackingUrl = new URL(window.location.href);
+			trackingUrl.searchParams.set('order_id', data.order_id);
+			trackingUrl.hash = '';
+			window.location.href = trackingUrl.toString();
 		};
 
 		var restoreButton = function () {

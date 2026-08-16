@@ -3,7 +3,7 @@
  * Plugin Name: Lineweb Restaurant Orders
  * Plugin URI:  https://github.com/drewmt/lineweb-restaurant-orders
  * Description: A self-hosted QR menu and restaurant ordering system for delivery, pickup, and dine-in, with card or cash payments and no commissions.
- * Version:     1.0.1
+ * Version:     1.0.2
  * Author:      Andrew Matia / Lineweb
  * Author URI:  https://www.lineweb.gr/
  * License:     GPL-2.0+
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SNAPORDER_VERSION', '1.0.1' );
+define( 'SNAPORDER_VERSION', '1.0.2' );
 define( 'SNAPORDER_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'SNAPORDER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'SNAPORDER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
